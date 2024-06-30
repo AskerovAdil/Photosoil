@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  photosoil.api:
+    image: ${DOCKER_REGISTRY-}photosoilapi
+    build:
+      context: .
+      dockerfile: Photosoil.API/Dockerfile
+    restart: always
