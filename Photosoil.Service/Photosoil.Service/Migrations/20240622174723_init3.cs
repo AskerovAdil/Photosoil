@@ -1,14 +1,59 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Photosoil.Service.Migrations
 {
-    public partial class init : Migration
+    public partial class init3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Role = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Classification",
                 columns: table => new
@@ -24,81 +69,143 @@ namespace Photosoil.Service.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NatureZone",
+                name: "Photo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    TitleEng = table.Column<string>(type: "text", nullable: true),
+                    TitleRu = table.Column<string>(type: "text", nullable: true),
+                    LastUpdated = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NatureZone", x => x.Id);
+                    table.PrimaryKey("PK_Photo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Qualifier",
+                name: "Translation",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Organization = table.Column<string>(type: "text", nullable: true),
+                    Specialization = table.Column<string>(type: "text", nullable: true),
+                    Degree = table.Column<string>(type: "text", nullable: true),
+                    Position = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Qualifier", x => x.Id);
+                    table.PrimaryKey("PK_Translation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilDepartment",
+                name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilDepartment", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilGroup",
+                name: "AspNetUserClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilGroup", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilSubType",
+                name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilSubType", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilType",
+                name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilType", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,7 +225,7 @@ namespace Photosoil.Service.Migrations
                         column: x => x.ClassificationId,
                         principalTable: "Classification",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,36 +241,79 @@ namespace Photosoil.Service.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Article", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Article_Photo_PhotoId",
+                        column: x => x.PhotoId,
+                        principalTable: "Photo",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Author",
+                name: "EcoSystem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FIO = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    PhotoId = table.Column<int>(type: "integer", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    PhotoId = table.Column<int>(type: "integer", nullable: false),
+                    LastUpdated = table.Column<string>(type: "text", nullable: true),
+                    IsVisible = table.Column<bool>(type: "boolean", nullable: true),
+                    IsEnglish = table.Column<bool>(type: "boolean", nullable: true),
+                    OtherLangId = table.Column<int>(type: "integer", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Latitude = table.Column<string>(type: "text", nullable: true),
+                    Longtitude = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Author", x => x.Id);
+                    table.PrimaryKey("PK_EcoSystem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EcoSystem_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_EcoSystem_Photo_PhotoId",
+                        column: x => x.PhotoId,
+                        principalTable: "Photo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Photo",
+                name: "Publication",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Path = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    SoilObjectId = table.Column<int>(type: "integer", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Edition = table.Column<string>(type: "text", nullable: true),
+                    Authors = table.Column<string>(type: "text", nullable: true),
+                    Doi = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: true),
+                    LastUpdated = table.Column<string>(type: "text", nullable: true),
+                    IsVisible = table.Column<bool>(type: "boolean", nullable: true),
+                    Coordinates = table.Column<string>(type: "text", nullable: true),
+                    FileId = table.Column<int>(type: "integer", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Photo", x => x.Id);
+                    table.PrimaryKey("PK_Publication", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Publication_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Publication_Photo_FileId",
+                        column: x => x.FileId,
+                        principalTable: "Photo",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -180,61 +330,140 @@ namespace Photosoil.Service.Migrations
                     PhotoId = table.Column<int>(type: "integer", nullable: false),
                     AssociatedSoilComponents = table.Column<string>(type: "text", nullable: true),
                     Comments = table.Column<string>(type: "text", nullable: true),
+                    Code = table.Column<string>(type: "text", nullable: true),
+                    LastUpdated = table.Column<string>(type: "text", nullable: true),
+                    IsVisible = table.Column<bool>(type: "boolean", nullable: true),
+                    IsEnglish = table.Column<bool>(type: "boolean", nullable: true),
+                    OtherLangId = table.Column<int>(type: "integer", nullable: true),
                     ObjectType = table.Column<int>(type: "integer", nullable: true),
-                    AuthorId = table.Column<int>(type: "integer", nullable: true),
-                    SoilGroupId = table.Column<int>(type: "integer", nullable: true),
-                    DepartmentId = table.Column<int>(type: "integer", nullable: true),
-                    NatureZoneId = table.Column<int>(type: "integer", nullable: true)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Latitude = table.Column<string>(type: "text", nullable: true),
+                    Longtitude = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SoilObjects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SoilObjects_Author_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Author",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SoilObjects_NatureZone_NatureZoneId",
-                        column: x => x.NatureZoneId,
-                        principalTable: "NatureZone",
-                        principalColumn: "Id");
+                        name: "FK_SoilObjects_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_SoilObjects_Photo_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "Photo",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SoilObjects_SoilDepartment_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "SoilDepartment",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_SoilObjects_SoilGroup_SoilGroupId",
-                        column: x => x.SoilGroupId,
-                        principalTable: "SoilGroup",
-                        principalColumn: "Id");
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "QualifierSoilObject",
+                name: "Author",
                 columns: table => new
                 {
-                    QualifiersId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DataEngId = table.Column<int>(type: "integer", nullable: false),
+                    DataRuId = table.Column<int>(type: "integer", nullable: false),
+                    OtherProfiles = table.Column<string>(type: "text", nullable: true),
+                    Contacts = table.Column<string>(type: "text", nullable: true),
+                    PhotoId = table.Column<int>(type: "integer", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Author", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Author_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Author_Photo_PhotoId",
+                        column: x => x.PhotoId,
+                        principalTable: "Photo",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Author_Translation_DataEngId",
+                        column: x => x.DataEngId,
+                        principalTable: "Translation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Author_Translation_DataRuId",
+                        column: x => x.DataRuId,
+                        principalTable: "Translation",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EcoSystemFile",
+                columns: table => new
+                {
+                    EcoSystemsId = table.Column<int>(type: "integer", nullable: false),
+                    ObjectPhotoId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EcoSystemFile", x => new { x.EcoSystemsId, x.ObjectPhotoId });
+                    table.ForeignKey(
+                        name: "FK_EcoSystemFile_EcoSystem_EcoSystemsId",
+                        column: x => x.EcoSystemsId,
+                        principalTable: "EcoSystem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EcoSystemFile_Photo_ObjectPhotoId",
+                        column: x => x.ObjectPhotoId,
+                        principalTable: "Photo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EcoSystemPublication",
+                columns: table => new
+                {
+                    EcoSystemsId = table.Column<int>(type: "integer", nullable: false),
+                    PublicationsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EcoSystemPublication", x => new { x.EcoSystemsId, x.PublicationsId });
+                    table.ForeignKey(
+                        name: "FK_EcoSystemPublication_EcoSystem_EcoSystemsId",
+                        column: x => x.EcoSystemsId,
+                        principalTable: "EcoSystem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EcoSystemPublication_Publication_PublicationsId",
+                        column: x => x.PublicationsId,
+                        principalTable: "Publication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EcoSystemSoilObject",
+                columns: table => new
+                {
+                    EcoSystemsId = table.Column<int>(type: "integer", nullable: false),
                     SoilObjectsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QualifierSoilObject", x => new { x.QualifiersId, x.SoilObjectsId });
+                    table.PrimaryKey("PK_EcoSystemSoilObject", x => new { x.EcoSystemsId, x.SoilObjectsId });
                     table.ForeignKey(
-                        name: "FK_QualifierSoilObject_Qualifier_QualifiersId",
-                        column: x => x.QualifiersId,
-                        principalTable: "Qualifier",
+                        name: "FK_EcoSystemSoilObject_EcoSystem_EcoSystemsId",
+                        column: x => x.EcoSystemsId,
+                        principalTable: "EcoSystem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QualifierSoilObject_SoilObjects_SoilObjectsId",
+                        name: "FK_EcoSystemSoilObject_SoilObjects_SoilObjectsId",
                         column: x => x.SoilObjectsId,
                         principalTable: "SoilObjects",
                         principalColumn: "Id",
@@ -242,49 +471,49 @@ namespace Photosoil.Service.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilObjectSoilSubType",
+                name: "FileSoilObject",
                 columns: table => new
                 {
-                    SoilObjectsId = table.Column<int>(type: "integer", nullable: false),
-                    SoilSubTypesId = table.Column<int>(type: "integer", nullable: false)
+                    ObjectPhotoId = table.Column<int>(type: "integer", nullable: false),
+                    SoilObjectsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilObjectSoilSubType", x => new { x.SoilObjectsId, x.SoilSubTypesId });
+                    table.PrimaryKey("PK_FileSoilObject", x => new { x.ObjectPhotoId, x.SoilObjectsId });
                     table.ForeignKey(
-                        name: "FK_SoilObjectSoilSubType_SoilObjects_SoilObjectsId",
-                        column: x => x.SoilObjectsId,
-                        principalTable: "SoilObjects",
+                        name: "FK_FileSoilObject_Photo_ObjectPhotoId",
+                        column: x => x.ObjectPhotoId,
+                        principalTable: "Photo",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SoilObjectSoilSubType_SoilSubType_SoilSubTypesId",
-                        column: x => x.SoilSubTypesId,
-                        principalTable: "SoilSubType",
+                        name: "FK_FileSoilObject_SoilObjects_SoilObjectsId",
+                        column: x => x.SoilObjectsId,
+                        principalTable: "SoilObjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SoilObjectSoilType",
+                name: "PublicationSoilObject",
                 columns: table => new
                 {
-                    SoilObjectsId = table.Column<int>(type: "integer", nullable: false),
-                    SoilTypesId = table.Column<int>(type: "integer", nullable: false)
+                    PublicationsId = table.Column<int>(type: "integer", nullable: false),
+                    SoilObjectsId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SoilObjectSoilType", x => new { x.SoilObjectsId, x.SoilTypesId });
+                    table.PrimaryKey("PK_PublicationSoilObject", x => new { x.PublicationsId, x.SoilObjectsId });
                     table.ForeignKey(
-                        name: "FK_SoilObjectSoilType_SoilObjects_SoilObjectsId",
-                        column: x => x.SoilObjectsId,
-                        principalTable: "SoilObjects",
+                        name: "FK_PublicationSoilObject_Publication_PublicationsId",
+                        column: x => x.PublicationsId,
+                        principalTable: "Publication",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SoilObjectSoilType_SoilType_SoilTypesId",
-                        column: x => x.SoilTypesId,
-                        principalTable: "SoilType",
+                        name: "FK_PublicationSoilObject_SoilObjects_SoilObjectsId",
+                        column: x => x.SoilObjectsId,
+                        principalTable: "SoilObjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -309,6 +538,54 @@ namespace Photosoil.Service.Migrations
                         name: "FK_SoilObjectTerm_Term_TermsId",
                         column: x => x.TermsId,
                         principalTable: "Term",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuthorEcoSystem",
+                columns: table => new
+                {
+                    AuthorsId = table.Column<int>(type: "integer", nullable: false),
+                    EcoSystemsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthorEcoSystem", x => new { x.AuthorsId, x.EcoSystemsId });
+                    table.ForeignKey(
+                        name: "FK_AuthorEcoSystem_Author_AuthorsId",
+                        column: x => x.AuthorsId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorEcoSystem_EcoSystem_EcoSystemsId",
+                        column: x => x.EcoSystemsId,
+                        principalTable: "EcoSystem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuthorSoilObject",
+                columns: table => new
+                {
+                    AuthorsId = table.Column<int>(type: "integer", nullable: false),
+                    SoilObjectsId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthorSoilObject", x => new { x.AuthorsId, x.SoilObjectsId });
+                    table.ForeignKey(
+                        name: "FK_AuthorSoilObject_Author_AuthorsId",
+                        column: x => x.AuthorsId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorSoilObject_SoilObjects_SoilObjectsId",
+                        column: x => x.SoilObjectsId,
+                        principalTable: "SoilObjects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -580,59 +857,127 @@ namespace Photosoil.Service.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Author_DataEngId",
+                table: "Author",
+                column: "DataEngId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Author_DataRuId",
+                table: "Author",
+                column: "DataRuId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Author_PhotoId",
                 table: "Author",
                 column: "PhotoId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photo_SoilObjectId",
-                table: "Photo",
-                column: "SoilObjectId");
+                name: "IX_Author_UserId",
+                table: "Author",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QualifierSoilObject_SoilObjectsId",
-                table: "QualifierSoilObject",
+                name: "IX_AuthorEcoSystem_EcoSystemsId",
+                table: "AuthorEcoSystem",
+                column: "EcoSystemsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuthorSoilObject_SoilObjectsId",
+                table: "AuthorSoilObject",
                 column: "SoilObjectsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SoilObjects_AuthorId",
-                table: "SoilObjects",
-                column: "AuthorId");
+                name: "IX_EcoSystem_PhotoId",
+                table: "EcoSystem",
+                column: "PhotoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SoilObjects_DepartmentId",
-                table: "SoilObjects",
-                column: "DepartmentId",
-                unique: true);
+                name: "IX_EcoSystem_UserId",
+                table: "EcoSystem",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SoilObjects_NatureZoneId",
-                table: "SoilObjects",
-                column: "NatureZoneId",
-                unique: true);
+                name: "IX_EcoSystemFile_ObjectPhotoId",
+                table: "EcoSystemFile",
+                column: "ObjectPhotoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EcoSystemPublication_PublicationsId",
+                table: "EcoSystemPublication",
+                column: "PublicationsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EcoSystemSoilObject_SoilObjectsId",
+                table: "EcoSystemSoilObject",
+                column: "SoilObjectsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileSoilObject_SoilObjectsId",
+                table: "FileSoilObject",
+                column: "SoilObjectsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Publication_FileId",
+                table: "Publication",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Publication_UserId",
+                table: "Publication",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PublicationSoilObject_SoilObjectsId",
+                table: "PublicationSoilObject",
+                column: "SoilObjectsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SoilObjects_PhotoId",
                 table: "SoilObjects",
-                column: "PhotoId",
-                unique: true);
+                column: "PhotoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SoilObjects_SoilGroupId",
+                name: "IX_SoilObjects_UserId",
                 table: "SoilObjects",
-                column: "SoilGroupId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SoilObjectSoilSubType_SoilSubTypesId",
-                table: "SoilObjectSoilSubType",
-                column: "SoilSubTypesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SoilObjectSoilType_SoilTypesId",
-                table: "SoilObjectSoilType",
-                column: "SoilTypesId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SoilObjectTerm_TermsId",
@@ -643,87 +988,81 @@ namespace Photosoil.Service.Migrations
                 name: "IX_Term_ClassificationId",
                 table: "Term",
                 column: "ClassificationId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Article_Photo_PhotoId",
-                table: "Article",
-                column: "PhotoId",
-                principalTable: "Photo",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Author_Photo_PhotoId",
-                table: "Author",
-                column: "PhotoId",
-                principalTable: "Photo",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Photo_SoilObjects_SoilObjectId",
-                table: "Photo",
-                column: "SoilObjectId",
-                principalTable: "SoilObjects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Author_Photo_PhotoId",
-                table: "Author");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_SoilObjects_Photo_PhotoId",
-                table: "SoilObjects");
-
             migrationBuilder.DropTable(
                 name: "Article");
 
             migrationBuilder.DropTable(
-                name: "QualifierSoilObject");
+                name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
-                name: "SoilObjectSoilSubType");
+                name: "AspNetUserClaims");
 
             migrationBuilder.DropTable(
-                name: "SoilObjectSoilType");
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AuthorEcoSystem");
+
+            migrationBuilder.DropTable(
+                name: "AuthorSoilObject");
+
+            migrationBuilder.DropTable(
+                name: "EcoSystemFile");
+
+            migrationBuilder.DropTable(
+                name: "EcoSystemPublication");
+
+            migrationBuilder.DropTable(
+                name: "EcoSystemSoilObject");
+
+            migrationBuilder.DropTable(
+                name: "FileSoilObject");
+
+            migrationBuilder.DropTable(
+                name: "PublicationSoilObject");
 
             migrationBuilder.DropTable(
                 name: "SoilObjectTerm");
 
             migrationBuilder.DropTable(
-                name: "Qualifier");
-
-            migrationBuilder.DropTable(
-                name: "SoilSubType");
-
-            migrationBuilder.DropTable(
-                name: "SoilType");
-
-            migrationBuilder.DropTable(
-                name: "Term");
-
-            migrationBuilder.DropTable(
-                name: "Classification");
-
-            migrationBuilder.DropTable(
-                name: "Photo");
-
-            migrationBuilder.DropTable(
-                name: "SoilObjects");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Author");
 
             migrationBuilder.DropTable(
-                name: "NatureZone");
+                name: "EcoSystem");
 
             migrationBuilder.DropTable(
-                name: "SoilDepartment");
+                name: "Publication");
 
             migrationBuilder.DropTable(
-                name: "SoilGroup");
+                name: "SoilObjects");
+
+            migrationBuilder.DropTable(
+                name: "Term");
+
+            migrationBuilder.DropTable(
+                name: "Translation");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Photo");
+
+            migrationBuilder.DropTable(
+                name: "Classification");
         }
     }
 }

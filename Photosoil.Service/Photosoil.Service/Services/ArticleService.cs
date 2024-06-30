@@ -28,6 +28,7 @@ namespace Photosoil.Service.Services
 
         public  ServiceResponse<List<Article>> GetAll()
         {
+
             var datArticles = _context.Article.ToList();
             return ServiceResponse<List<Article>>.OkResponse(datArticles);
         }
@@ -42,7 +43,7 @@ namespace Photosoil.Service.Services
             try
             {
                 var path = await FileHelper.SavePhoto(articleVM.Photo.File);
-                var photo = new Core.Models.File(path, articleVM.Photo.Title);
+                var photo = new Core.Models.File(path, articleVM.Photo.TitleEng, articleVM.Photo.TitleRu);
 
                 var article = _mapper.Map<Article>(articleVM);
                 article.Photo = photo;
@@ -68,7 +69,7 @@ namespace Photosoil.Service.Services
                 if (articleVM.Photo != null)
                 {
                     var path = await FileHelper.SavePhoto(articleVM.Photo.File);
-                    var photo = new File(path, articleVM.Photo.Title);
+                    var photo = new Core.Models.File(path, articleVM.Photo.TitleEng, articleVM.Photo.TitleRu);
                     article.Photo = photo;
                 }
 

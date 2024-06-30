@@ -12,6 +12,7 @@ RUN dotnet restore "Photosoil.API/Photosoil.API.csproj"
 COPY . .
 WORKDIR "/src/Photosoil.API"
 RUN dotnet build "Photosoil.API.csproj" -c Release -o /app/build
+#SHELL ["/bin/bash", "-c", "chmod +x /Storage/"] 
 
 FROM build AS publish
 RUN dotnet publish "Photosoil.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
@@ -19,4 +20,6 @@ RUN dotnet publish "Photosoil.API.csproj" -c Release -o /app/publish /p:UseAppHo
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Photosoil.API.dll"]
+#RUN chmod -R 777 /app
+
+ENTRYPOINT ["dotnet", "Photosoil.API.dll"]	

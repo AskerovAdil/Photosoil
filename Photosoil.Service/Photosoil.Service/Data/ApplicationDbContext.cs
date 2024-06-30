@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Photosoil.Service.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public virtual DbSet<SoilObject> SoilObjects { get; set; }
         public virtual DbSet<Core.Models.File> Photo { get; set; }
@@ -21,6 +16,7 @@ namespace Photosoil.Service.Data
         public virtual DbSet<Author> Author { get; set; }
         public virtual DbSet<EcoSystem> EcoSystem { get; set; }
         public virtual DbSet<Publication> Publication { get; set; }
+        public virtual DbSet<ApplicationUser> User { get; set; }
 
 
         public virtual DbSet<Term> Term { get; set; }
@@ -30,7 +26,7 @@ namespace Photosoil.Service.Data
         {
         }
 
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -43,18 +39,45 @@ namespace Photosoil.Service.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Classification>().HasMany(x => x.Terms).WithOne(x => x.Classification)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Cascade);
 
+
+            //builder.Entity<ApplicationUser>().HasMany(x => x.SoilObjects).WithOne(x => x.Redactor)
+            //    .HasForeignKey(x=>x.RedactorId)
+            //    .OnDelete(DeleteBehavior.SetNull);
+
+
+
+            builder.Entity<SoilObject>().HasMany(x => x.Authors).WithMany(x => x.SoilObjects);
             builder.Entity<SoilObject>().HasMany(x => x.Terms).WithMany(x => x.SoilObjects);
             builder.Entity<SoilObject>().HasMany(x => x.Publications).WithMany(x => x.SoilObjects);
             builder.Entity<SoilObject>().HasMany(x => x.EcoSystems).WithMany(x => x.SoilObjects);
             builder.Entity<EcoSystem>().HasMany(x => x.Publications).WithMany(x => x.EcoSystems);
+            builder.Entity<EcoSystem>().HasMany(x => x.Authors).WithMany(x => x.EcoSystems);
+            builder.Entity<EcoSystem>().HasMany(x => x.ObjectPhoto).WithMany(x => x.EcoSystems);
+            
+            builder.Entity<EcoSystem>().HasOne(x => x.Photo).WithMany()
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Article>().HasOne(x=>x.Photo).WithOne().HasForeignKey<Article>(x => x.PhotoId);
-            builder.Entity<Author>().HasOne(x=>x.Photo).WithOne().HasForeignKey<Author>(x => x.PhotoId);
-            builder.Entity<SoilObject>().HasOne(x=>x.Photo).WithOne().HasForeignKey<SoilObject>(x => x.PhotoId);
+            builder.Entity<Author>().HasOne(x => x.Photo).WithOne().HasForeignKey<Author>(x => x.PhotoId);
+
+            //builder.Entity<SoilObject>().HasOne(x=>x.Photo).WithOne().HasForeignKey<SoilObject>(x => x.PhotoId)
+            //   .OnDelete(DeleteBehavior.Cascade);
 
 
+            builder.Entity<SoilObject>().HasOne(x => x.Photo).WithMany()
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<SoilObject>().HasMany(x => x.ObjectPhoto).WithMany(x => x.SoilObjects);
+
+
+            builder.Entity<Author>().HasOne(x => x.User).WithMany(x => x.Authors).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId);
+
+            builder.Entity<ApplicationUser>().HasMany(x => x.EcoSystems).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
+            builder.Entity<ApplicationUser>().HasMany(x => x.Publications).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
+            builder.Entity<ApplicationUser>().HasMany(x => x.SoilObjects).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
+            
 
 
             SetData(builder);

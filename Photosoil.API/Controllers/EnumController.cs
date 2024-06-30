@@ -20,6 +20,11 @@ namespace Photosoil.API.Controllers
             var props = _enumService.GetSoilObjectNames();
             return Ok(props);
         }
-
+        [HttpGet(nameof(PublicationType))]
+        public IActionResult PublicationType()
+        {
+            var props = _enumService.GetPublicationNames();
+            return Ok(props);
+        }
     }
 }

@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Photosoil.Core.Models.Base;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Core.Models.Second;
+using System.Globalization;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
@@ -43,6 +44,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         /// Сопряжённые компоненты почвенного покрова
         /// </summary>
         public string? AssociatedSoilComponents { get; set; }
+        public string? Code { get; set; }
 
         /// <summary>
         /// Общие комментарии
@@ -52,19 +54,44 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         /// Изображение
         /// </summary>
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
-        public PhotoBase Photo { get; set; }
+        public int PhotoId { get; set; }
 
-        public int? AuthorId { get; set; }
+        public int[]? Authors { get; set; } = { };
+
+        public bool? IsEnglish{ get; set; } = false;
 
         /// <summary>
         /// Тип объекта базы данных
         /// </summary>
         public SoilObjectType? ObjectType { get; set; } = SoilObjectType.SoilDynamics;
 
+        public int[]? ObjectPhoto { get; set; } = { };
         public int[]? SoilTerms { get; set; } = { };
         public int[]? Publications { get; set; } = { };
         public int[]? EcoSystems { get; set; } = { };
 
+
+        public void CopySoilObjectFields(SoilObject source)
+        {
+
+            source.Latitude= this.Latitude;
+            source.Longtitude = this.Longtitude;
+            source.Name = this.Name;
+            source.GeographicLocation = this.GeographicLocation;
+            source.ReliefLocation = this.ReliefLocation;
+            source.PlantCommunity = this.PlantCommunity;
+            source.SoilFeatures = this.SoilFeatures;
+            source.AssociatedSoilComponents = this.AssociatedSoilComponents;
+            source.Code = this.Code;
+            source.Comments = this.Comments;
+            source.ObjectType = this.ObjectType;
+
+
+            source.LastUpdated = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+
+
+        }
     }
 
 }

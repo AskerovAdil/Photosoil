@@ -12,8 +12,8 @@ using Photosoil.Service.Data;
 namespace Photosoil.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240222111031_init")]
-    partial class init
+    [Migration("20240622174723_init3")]
+    partial class init3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,306 @@ namespace Photosoil.Service.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("AuthorEcoSystem", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EcoSystemsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AuthorsId", "EcoSystemsId");
+
+                    b.HasIndex("EcoSystemsId");
+
+                    b.ToTable("AuthorEcoSystem");
+                });
+
+            modelBuilder.Entity("AuthorSoilObject", b =>
+                {
+                    b.Property<int>("AuthorsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SoilObjectsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AuthorsId", "SoilObjectsId");
+
+                    b.HasIndex("SoilObjectsId");
+
+                    b.ToTable("AuthorSoilObject");
+                });
+
+            modelBuilder.Entity("EcoSystemFile", b =>
+                {
+                    b.Property<int>("EcoSystemsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ObjectPhotoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EcoSystemsId", "ObjectPhotoId");
+
+                    b.HasIndex("ObjectPhotoId");
+
+                    b.ToTable("EcoSystemFile");
+                });
+
+            modelBuilder.Entity("EcoSystemPublication", b =>
+                {
+                    b.Property<int>("EcoSystemsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PublicationsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EcoSystemsId", "PublicationsId");
+
+                    b.HasIndex("PublicationsId");
+
+                    b.ToTable("EcoSystemPublication");
+                });
+
+            modelBuilder.Entity("EcoSystemSoilObject", b =>
+                {
+                    b.Property<int>("EcoSystemsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SoilObjectsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("EcoSystemsId", "SoilObjectsId");
+
+                    b.HasIndex("SoilObjectsId");
+
+                    b.ToTable("EcoSystemSoilObject");
+                });
+
+            modelBuilder.Entity("FileSoilObject", b =>
+                {
+                    b.Property<int>("ObjectPhotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SoilObjectsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ObjectPhotoId", "SoilObjectsId");
+
+                    b.HasIndex("SoilObjectsId");
+
+                    b.ToTable("FileSoilObject");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.ApplicationUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text")
+                        .HasColumnName("RefreshToken");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
 
             modelBuilder.Entity("Photosoil.Core.Models.Article", b =>
                 {
@@ -59,26 +359,165 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<string>("Contacts")
                         .HasColumnType("text");
 
-                    b.Property<string>("FIO")
-                        .IsRequired()
+                    b.Property<int>("DataEngId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DataRuId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("OtherProfiles")
                         .HasColumnType("text");
 
                     b.Property<int?>("PhotoId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DataEngId");
+
+                    b.HasIndex("DataRuId");
 
                     b.HasIndex("PhotoId")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Author");
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.Classification", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.EcoSystem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("IsEnglish")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Latitude")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Longtitude")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OtherLangId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PhotoId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EcoSystem");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.File", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TitleEng")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TitleRu")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Photo");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Publication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Authors")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Coordinates")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Doi")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Edition")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Publication");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Second.Classification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -130,202 +569,7 @@ namespace Photosoil.Service.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.Photo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("SoilObjectId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SoilObjectId");
-
-                    b.ToTable("Photo");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.NatureZone", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NatureZone");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.Qualifier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Qualifier");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.SoilDepartment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SoilDepartment");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.SoilGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SoilGroup");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.SoilSubType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SoilSubType");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.SoilType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SoilType");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.SoilObject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AssociatedSoilComponents")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("AuthorId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Comments")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("GeographicLocation")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("NatureZoneId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ObjectType")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("PhotoId")
-                        .IsRequired()
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PlantCommunity")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReliefLocation")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SoilFeatures")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("SoilGroupId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("DepartmentId")
-                        .IsUnique();
-
-                    b.HasIndex("NatureZoneId")
-                        .IsUnique();
-
-                    b.HasIndex("PhotoId")
-                        .IsUnique();
-
-                    b.HasIndex("SoilGroupId")
-                        .IsUnique();
-
-                    b.ToTable("SoilObjects");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Term", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.Second.Term", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1795,49 +2039,121 @@ namespace Photosoil.Service.Migrations
                         });
                 });
 
-            modelBuilder.Entity("QualifierSoilObject", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.SoilObject", b =>
                 {
-                    b.Property<int>("QualifiersId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssociatedSoilComponents")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GeographicLocation")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("IsEnglish")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Latitude")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Longtitude")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ObjectType")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("OtherLangId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PhotoId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PlantCommunity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReliefLocation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SoilFeatures")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SoilObjects");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Translation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Degree")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Organization")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Specialization")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Translation");
+                });
+
+            modelBuilder.Entity("PublicationSoilObject", b =>
+                {
+                    b.Property<int>("PublicationsId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SoilObjectsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("QualifiersId", "SoilObjectsId");
+                    b.HasKey("PublicationsId", "SoilObjectsId");
 
                     b.HasIndex("SoilObjectsId");
 
-                    b.ToTable("QualifierSoilObject");
-                });
-
-            modelBuilder.Entity("SoilObjectSoilSubType", b =>
-                {
-                    b.Property<int>("SoilObjectsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SoilSubTypesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SoilObjectsId", "SoilSubTypesId");
-
-                    b.HasIndex("SoilSubTypesId");
-
-                    b.ToTable("SoilObjectSoilSubType");
-                });
-
-            modelBuilder.Entity("SoilObjectSoilType", b =>
-                {
-                    b.Property<int>("SoilObjectsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SoilTypesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SoilObjectsId", "SoilTypesId");
-
-                    b.HasIndex("SoilTypesId");
-
-                    b.ToTable("SoilObjectSoilType");
+                    b.ToTable("PublicationSoilObject");
                 });
 
             modelBuilder.Entity("SoilObjectTerm", b =>
@@ -1855,9 +2171,150 @@ namespace Photosoil.Service.Migrations
                     b.ToTable("SoilObjectTerm");
                 });
 
+            modelBuilder.Entity("AuthorEcoSystem", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.EcoSystem", null)
+                        .WithMany()
+                        .HasForeignKey("EcoSystemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AuthorSoilObject", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.SoilObject", null)
+                        .WithMany()
+                        .HasForeignKey("SoilObjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EcoSystemFile", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.EcoSystem", null)
+                        .WithMany()
+                        .HasForeignKey("EcoSystemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("ObjectPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EcoSystemPublication", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.EcoSystem", null)
+                        .WithMany()
+                        .HasForeignKey("EcoSystemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.Publication", null)
+                        .WithMany()
+                        .HasForeignKey("PublicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EcoSystemSoilObject", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.EcoSystem", null)
+                        .WithMany()
+                        .HasForeignKey("EcoSystemsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.SoilObject", null)
+                        .WithMany()
+                        .HasForeignKey("SoilObjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FileSoilObject", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("ObjectPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.SoilObject", null)
+                        .WithMany()
+                        .HasForeignKey("SoilObjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Photosoil.Core.Models.Article", b =>
                 {
-                    b.HasOne("Photosoil.Core.Models.Photo", "Photo")
+                    b.HasOne("Photosoil.Core.Models.File", "Photo")
                         .WithOne()
                         .HasForeignKey("Photosoil.Core.Models.Article", "PhotoId");
 
@@ -1866,110 +2323,114 @@ namespace Photosoil.Service.Migrations
 
             modelBuilder.Entity("Photosoil.Core.Models.Author", b =>
                 {
-                    b.HasOne("Photosoil.Core.Models.Photo", "Photo")
-                        .WithOne()
-                        .HasForeignKey("Photosoil.Core.Models.Author", "PhotoId");
-
-                    b.Navigation("Photo");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Photo", b =>
-                {
-                    b.HasOne("Photosoil.Core.Models.SoilObject", "SoilObject")
-                        .WithMany("ObjectPhoto")
-                        .HasForeignKey("SoilObjectId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("SoilObject");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.SoilObject", b =>
-                {
-                    b.HasOne("Photosoil.Core.Models.Author", "Author")
+                    b.HasOne("Photosoil.Core.Models.Translation", "DataEng")
                         .WithMany()
-                        .HasForeignKey("AuthorId");
-
-                    b.HasOne("Photosoil.Core.Models.Second.SoilDepartment", "Department")
-                        .WithOne()
-                        .HasForeignKey("Photosoil.Core.Models.SoilObject", "DepartmentId");
-
-                    b.HasOne("Photosoil.Core.Models.Second.NatureZone", "NatureZone")
-                        .WithOne()
-                        .HasForeignKey("Photosoil.Core.Models.SoilObject", "NatureZoneId");
-
-                    b.HasOne("Photosoil.Core.Models.Photo", "Photo")
-                        .WithOne()
-                        .HasForeignKey("Photosoil.Core.Models.SoilObject", "PhotoId")
+                        .HasForeignKey("DataEngId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Photosoil.Core.Models.Second.SoilGroup", "SoilGroup")
+                    b.HasOne("Photosoil.Core.Models.Translation", "DataRu")
+                        .WithMany()
+                        .HasForeignKey("DataRuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.File", "Photo")
                         .WithOne()
-                        .HasForeignKey("Photosoil.Core.Models.SoilObject", "SoilGroupId");
+                        .HasForeignKey("Photosoil.Core.Models.Author", "PhotoId");
 
-                    b.Navigation("Author");
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
+                        .WithMany("Authors")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
-                    b.Navigation("Department");
+                    b.Navigation("DataEng");
 
-                    b.Navigation("NatureZone");
+                    b.Navigation("DataRu");
 
                     b.Navigation("Photo");
 
-                    b.Navigation("SoilGroup");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.Term", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.EcoSystem", b =>
                 {
-                    b.HasOne("Photosoil.Core.Models.Classification", "Classification")
+                    b.HasOne("Photosoil.Core.Models.File", "Photo")
+                        .WithMany()
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
+                        .WithMany("EcoSystems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Photo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Publication", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.File", "File")
+                        .WithMany()
+                        .HasForeignKey("FileId");
+
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
+                        .WithMany("Publications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("File");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Second.Term", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.Second.Classification", "Classification")
                         .WithMany("Terms")
                         .HasForeignKey("ClassificationId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Classification");
                 });
 
-            modelBuilder.Entity("QualifierSoilObject", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.SoilObject", b =>
                 {
-                    b.HasOne("Photosoil.Core.Models.Second.Qualifier", null)
+                    b.HasOne("Photosoil.Core.Models.File", "Photo")
                         .WithMany()
-                        .HasForeignKey("QualifiersId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.HasOne("Photosoil.Core.Models.SoilObject", null)
-                        .WithMany()
-                        .HasForeignKey("SoilObjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
+                        .WithMany("SoilObjects")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
+
+                    b.Navigation("Photo");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SoilObjectSoilSubType", b =>
+            modelBuilder.Entity("PublicationSoilObject", b =>
                 {
+                    b.HasOne("Photosoil.Core.Models.Publication", null)
+                        .WithMany()
+                        .HasForeignKey("PublicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Photosoil.Core.Models.SoilObject", null)
                         .WithMany()
                         .HasForeignKey("SoilObjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Photosoil.Core.Models.Second.SoilSubType", null)
-                        .WithMany()
-                        .HasForeignKey("SoilSubTypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SoilObjectSoilType", b =>
-                {
-                    b.HasOne("Photosoil.Core.Models.SoilObject", null)
-                        .WithMany()
-                        .HasForeignKey("SoilObjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Photosoil.Core.Models.Second.SoilType", null)
-                        .WithMany()
-                        .HasForeignKey("SoilTypesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1982,21 +2443,27 @@ namespace Photosoil.Service.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Photosoil.Core.Models.Term", null)
+                    b.HasOne("Photosoil.Core.Models.Second.Term", null)
                         .WithMany()
                         .HasForeignKey("TermsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.Classification", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Terms");
+                    b.Navigation("Authors");
+
+                    b.Navigation("EcoSystems");
+
+                    b.Navigation("Publications");
+
+                    b.Navigation("SoilObjects");
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.SoilObject", b =>
+            modelBuilder.Entity("Photosoil.Core.Models.Second.Classification", b =>
                 {
-                    b.Navigation("ObjectPhoto");
+                    b.Navigation("Terms");
                 });
 #pragma warning restore 612, 618
         }

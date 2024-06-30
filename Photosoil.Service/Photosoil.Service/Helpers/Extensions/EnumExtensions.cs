@@ -11,7 +11,7 @@ namespace Photosoil.Service.Helpers.Extensions
 {
     public static class EnumExtensions
     {
-        public static string GetDisplayName(this SoilObjectType value)
+        public static string GetDisplayName<T>(this T value) where T : Enum
         {
             var displayAttribute = value.GetType()
                                         .GetMember(value.ToString())

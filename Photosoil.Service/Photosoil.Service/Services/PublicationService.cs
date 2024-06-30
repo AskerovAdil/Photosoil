@@ -26,35 +26,114 @@ namespace Photosoil.Service.Services
             _context = context;
         }
 
-        public  ServiceResponse<List<Publication>> GetAll()
+        public  ServiceResponse<List<Publication>> GetAll(int? userId = 0, string? role = "")
         {
-            var datArticles = _context.Publication
-                .Include(x => x.File)
-                .Include(x => x.EcoSystems)
-                .Include(x => x.SoilObjects)
-                .ToList();
+            var datArticles = new List<Publication>();
+            if (role == "")
+                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                    .Where(x=>x.IsVisible == true).ToList();
+            else if (role == "Admin")
+                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                    .ToList();
+            else if (role == "Moderator")
+                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                    .Where(x=>x.UserId == userId).ToList();
+
+
             return ServiceResponse<List<Publication>>.OkResponse(datArticles);
         }
 
-        public ServiceResponse<Publication> GetById(int articleId)
+        public ServiceResponse<PublicationResponseById> GetById(int articleId)
         {
-            var article = _context.Publication.FirstOrDefault(x=>x.Id == articleId);
-            return ServiceResponse<Publication>.OkResponse(article);
+            var article = _context.Publication.Include(x=>x.File)
+                .Include (x => x.EcoSystems)
+                .Include(x=>x.SoilObjects)
+                .FirstOrDefault(x=>x.Id == articleId);
+
+            var result = _mapper.Map<PublicationResponseById>(article); 
+
+            return ServiceResponse<PublicationResponseById>.OkResponse(result);
         }
-        public async Task<ServiceResponse<Publication>> Post(PublicationVM publicationVM)
+
+        public ServiceResponse<PublicationVM> GetForUpdate(int id)
+        {
+            var soilObject = _context.Publication
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == id);
+
+            var soilObjectResponse = _mapper.Map<PublicationVM>(soilObject);
+
+
+            return soilObject != null
+                ? ServiceResponse<PublicationVM>.OkResponse(soilObjectResponse)
+                : ServiceResponse<PublicationVM>.BadResponse(ErrorMessage.NoContent);
+        }
+
+
+        public async Task<ServiceResponse<List<Publication>>> Post(int userId, List<PublicationVM> publicationVM)
         {
             try
             {
-                var path = await FileHelper.SavePhoto(publicationVM.File?.File!);
-                var file = new Core.Models.File(path, publicationVM.File.Title);
+                var result = new List<Publication>();
 
-                var publication = _mapper.Map<Publication>(publicationVM);
-                publication.File = file;
+                foreach (var el in publicationVM)
+                {
+                    var publication = _mapper.Map<Publication>(el);
+                    publication.FileId = el.FileId;
+                    publication.UserId = userId;
 
-                _context.Publication.Add(publication);
+                    publication.LastUpdated = DateTime.Now.ToString();
 
-                await _context.SaveChangesAsync();
+                    _context.Publication.Add(publication);
+                    await _context.SaveChangesAsync();
 
+                    result.Add(publication);
+
+                }
+                if (result.Count > 1)
+                    await MergeLang(result);
+
+                return ServiceResponse<List<Publication>>.OkResponse(result);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<List<Publication>>.BadResponse(ex.Message);
+            }
+        }
+
+
+        private async Task<List<Publication>> MergeLang(List<Publication> publications)
+        {
+            var Ru = publications.FirstOrDefault();
+            var Eng = publications.LastOrDefault();
+
+            Ru.OtherLangId = Eng.Id;
+            Eng.OtherLangId = Ru.Id;
+
+            _context.Update(Ru);
+            _context.Update(Eng);
+
+            _context.SaveChanges();
+
+            return publications;
+        }
+
+
+        public async Task<ServiceResponse<Publication>> PutVisible(int id, bool isVisible)
+        {
+            try
+            {
+                var publication = await _context.Publication
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                publication.LastUpdated = DateTime.Now.ToString();
+                publication.IsVisible = isVisible;
+
+                if (publication == null)
+                    return ServiceResponse<Publication>.BadResponse("Публикация не найдена!");
+
+                _context.Publication.Update(publication);
+                _context.SaveChanges();
                 return ServiceResponse<Publication>.OkResponse(publication);
             }
             catch (Exception ex)
@@ -62,19 +141,30 @@ namespace Photosoil.Service.Services
                 return ServiceResponse<Publication>.BadResponse(ex.Message);
             }
         }
-
         public async Task<ServiceResponse<Publication>> Put(int id, PublicationVM publicationVm)
         {
+
             try
             {
-                var publication = _mapper.Map<Publication>(publicationVm);
+                var publication = await _context.Publication.Include(x=>x.File)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+                
+                publication.LastUpdated = DateTime.Now.ToString();
+                
+                publication.FileId = publicationVm.FileId;
 
-                if (publicationVm.File != null)
-                {
-                    var path = await FileHelper.SavePhoto(publicationVm.File.File);
-                    var file = new File(path, publicationVm.File.Title);
-                    publication.File = file;
-                }
+                if (publication == null)
+                    return ServiceResponse<Publication>.BadResponse("Публикация не найдена!");
+
+
+               //if (publicationVm.File?.File != null)
+               //{
+               //    var path = await FileHelper.SavePhoto(publicationVm.File.File);
+               //    var file = new File(path, publicationVm.File.Title);
+               //    publication.File = file;
+               //}
+
+                _mapper.Map(publicationVm, publication);
 
                 _context.Publication.Update(publication);
                 _context.SaveChanges();

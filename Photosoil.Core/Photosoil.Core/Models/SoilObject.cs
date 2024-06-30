@@ -63,25 +63,40 @@ namespace Photosoil.Core.Models
         /// Общие комментарии
         /// </summary>
         public string? Comments { get; set; }
-        public bool? IsVisible{ get; set; }
+        public string? Code { get; set; }
+
+
+        public string? LastUpdated { get; set; }
+        public bool? IsVisible { get; set; } = false;
+        public bool? IsEnglish{ get; set; } = false;
+
+        public int? OtherLangId { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных
         /// </summary>
         public SoilObjectType? ObjectType { get; set; } = SoilObjectType.SoilDynamics;
-        public int? AuthorId { get; set; }
-        public Author? Author { get; set; }
-   
+
+        public List<Author> Authors { get; set; } = new();
+        
         /// <summary>
         /// Фотографии объекта
         /// </summary>
         public List<File> ObjectPhoto { get; set; } = new();
 
-        public List<Term> Terms{ get; set; } = new();
+        public List<Term> Terms { get; set; } = new();
         [JsonIgnore]
         public List<EcoSystem> EcoSystems { get; set; } = new();
         [JsonIgnore]
         public List<Publication> Publications { get; set; } = new();
+
+        public int UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+  
+
+
+        //public string? RedactorId { get; set; }
+        //public ApplicationUser? Redactor { get; set; }
 
     }
 }

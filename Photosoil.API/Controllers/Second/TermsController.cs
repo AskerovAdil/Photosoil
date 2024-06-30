@@ -5,6 +5,7 @@ using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
+using Photosoil.Service.Helpers.ViewModel.Response;
 using Photosoil.Service.Services;
 using Photosoil.Service.Services.Second;
 
@@ -21,6 +22,7 @@ namespace Photosoil.API.Controllers.Second
             _termsService = termsService;
         }
 
+
         [HttpPost(nameof(Post))]
         public async Task<IActionResult> Post([FromForm] TermsVM term)
         {
@@ -28,12 +30,14 @@ namespace Photosoil.API.Controllers.Second
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
-        [HttpPost(nameof(Put))]
-        public Task<IActionResult> Put([FromForm] TermsVM term)
-        {
-            var response = _termsService.Put(term);
 
-            return Task.FromResult<IActionResult>(response.Error ? BadRequest(response) : Ok(response));
+
+        [HttpPut(nameof(Put) + "/{Id}")]
+        public async Task<IActionResult> Put(int Id, [FromForm] string Name)
+        {
+            var response = await _termsService.Put(Id, Name);
+
+            return response.Error ? BadRequest(response) : Ok(response);
         }
 
         [HttpDelete(nameof(Delete))]

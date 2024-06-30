@@ -10,8 +10,8 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 {
     public class PhotoVM
     {
-        public int soilId { get; set; }
-        public string? Title { get; set; }
+        public string? TitleEng { get; set; }
+        public string? TitleRu { get; set; }
         public IFormFile Photo { get; set; }
     }
 }

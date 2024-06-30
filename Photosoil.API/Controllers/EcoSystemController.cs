@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
@@ -6,6 +7,7 @@ using Photosoil.Service.Abstract;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Services;
+using System.Security.Claims;
 
 namespace Photosoil.API.Controllers
 {
@@ -19,10 +21,25 @@ namespace Photosoil.API.Controllers
             _ecoSystemService = ecoSystemService;
         }
 
-        [HttpGet(nameof(GetAll))]
-        public IActionResult GetAll()
+        [HttpGet(nameof(GetAdminAll))]
+        [Authorize]
+        public IActionResult GetAdminAll()
         {
-            var response= _ecoSystemService.GetAll();
+            string? userId = User.FindFirstValue("Id");
+            string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+            int.TryParse(userId, out var id);
+
+            var response = _ecoSystemService.GetAll("",id, role);
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+
+
+        [HttpGet(nameof(GetAll))]
+        public IActionResult GetAll(string? lang = "")
+        {
+            var response= _ecoSystemService.GetAll(lang);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -34,19 +51,36 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
 
-        [HttpPost(nameof(Post))]
-        [ProducesResponseType(typeof(EcoSystemVM), StatusCodes.Status200OK)]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Post([FromForm] EcoSystemVM ecoSystemVm)
+        [HttpGet(nameof(GetForUpdate))]
+        public IActionResult GetForUpdate(int Id)
         {
-            var response = await _ecoSystemService.Post(ecoSystemVm);
+            var response = _ecoSystemService.GetForUpdate(Id);
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+        [HttpPost(nameof(Post))]
+        [Authorize]
+        [ProducesResponseType(typeof(List<EcoSystemVM>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] List<EcoSystemVM> ecoSystemVm)
+        {
+            string? userId = User.FindFirstValue("Id");
+            int.TryParse(userId, out var id);
+
+            var response = await _ecoSystemService.Post(id, ecoSystemVm);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
-        [HttpPut(nameof(Put) + "/Id")]
+        [HttpPut(nameof(Put) + "/{Id}")]
         public async Task<IActionResult> Put(int Id, [FromForm] EcoSystemVM soilObject)
         {
             var response = await _ecoSystemService.Put(Id, soilObject);
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+        [HttpPut(nameof(PutVisible) + "/{Id}")]
+        public async Task<IActionResult> PutVisible(int Id, [FromForm] bool isVisible)
+        {
+
+            var response = await _ecoSystemService.PutVisible(Id, isVisible);
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpDelete(nameof(Delete))]

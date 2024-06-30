@@ -1,4 +1,5 @@
 ﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models;
 using Photosoil.Service.Abstract;
 using Photosoil.Service.Helpers.Extensions;
 using System;
@@ -11,6 +12,19 @@ namespace Photosoil.Service.Services
 {
     public class EnumService : IEnumService
     {
+        public Dictionary<int, string> GetPublicationNames()
+        {
+            var enumDisplayNames = new Dictionary<int, string>();
+
+            var soilObjectTypeValues = Enum.GetValues(typeof(PublicationType));
+            foreach (var value in soilObjectTypeValues)
+            {
+                var displayName = ((PublicationType)value).GetDisplayName();
+                enumDisplayNames.Add((int)value, displayName);
+            }
+            // Добавьте другие перечисления, если они есть
+            return enumDisplayNames;
+        }
 
 
         public Dictionary<int, string> GetSoilObjectNames()

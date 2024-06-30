@@ -17,13 +17,15 @@ namespace Photosoil.Service.Abstract
     public interface ISoilObjectService
     {
 
-        ServiceResponse<List<SoilObjectResponse>> Get();
-        ServiceResponse<SoilObjectResponse> GetById(int Id);
-        ServiceResponse<List<SoilObjectResponse>> GetByType(SoilObjectType soilType);
-        ServiceResponse<List<SoilObjectResponse>> GetByFilter(params int[] terms);
+        ServiceResponse<List<SoilResponse>> Get(string lang = "",int? userId = 0, string? role = "");
+        ServiceResponse<SoilResponseById> GetById(int Id);
+        ServiceResponse<SoilObjectVM> GetForUpdate(int id);
+        ServiceResponse<List<SoilResponse>> GetByType(SoilObjectType soilType);
+        ServiceResponse<List<SoilResponse>> GetByFilter(params int[] terms);
 
         Task<ServiceResponse<SoilObject>> Put(int id, SoilObjectVM soilObject);
-        Task<ServiceResponse<SoilObject>> Post(SoilObjectVM soilObject);
+        Task<ServiceResponse<SoilObject>> PutVisible(int id, bool isVisible);
+        Task<ServiceResponse<List<SoilObject>>> Post(int userId, List<SoilObjectVM> soils);
         Task<ServiceResponse<SoilObject>> PostMass(SoilMass soilMass);
         ServiceResponse Delete(int Id);
         

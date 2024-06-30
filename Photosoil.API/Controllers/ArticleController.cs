@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
 using Photosoil.Service.Abstract;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Services;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Photosoil.API.Controllers
 {
@@ -18,12 +22,13 @@ namespace Photosoil.API.Controllers
         public ArticleController(ArticleService articleService) {
             _articleService = articleService;
         }
-
+        [Authorize(Roles = "Moderator")]
         [HttpGet(nameof(GetAll))]
         public IActionResult GetAll()
         {
-            var response= _articleService.GetAll();
+            var verificationKey = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
 
+            var response = _articleService.GetAll();
             return response.Error ? BadRequest(response) : Ok(response);
         }
 

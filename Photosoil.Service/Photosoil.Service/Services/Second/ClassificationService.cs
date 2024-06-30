@@ -33,12 +33,11 @@ namespace Photosoil.Service.Services.Second
             return ServiceResponse<List<Classification>>.OkResponse(soilObjects);
         }
 
-        public ServiceResponse<List<Classification>> GetById(int id)
+        public ServiceResponse<Classification> GetById(int id)
         {
             var soilObjects = _context.Classification.Include(x => x.Terms)
-                .Where(x=>x.Id== id)
-                .ToList();
-            return ServiceResponse<List<Classification>>.OkResponse(soilObjects);
+                .FirstOrDefault(x => x.Id == id);
+            return ServiceResponse<Classification>.OkResponse(soilObjects);
         }
 
         public async Task<ServiceResponse<Classification>> Post(ClassificationVM classificationVm)
@@ -61,25 +60,27 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
-        public ServiceResponse<SoilObject> Put(SoilObjectVM soilObject)
+        public async Task<ServiceResponse<Classification>> Put(int id, string name)
         {
             try
             {
-                var newSoil = _mapper.Map<SoilObject>(soilObject);
+                var classification = await _context.Classification.FirstOrDefaultAsync(x => x.Id == id);
+                classification.Name = name;
 
-
-                _context.SoilObjects.Update(newSoil);
+                _context.Classification.Update(classification);
                 _context.SaveChanges();
-                return ServiceResponse<SoilObject>.OkResponse(newSoil);
+                return ServiceResponse<Classification>.OkResponse(classification);
             }
             catch (Exception ex)
             {
-                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
+                return ServiceResponse<Classification>.BadResponse(ex.Message);
             }
         }
+
+
         public ServiceResponse Delete(int id)
         {
-            var classification = _context.Classification.FirstOrDefault(x => x.Id == id);
+            var classification = _context.Classification.Include(x=>x.Terms).FirstOrDefault(x => x.Id == id);
 
             try
             {

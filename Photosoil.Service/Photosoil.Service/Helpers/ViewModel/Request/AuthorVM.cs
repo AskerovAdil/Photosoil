@@ -1,17 +1,24 @@
 ﻿using Photosoil.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Photosoil.Service.Helpers.ViewModel.Base;
+
+using System.ComponentModel.DataAnnotations;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
     public class AuthorVM
     {
-        public string FIO { get; set; }
-        public string Description { get; set; }
-        public PhotoBase? Photo { get; set; }
+
+        public Translation DataEng { get; set; }
+        public Translation DataRu { get; set; }
+
+        [Display(Name = "Контакты")]
+        public string[]? Contacts { get; set; } = new string[] { };
+
+        public string[]? OtherProfiles { get; set; } = new string[] { };
+
+        public int? PhotoId { get; set; }
+
     }
+
+
+
 }

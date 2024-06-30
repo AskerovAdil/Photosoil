@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Photosoil.Core.Enum;
 using Photosoil.Core.Models.Second;
@@ -12,6 +13,7 @@ using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
 using Photosoil.Service.Helpers.ViewModel.Request;
+using Photosoil.Service.Helpers.ViewModel.Response;
 
 namespace Photosoil.Service.Services.Second
 {
@@ -45,13 +47,16 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
-        public ServiceResponse<Term> Put(TermsVM termsVm)
+        public async Task<ServiceResponse<Term>> Put(int Id, [FromForm] string Name)
         {
             try
             {
-                var term = _mapper.Map<Term>(termsVm);
-                var classification = _context.Classification.FirstOrDefault(x => x.Id == termsVm.ClassificationId);
-                term.Classification = classification;
+                var term = _context.Term.FirstOrDefault(x => x.Id == Id);
+
+                if(term == null)
+                    return ServiceResponse<Term>.BadResponse("Термин не найден");
+
+                term.Name = Name;
 
                 _context.Term.Update(term);
                 _context.SaveChanges();
@@ -65,10 +70,12 @@ namespace Photosoil.Service.Services.Second
 
         public ServiceResponse Delete(int id)
         {
-            var term = _context.Term.FirstOrDefault(x => x.Id == id);
+            var term = _context.Term.Include(x=>x.Classification).
+                FirstOrDefault(x => x.Id == id);
 
             try
             {
+
                 if (term != null) _context.Term.Remove(term);
                 _context.SaveChanges();
                 return ServiceResponse.OkResponse;

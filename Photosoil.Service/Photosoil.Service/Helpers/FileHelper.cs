@@ -14,12 +14,14 @@ namespace Photosoil.Service.Helpers
         public static async Task<string> SavePhoto(IFormFile file)
         {
             var path = $"/Storage/{Guid.NewGuid().ToString()[5..]}";
-            await using (Stream fileStream = new FileStream(path, FileMode.Create))
+            Directory.CreateDirectory(path);
+            var filepath = $"{path}/{file.FileName}";
+            await using (Stream fileStream = new FileStream(filepath, FileMode.Create))
             {
                     await file.CopyToAsync(fileStream);
             }
 
-            return $"{path}/{file.FileName}";
+            return filepath;
 
         }
     }

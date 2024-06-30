@@ -17,11 +17,25 @@ namespace Photosoil.API.Controllers
         public PhotoController(PhotoService soilObject) {
             _photoService = soilObject;
         }
-
         [HttpGet(nameof(GetAll))]
-        public IActionResult GetAll(int soilId)
+        public IActionResult GetAll()
         {
-            var response= _photoService.Get(soilId);
+            var response = _photoService.GetAll();
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+        [HttpGet(nameof(GetById))]
+        public IActionResult GetById(int Id)
+        {
+            var response = _photoService.GetById(Id);
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+        [HttpGet(nameof(GetBySoilId))]
+        public IActionResult GetBySoilId(int soilId)
+        {
+            var response= _photoService.GetBySoilId(soilId);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -30,6 +44,13 @@ namespace Photosoil.API.Controllers
         public async Task<IActionResult> Post([FromForm] PhotoVM photo)
         {
             var response = await _photoService.Post(photo);
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+        [HttpPut(nameof(Put) + "/{Id}")]
+        public async Task<IActionResult> Put(int Id, [FromForm] string? TitleEng, [FromForm] string? TitleRu)
+        {
+            var response = await _photoService.Put(Id, TitleEng,TitleRu);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

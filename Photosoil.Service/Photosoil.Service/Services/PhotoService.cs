@@ -28,24 +28,38 @@ namespace Photosoil.Service.Services
             _context = context;
         }
 
-        public  ServiceResponse<List<File>> Get(int soilId)
+        public ServiceResponse<List<File>> GetAll ()
+        {
+
+            var soilPhoto = _context.Photo.ToList();
+
+            return ServiceResponse<List<Core.Models.File>>.OkResponse(soilPhoto);
+        }
+
+
+        public ServiceResponse<List<File>> GetBySoilId(int soilId)
         {
 
             var soilPhoto = _context.SoilObjects.Include(x=>x.ObjectPhoto).FirstOrDefault(x => x.Id == soilId)?.ObjectPhoto;
             
             return ServiceResponse<List<Core.Models.File>>.OkResponse(soilPhoto);
         }
-        
+
+        public ServiceResponse<File> GetById(int Id)
+        {
+
+            var soilPhoto = _context.Photo.FirstOrDefault(x => x.Id == Id);
+
+            return ServiceResponse<File>.OkResponse(soilPhoto);
+        }
+
         public async Task<ServiceResponse<Core.Models.File>> Post(PhotoVM photoVM)
         {
             try
             {
                 var path = await FileHelper.SavePhoto(photoVM.Photo);
-                var photo = new Core.Models.File(path, photoVM.Title);
+                var photo = new Core.Models.File(path, photoVM.TitleEng, photoVM.TitleRu);
                 
-                var soil = _context.SoilObjects.First(x => x.Id == photoVM.soilId);
-                soil.ObjectPhoto.Add(photo);
-
                 _context.Photo.AddRange(photo);
                 await _context.SaveChangesAsync();
 
@@ -57,12 +71,13 @@ namespace Photosoil.Service.Services
             }
         }
 
-        public async Task<ServiceResponse<File>> Put(int id,string Title)
+        public async Task<ServiceResponse<File>> Put(int id,string? TitleEng, string? TitleRu)
         {
             try
             {
                 var photo = _context.Photo.FirstOrDefault(x => x.Id == id);
-                photo.Title = Title;
+                photo.TitleEng = TitleEng;
+                photo.TitleRu = TitleRu;
                 _context.Photo.Update(photo);
                 _context.SaveChanges();
                 

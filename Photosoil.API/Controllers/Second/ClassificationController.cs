@@ -43,6 +43,13 @@ namespace Photosoil.API.Controllers.Second
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
+        [HttpPut(nameof(Put) + "/{Id}")]
+        public async Task<IActionResult> Put(int Id, [FromForm] string Name)
+        {
+            var response = await _classificationService.Put(Id, Name);
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
 
         [HttpDelete(nameof(Delete))]
         public IActionResult Delete(int Id)

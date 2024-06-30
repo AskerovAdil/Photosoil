@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -26,58 +27,177 @@ namespace Photosoil.Service.Services
             _context = context;
         }
 
-        public  ServiceResponse<List<EcoSystem>> GetAll()
+        public  ServiceResponse<List<EcoSystem>> GetAll(string lang ="", int? userId = 0, string? role = "")
         {
-            var ecoSystems = _context.EcoSystem
-                .Include(x=>x.Photo)
-                .Include(x=>x.Publications)
-                .Include(x=>x.SoilObjects)
-                .ToList();
-            return ServiceResponse<List<EcoSystem>>.OkResponse(ecoSystems);
+
+            IQueryable<EcoSystem> ecoSystems;
+            if (role == "Moderator")
+                ecoSystems = _context.EcoSystem.Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects).Where(x => x.UserId == userId);
+            else if (role == "Admin")
+                ecoSystems = _context.EcoSystem.Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects);
+            else
+                ecoSystems = _context.EcoSystem.Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects).Where(x => x.IsVisible == true);
+
+
+
+            if (lang == "en")
+                ecoSystems = ecoSystems.Where(x => x.IsEnglish == true);
+            else if (lang == "ru")
+                ecoSystems = ecoSystems.Where(x => x.IsEnglish == false);
+
+
+
+            return ServiceResponse<List<EcoSystem>>.OkResponse(ecoSystems.ToList());
         }
 
         public ServiceResponse<EcoSystem> GetById(int id)
         {
-            var ecoSystem = _context.EcoSystem.FirstOrDefault(x=>x.Id == id);
+            var ecoSystem = _context.EcoSystem
+                    .Include(x => x.Photo)
+                    .Include(x => x.Publications)
+                    .Include(x => x.ObjectPhoto)
+                    .Include(x => x.SoilObjects).ThenInclude(x => x.Photo)
+                    .Include(x => x.Authors).ThenInclude(x=>x.Photo)
+                    .FirstOrDefault(x => x.Id == id)
+                ;
             return ServiceResponse<EcoSystem>.OkResponse(ecoSystem);
         }
-        public async Task<ServiceResponse<EcoSystem>> Post(EcoSystemVM ecoSystemVM)
+        public ServiceResponse<EcoSystemVM> GetForUpdate(int id)
+        {
+            var item = _context.EcoSystem
+                .AsNoTracking()
+                .Include(x => x.Photo)
+                .Include(x => x.Authors)
+                .Include(x => x.ObjectPhoto)
+                .Include(x => x.SoilObjects).ThenInclude(x => x.Photo)
+                .Include(x => x.Publications).ThenInclude(x => x.File)
+                .FirstOrDefault(x => x.Id == id);
+
+            var itemResponse = _mapper.Map<EcoSystemVM>(item);
+
+
+            return item != null
+                ? ServiceResponse<EcoSystemVM>.OkResponse(itemResponse)
+                : ServiceResponse<EcoSystemVM>.BadResponse(ErrorMessage.NoContent);
+        }
+
+        public async Task<ServiceResponse<List<EcoSystem>>> Post(int userId, List<EcoSystemVM> ecoSystems)
         {
             try
             {
-                var path = await FileHelper.SavePhoto(ecoSystemVM.Photo?.File!);
-                var file = new Core.Models.File(path, ecoSystemVM.Photo.Title);
+                var result = new List<EcoSystem>();
+                foreach (var eco in ecoSystems)
+                {
+                    var ecoSystem = _mapper.Map<EcoSystem>(eco);
+                    ecoSystem.PhotoId = eco.PhotoId;
+                    ecoSystem.UserId = userId;
 
-                var ecoSystem = _mapper.Map<EcoSystem>(ecoSystemVM);
-                ecoSystem.Photo = file;
+                    ecoSystem.LastUpdated = DateTime.Now.ToString();
+                    foreach (var id in eco.Publications)
+                    {
+                        var publication = _context.Publication.FirstOrDefault(x => x.Id == id);
+                        ecoSystem.Publications.Add(publication);
+                    }
 
-                _context.EcoSystem.Add(ecoSystem);
+                    foreach (var id in eco.Authors)
+                    {
+                        var q = _context.Author.FirstOrDefault(x => x.Id == id);
+                        ecoSystem.Authors.Add(q);
+                    }
+                    foreach (var id in eco.ObjectPhoto)
+                    {
+                        var q = _context.Photo.FirstOrDefault(x => x.Id == id);
+                        ecoSystem.ObjectPhoto.Add(q);
+                    }
+                    _context.EcoSystem.Add(ecoSystem);
+                    await _context.SaveChangesAsync();
+                    result.Add(ecoSystem);
+                }
 
-                await _context.SaveChangesAsync();
+                if (result.Count > 1)
+                    await MergeLang(result);
 
-                return ServiceResponse<EcoSystem>.OkResponse(ecoSystem);
+                return ServiceResponse<List<EcoSystem>>.OkResponse(result);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<List<EcoSystem>>.BadResponse(ex.Message);
+            }
+        }
+
+        private async Task<List<EcoSystem>> MergeLang(List<EcoSystem> ecoSystems)
+        {
+            var ecoRu = ecoSystems.FirstOrDefault();
+            var ecoEng = ecoSystems.LastOrDefault();
+
+            ecoRu.OtherLangId = ecoEng.Id;
+            ecoEng.OtherLangId = ecoRu.Id;
+
+            _context.Update(ecoRu);
+            _context.Update(ecoEng);
+
+            _context.SaveChanges();
+
+            return ecoSystems;
+        }
+
+        public async Task<ServiceResponse<EcoSystem>> PutVisible(int id, bool isVisible)
+        {
+            try
+            {
+
+                var eco = await _context.EcoSystem.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (eco == null)
+                    return ServiceResponse<EcoSystem>.BadResponse("Экосистема не найдена!");
+
+                eco.LastUpdated = DateTime.Now.ToString();
+                eco.IsVisible = isVisible;
+
+                _context.EcoSystem.Update(eco);
+                _context.SaveChanges();
+                return ServiceResponse<EcoSystem>.OkResponse(eco);
             }
             catch (Exception ex)
             {
                 return ServiceResponse<EcoSystem>.BadResponse(ex.Message);
             }
         }
+
         public async Task<ServiceResponse<EcoSystem>> Put(int id,EcoSystemVM ecoSystemVM)
         {
             try
-            {
-                var ecoSystem = _mapper.Map<EcoSystem>(ecoSystemVM);
-                ecoSystem.Id = id;
-                if (ecoSystemVM.Photo != null)
-                {
-                    var path = await FileHelper.SavePhoto(ecoSystemVM.Photo.File);
-                    var photo = new File(path, ecoSystemVM.Photo.Title);
-                    ecoSystem.Photo = photo;
-                }
+            {   
+                
+                var eco = await _context.EcoSystem.Include(x=>x.Photo).Include(x=>x.ObjectPhoto).Include(x=>x.Publications).Include(x => x.Authors).FirstOrDefaultAsync(x => x.Id == id);
+                
+                if (eco == null)
+                     return ServiceResponse<EcoSystem>.BadResponse("Экосистема не найдена!");
 
-                _context.EcoSystem.Update(ecoSystem);
-                _context.SaveChanges();
-                return ServiceResponse<EcoSystem>.OkResponse(ecoSystem);
+                _mapper.Map(ecoSystemVM,eco);
+
+                var authors = ecoSystemVM.Authors
+                     .Select(id => _context.Author.FirstOrDefault(x => x.Id == id))
+                     .ToList();
+                var publications = ecoSystemVM.Publications
+                     .Select(id => _context.Publication.FirstOrDefault(x => x.Id == id))
+                     .ToList();
+                var photo= ecoSystemVM.ObjectPhoto
+                     .Select(id => _context.Photo.FirstOrDefault(x => x.Id == id))
+                     .ToList();
+
+
+                eco.Authors = new List<Author>();
+                eco.ObjectPhoto = new List<File>();
+                eco.Publications = new List<Publication>();
+
+                eco.Authors.AddRange(authors);
+                eco.ObjectPhoto.AddRange(photo);
+                eco.Publications.AddRange(publications);
+
+                _context.EcoSystem.Update(eco);
+                 _context.SaveChanges();
+                return ServiceResponse<EcoSystem>.OkResponse(eco);
             }
             catch (Exception ex)
             {
@@ -87,7 +207,8 @@ namespace Photosoil.Service.Services
 
         public ServiceResponse Delete(int id)
         {
-            var ecoSystem = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
+            var ecoSystem = _context.EcoSystem.Include(x=>x.ObjectPhoto)
+                .Include(x=>x.Publications).Include(x=>x.SoilObjects).FirstOrDefault(x => x.Id == id);
 
             try
             {
