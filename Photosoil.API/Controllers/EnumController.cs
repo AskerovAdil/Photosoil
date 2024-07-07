@@ -26,5 +26,12 @@ namespace Photosoil.API.Controllers
             var props = _enumService.GetPublicationNames();
             return Ok(props);
         }
+
+        [HttpGet(nameof(TranslationMode))]
+        public IActionResult TranslationMode()
+        {
+            var props = _enumService.GetTranslationMode();
+            return Ok(props);
+        }
     }
 }

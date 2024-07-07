@@ -29,7 +29,7 @@ namespace Photosoil.API.Controllers
             string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
             int.TryParse(userId, out var id);
 
-            var response = _ecoSystemService.GetAll("",id, role);
+            var response = _ecoSystemService.GetAdminAll(id, role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -37,9 +37,13 @@ namespace Photosoil.API.Controllers
 
 
         [HttpGet(nameof(GetAll))]
-        public IActionResult GetAll(string? lang = "")
+        public IActionResult GetAll()
         {
-            var response= _ecoSystemService.GetAll(lang);
+
+            string? userId = User.FindFirstValue("Id");
+            string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+            int.TryParse(userId, out var id);
+            var response= _ecoSystemService.GetAll(id,role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -61,7 +65,7 @@ namespace Photosoil.API.Controllers
         [HttpPost(nameof(Post))]
         [Authorize]
         [ProducesResponseType(typeof(List<EcoSystemVM>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] List<EcoSystemVM> ecoSystemVm)
+        public async Task<IActionResult> Post([FromBody] EcoSystemVM ecoSystemVm)
         {
             string? userId = User.FindFirstValue("Id");
             int.TryParse(userId, out var id);
@@ -71,7 +75,7 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpPut(nameof(Put) + "/{Id}")]
-        public async Task<IActionResult> Put(int Id, [FromForm] EcoSystemVM soilObject)
+        public async Task<IActionResult> Put(int Id, EcoSystemVM soilObject)
         {
             var response = await _ecoSystemService.Put(Id, soilObject);
             return response.Error ? BadRequest(response) : Ok(response);
@@ -84,9 +88,9 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpDelete(nameof(Delete))]
-        public IActionResult Delete(int Id)
+        public IActionResult Delete(int TranslationId)
         {
-            var response = _ecoSystemService.Delete(Id);
+            var response = _ecoSystemService.Delete(TranslationId);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

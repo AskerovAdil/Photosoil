@@ -30,7 +30,7 @@ namespace Photosoil.API.Controllers
             string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
             int.TryParse(userId, out var id);
 
-            var response = _publicationService.GetAll(id,role);
+            var response = _publicationService.GetAdminAll(id,role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -38,7 +38,11 @@ namespace Photosoil.API.Controllers
         [HttpGet(nameof(GetAll))]
         public IActionResult GetAll()
         {
-            var response= _publicationService.GetAll();
+            string? userId = User.FindFirstValue("Id");
+            string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+            int.TryParse(userId, out var id);
+
+            var response= _publicationService.GetAll(id,role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -52,7 +56,7 @@ namespace Photosoil.API.Controllers
 
         [HttpPut(nameof(Put) + "/{Id}")]
         [ProducesResponseType(typeof(PublicationVM), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Put(int Id,[FromForm] PublicationVM publicationVm)
+        public async Task<IActionResult> Put(int Id,PublicationVM publicationVm)
         {
             var response = await _publicationService.Put(Id, publicationVm);
 
@@ -77,8 +81,7 @@ namespace Photosoil.API.Controllers
         [HttpPost(nameof(Post))]
         [Authorize]
         [ProducesResponseType(typeof(PublicationVM), StatusCodes.Status200OK)]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Post(List<PublicationVM> publicationVm)
+        public async Task<IActionResult> Post(PublicationVM publicationVm)
         {
             string? userId = User.FindFirstValue("Id");
             int.TryParse(userId, out var id);
@@ -89,9 +92,9 @@ namespace Photosoil.API.Controllers
         }
 
         [HttpDelete(nameof(Delete))]
-        public IActionResult Delete(int Id)
+        public IActionResult Delete(int TranslationId)
         {
-            var response = _publicationService.Delete(Id);
+            var response = _publicationService.Delete(TranslationId);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

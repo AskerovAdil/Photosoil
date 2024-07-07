@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
@@ -44,9 +45,9 @@ namespace Photosoil.API.Controllers.Second
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpPut(nameof(Put) + "/{Id}")]
-        public async Task<IActionResult> Put(int Id, [FromForm] string Name)
+        public async Task<IActionResult> Put(int Id, [FromForm] string Name, [FromForm] TranslationMode TranslationMode = TranslationMode.Neutral)
         {
-            var response = await _classificationService.Put(Id, Name);
+            var response = await _classificationService.Put(Id, Name,TranslationMode );
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

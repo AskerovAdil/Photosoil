@@ -35,15 +35,15 @@ namespace Photosoil.API.Controllers
             string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
             int.TryParse(userId, out var id);
 
-            var response = _soilObjectService.Get("",id, role);
+            var response = _soilObjectService.GetAdminAll(id, role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
 
         [HttpGet(nameof(GetAll))]
-        public IActionResult GetAll(string? lang = "")
+        public IActionResult GetAll()
         {
-            var response = _soilObjectService.Get(lang);
+            var response = _soilObjectService.Get();
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -88,7 +88,7 @@ namespace Photosoil.API.Controllers
         [HttpPost(nameof(Post))]
         [Authorize]
         [ProducesResponseType(typeof(SoilObjectVM), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post(List<SoilObjectVM> soilObject)
+        public async Task<IActionResult> Post(SoilObjectVM soilObject)
         {
             string? userId = User.FindFirstValue("Id");
             int.TryParse(userId, out var id);
@@ -110,7 +110,7 @@ namespace Photosoil.API.Controllers
         }
 
         [HttpPut(nameof(Put)+"/{Id}")]
-        public async Task<IActionResult> Put(int Id,[FromForm]SoilObjectVM soilObject)
+        public async Task<IActionResult> Put(int Id,SoilObjectVM soilObject)
         {
 
             var response = await _soilObjectService.Put(Id,soilObject);
@@ -125,9 +125,9 @@ namespace Photosoil.API.Controllers
         }
 
         [HttpDelete(nameof(Delete))]
-        public IActionResult Delete(int Id)
+        public IActionResult Delete(int TranslationId)
         {
-            var response = _soilObjectService.Delete(Id);
+            var response = _soilObjectService.Delete(TranslationId);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
