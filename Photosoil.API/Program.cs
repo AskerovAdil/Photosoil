@@ -68,10 +68,11 @@ namespace PhotosoilAPI
             builder.Services.AddScoped<Classification>();
             builder.Services.AddScoped<ArticleService>();
             builder.Services.AddScoped<AuthorService>();
+            builder.Services.AddScoped<NewsService>();
 
 
- 
-            
+
+
             builder.Services.AddScoped<AccountService>();
 
 

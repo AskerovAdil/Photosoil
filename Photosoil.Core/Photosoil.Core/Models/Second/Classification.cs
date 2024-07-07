@@ -1,11 +1,5 @@
-﻿using Photosoil.Core.Models.Base;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models.Base;
 
 namespace Photosoil.Core.Models.Second
 {
@@ -14,6 +8,9 @@ namespace Photosoil.Core.Models.Second
 
         public bool IsMulti { get; set; } = true;
         public List<Term> Terms { get; set; } = new();
+        public TranslationMode TranslationMode { get; set; } = TranslationMode.Neutral;
 
     }
+
+
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Photosoil.Core.Models.Second;
 
 namespace Photosoil.Core.Models
 {
@@ -18,19 +19,8 @@ namespace Photosoil.Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        /// <summary>
-        /// Название объекта
-        /// </summary>
-        [Required(ErrorMessage = "Поле 'Название' является обязательным")]
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+
         public int? PhotoId { get; set; }
-
-        public string? LastUpdated { get; set; }
-        public bool? IsVisible { get; set; } = false;
-
-        public bool? IsEnglish { get; set; } = false;
-        public int? OtherLangId { get; set; }
 
 
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
@@ -38,6 +28,7 @@ namespace Photosoil.Core.Models
         public List<SoilObject> SoilObjects { get; set; } = new();
         public List<Publication> Publications { get; set; } = new();
         public List<Author> Authors { get; set; } = new();
+        public List<EcoTranslation> Translations { get; set; } = new();
 
         /// <summary>
         /// Фотографии объекта
