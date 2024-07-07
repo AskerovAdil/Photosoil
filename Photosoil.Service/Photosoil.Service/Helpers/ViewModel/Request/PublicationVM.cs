@@ -9,18 +9,15 @@ using System.ComponentModel.DataAnnotations;
 using Photosoil.Core.Models.Base;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml.Linq;
+using Photosoil.Core.Models.Second;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
     public class PublicationVM 
     {
 
-        [Required(ErrorMessage = "Поле 'Название' является обязательным")]
-        public string? Name { get; set; }
-        public string? Description { get; set; }
+        public List<PublicationTranslation> Translations { get; set; } = new();
 
-        public string? Edition { get; set; }
-        public string? Authors { get; set; }
         public string? Doi { get; set; }
         
         public PublicationType? Type { get; set; }

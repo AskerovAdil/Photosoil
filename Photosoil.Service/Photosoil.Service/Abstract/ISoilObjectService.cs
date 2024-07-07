@@ -17,7 +17,8 @@ namespace Photosoil.Service.Abstract
     public interface ISoilObjectService
     {
 
-        ServiceResponse<List<SoilResponse>> Get(string lang = "",int? userId = 0, string? role = "");
+        ServiceResponse<List<SoilResponse>> Get(int? userId = 0, string? role = "");
+        ServiceResponse<List<SoilTranslation>> GetAdminAll(int? userId = 0, string? role = "");
         ServiceResponse<SoilResponseById> GetById(int Id);
         ServiceResponse<SoilObjectVM> GetForUpdate(int id);
         ServiceResponse<List<SoilResponse>> GetByType(SoilObjectType soilType);
@@ -25,7 +26,7 @@ namespace Photosoil.Service.Abstract
 
         Task<ServiceResponse<SoilObject>> Put(int id, SoilObjectVM soilObject);
         Task<ServiceResponse<SoilObject>> PutVisible(int id, bool isVisible);
-        Task<ServiceResponse<List<SoilObject>>> Post(int userId, List<SoilObjectVM> soils);
+        Task<ServiceResponse<SoilObject>> Post(int userId, SoilObjectVM soil);
         Task<ServiceResponse<SoilObject>> PostMass(SoilMass soilMass);
         ServiceResponse Delete(int Id);
         

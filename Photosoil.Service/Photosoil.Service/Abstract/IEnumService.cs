@@ -10,6 +10,7 @@ namespace Photosoil.Service.Abstract
     {
         Dictionary<int, string> GetSoilObjectNames();
         Dictionary<int, string> GetPublicationNames();
+        Dictionary<int, string> GetTranslationMode();
 
     }
 }

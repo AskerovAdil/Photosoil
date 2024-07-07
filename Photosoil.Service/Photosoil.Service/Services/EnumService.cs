@@ -22,7 +22,6 @@ namespace Photosoil.Service.Services
                 var displayName = ((PublicationType)value).GetDisplayName();
                 enumDisplayNames.Add((int)value, displayName);
             }
-            // Добавьте другие перечисления, если они есть
             return enumDisplayNames;
         }
 
@@ -37,7 +36,19 @@ namespace Photosoil.Service.Services
                 var displayName = ((SoilObjectType)value).GetDisplayName();
                 enumDisplayNames.Add((int)value, displayName);
             }
-            // Добавьте другие перечисления, если они есть
+            return enumDisplayNames;
+        }
+
+        public Dictionary<int, string> GetTranslationMode()
+        {
+            var enumDisplayNames = new Dictionary<int, string>();
+
+            var soilObjectTypeValues = Enum.GetValues(typeof(TranslationMode));
+            foreach (var value in soilObjectTypeValues)
+            {
+                var displayName = ((TranslationMode)value).GetDisplayName();
+                enumDisplayNames.Add((int)value, displayName);
+            }
             return enumDisplayNames;
         }
     }

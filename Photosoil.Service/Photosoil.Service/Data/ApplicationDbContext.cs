@@ -17,10 +17,15 @@ namespace Photosoil.Service.Data
         public virtual DbSet<EcoSystem> EcoSystem { get; set; }
         public virtual DbSet<Publication> Publication { get; set; }
         public virtual DbSet<ApplicationUser> User { get; set; }
+        public virtual DbSet<News> News{ get; set; }
 
 
         public virtual DbSet<Term> Term { get; set; }
         public virtual DbSet<Classification> Classification { get; set; }
+
+        public virtual DbSet<SoilTranslation> SoilTranslations { get; set; }
+        public virtual DbSet<PublicationTranslation> PublicationTranslations { get; set; }
+        public virtual DbSet<EcoTranslation> EcoTranslations { get; set; }
 
         public ApplicationDbContext()
         {
@@ -47,6 +52,7 @@ namespace Photosoil.Service.Data
             //    .OnDelete(DeleteBehavior.SetNull);
 
 
+            builder.Entity<SoilObject>().HasMany(x => x.Translations).WithOne(x => x.SoilObject).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.SoilId);
 
             builder.Entity<SoilObject>().HasMany(x => x.Authors).WithMany(x => x.SoilObjects);
             builder.Entity<SoilObject>().HasMany(x => x.Terms).WithMany(x => x.SoilObjects);
@@ -55,7 +61,9 @@ namespace Photosoil.Service.Data
             builder.Entity<EcoSystem>().HasMany(x => x.Publications).WithMany(x => x.EcoSystems);
             builder.Entity<EcoSystem>().HasMany(x => x.Authors).WithMany(x => x.EcoSystems);
             builder.Entity<EcoSystem>().HasMany(x => x.ObjectPhoto).WithMany(x => x.EcoSystems);
-            
+
+
+            builder.Entity<EcoSystem>().HasMany(x => x.Translations).WithOne(x => x.EcoSystem).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.EcoSystemId);
             builder.Entity<EcoSystem>().HasOne(x => x.Photo).WithMany()
                 .OnDelete(DeleteBehavior.SetNull);
 
@@ -77,13 +85,11 @@ namespace Photosoil.Service.Data
             builder.Entity<ApplicationUser>().HasMany(x => x.EcoSystems).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
             builder.Entity<ApplicationUser>().HasMany(x => x.Publications).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
             builder.Entity<ApplicationUser>().HasMany(x => x.SoilObjects).WithOne(x => x.User).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.UserId); ;
-            
+
+            builder.Entity<Publication>().HasMany(x => x.Translations).WithOne(x => x.Publication).OnDelete(DeleteBehavior.SetNull).HasForeignKey(x => x.PublicationId);
 
 
             SetData(builder);
-
-
-
             base.OnModelCreating(builder);
         }
 
@@ -387,65 +393,12 @@ namespace Photosoil.Service.Data
 
             var rand = new Random();
 
-            var soilObject = new SoilObject()
-            {
-                Id = 1,
-                ObjectType = SoilObjectType.SoilProfiles,
-                GeographicLocation = "Турция, северо-западные предместья Стамбула, окрестности местечка Фатих",
-                ReliefLocation = "Выположенная поверхность в средней части мезосклона в юго-восточной оконечности хребта Истранджа",
 
-                Latitude = "41.234193",
-                Longtitude = "28.687272",
-
-                PlantCommunity = "Кустарниково-древесное сообщество",
-                SoilFeatures = "Почва вскипает с поверхности. Почвообразующей породой является известняк.",
-                Terms = listTerm.GetRange(0,5),
-
-                    Name = "Бурозем остаточно-карбонатный"
-            };
 
 
             builder.Entity<Term>().HasData(listTerm);
 
         }
-        private void SetSoilData(ModelBuilder builder)
-        {
-            var soilObject = new SoilObject()
-            {
-                Id = 1, 
-                ObjectType = SoilObjectType.SoilProfiles,
-                GeographicLocation = "Турция, северо-западные предместья Стамбула, окрестности местечка Фатих",
-                ReliefLocation = "Выположенная поверхность в средней части мезосклона в юго-восточной оконечности хребта Истранджа",
-
-                Latitude = "41.234193",
-                Longtitude = "28.687272",
-
-                PlantCommunity = "Кустарниково-древесное сообщество",
-                SoilFeatures = "Почва вскипает с поверхности. Почвообразующей породой является известняк.",
-
-                Name = "Бурозем остаточно-карбонатный"
-            };
-            var soilObject2 = new SoilObject()
-            {
-                Id = 1,
-                ObjectType = SoilObjectType.SoilProfiles,
-                GeographicLocation = "Турция, северо-западные предместья Стамбула, окрестности местечка Фатих",
-                ReliefLocation = "Выположенная поверхность в средней части мезосклона в юго-восточной оконечности хребта Истранджа",
-
-                Latitude = "69.088061",
-                Longtitude = "49.804225",
-
-                PlantCommunity = "Кустарниково-древесное сообщество",
-                SoilFeatures = "Почва вскипает с поверхности. Почвообразующей породой является известняк.",
-
-                Name = "Перегнойно-криометаморфическая глееватая мерзлотная"
-            };
-
-
-
-            builder.Entity<SoilObject>().HasData(soilObject);
-            builder.Entity<SoilObject>().HasData(soilObject2);
-
-        }
+       
     }
 }

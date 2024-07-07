@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Photosoil.Service.Data;
@@ -11,9 +12,10 @@ using Photosoil.Service.Data;
 namespace Photosoil.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240702163734_i")]
+    partial class i
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -508,9 +510,6 @@ namespace Photosoil.Service.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TranslationMode")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.ToTable("Classification");
@@ -520,36 +519,31 @@ namespace Photosoil.Service.Migrations
                         {
                             Id = 1,
                             IsMulti = true,
-                            Name = "Отделы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Отделы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 4,
                             IsMulti = true,
-                            Name = "Природная зона",
-                            TranslationMode = 0
+                            Name = "Природная зона"
                         },
                         new
                         {
                             Id = 2,
                             IsMulti = true,
-                            Name = "Подтипы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Подтипы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 3,
                             IsMulti = true,
-                            Name = "Типы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Типы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 5,
                             IsMulti = true,
-                            Name = "Основные квалификаторы (WRB 2014)",
-                            TranslationMode = 0
+                            Name = "Основные квалификаторы (WRB 2014)"
                         });
                 });
 

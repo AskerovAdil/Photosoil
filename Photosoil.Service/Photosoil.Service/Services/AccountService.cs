@@ -69,7 +69,13 @@ namespace Photosoil.Service.Services
         public async Task<ServiceResponse> GetById(int UserId)
         {
             var existingUser =  _userManager.Users.Include(x=>x.SoilObjects)
-                .Include(x=>x.EcoSystems).Include(x=>x.Publications).Include(x=>x.Authors)
+                .ThenInclude(x=>x.Translations)
+                .Include(x=>x.EcoSystems)
+                .ThenInclude(x=>x.Translations)
+                .Include(x=>x.Publications)
+                .ThenInclude(x => x.Translations)
+
+                .Include(x=>x.Authors)
                 .ThenInclude(x=>x.DataEng)
                 .Include(x=>x.Authors)
                 .ThenInclude(x=>x.DataRu)
@@ -115,6 +121,7 @@ namespace Photosoil.Service.Services
             var response = GenerateToken(user);
 
             user.RefreshToken = response.RefreshToken;
+
             await _userManager.UpdateAsync(user);
      
             return ServiceResponse<AuthResponse>.OkResponse(response);
@@ -146,6 +153,8 @@ namespace Photosoil.Service.Services
 
             var response = new AuthResponse()
             {
+                Name = user.Name.ToString(),
+                Role = user.Role,
                 Token = encodedJwt,
                 RefreshToken = refreshToken,
                 DeadTime = second.ToString()
