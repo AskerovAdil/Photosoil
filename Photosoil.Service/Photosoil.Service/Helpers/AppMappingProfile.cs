@@ -20,6 +20,7 @@ namespace Photosoil.Service.Helpers
         {
             CreateMap<SoilObjectVM, SoilObject>()
                 .ForMember(x => x.Authors, x => x.Ignore())
+                .ForMember(x => x.Translations, x => x.Ignore())
                 .ForMember(x => x.Terms, x => x.Ignore())
                 .ForMember(x => x.ObjectPhoto, x => x.Ignore())
                 .ForMember(x => x.Publications, x => x.Ignore())
@@ -47,6 +48,19 @@ namespace Photosoil.Service.Helpers
                 ;
 
 
+            //CreateMap<SoilObjectVM, SoilObject>()
+            //    .ForMember(x => x.PhotoId, x => x.MapFrom(y => y.PhotoId))
+            //    .ForMember(x => x.Translations, x => x.Ignore())
+            //    .ForMember(x => x.Photo, x => x.Ignore())
+            //    .ForMember(x => x.ObjectPhoto, x => new List<Core.Models.File>())
+            //    .ForMember(x => x.Publications, x => new List<Publication>())
+            //    .ForMember(x => x.EcoSystems, x => new List<EcoSystem>())
+            //    .ForMember(x => x.Terms, x => new List<Term>())
+            //    .ForMember(x => x.Authors, x => new List<Author>());
+
+
+
+
             CreateMap<SoilResponse,SoilObject>().ReverseMap()
                 .ForMember(x => x.Terms, x => x.MapFrom(x => x.Terms.Select(x=>x.Id)));
 
@@ -66,6 +80,7 @@ namespace Photosoil.Service.Helpers
                 .ForMember(x => x.Authors, x => x.Ignore())
                 .ForMember(x => x.PhotoId, x => x.Ignore())
                 .ForMember(x => x.Photo, x => x.Ignore())
+                .ForMember(x => x.Translations, x => x.Ignore())
                 .ForMember(x => x.ObjectPhoto, x => x.Ignore())
                 .ForMember(x => x.PhotoId, x => x.MapFrom(y=>y.PhotoId))
                 .ForMember(x => x.Publications, x => x.Ignore())
@@ -82,14 +97,15 @@ namespace Photosoil.Service.Helpers
                 .ForMember(x => x.ObjectPhoto, x => new List<Core.Models.File>())
                 .ForMember(x => x.Authors, x => new List<Author>())
                 .ForMember(x => x.SoilObjects, x => new List<SoilObject>())
-                .ForMember(x => x.LastUpdated, x => DateTime.Now.ToString())
                 .ForMember(x => x.Publications, x => new List<Publication>());
+
+
+
             CreateMap<Publication, PublicationVM>()
                 .ForMember(x => x.FileId, x => x.MapFrom(x => x.FileId));
 
             CreateMap<PublicationVM, Publication>()
                 //.ForMember(x => x.Coordinates, x => x.MapFrom(y => JsonConvert.SerializeObject(y.Coordinates)))
-                .ForMember(x => x.LastUpdated, x => DateTime.Now.ToString())
                 .ForMember(x => x.FileId, x => x.Ignore())
                 .ForMember(x => x.File, x => x.Ignore())
                 .ForMember(x => x.EcoSystems, x => x.Ignore())

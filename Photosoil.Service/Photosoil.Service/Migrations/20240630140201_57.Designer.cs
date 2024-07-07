@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Photosoil.Service.Data;
@@ -11,9 +12,10 @@ using Photosoil.Service.Data;
 namespace Photosoil.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240630140201_57")]
+    partial class _57
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -397,6 +399,9 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
                     b.Property<string>("Latitude")
                         .HasColumnType("text");
 
@@ -445,22 +450,6 @@ namespace Photosoil.Service.Migrations
                     b.ToTable("Photo");
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.News", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("News");
-                });
-
             modelBuilder.Entity("Photosoil.Core.Models.Publication", b =>
                 {
                     b.Property<int>("Id")
@@ -469,13 +458,35 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Authors")
+                        .HasColumnType("text");
+
                     b.Property<string>("Coordinates")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("Doi")
                         .HasColumnType("text");
 
+                    b.Property<string>("Edition")
+                        .HasColumnType("text");
+
                     b.Property<int?>("FileId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool?>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OtherLangId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Type")
@@ -508,9 +519,6 @@ namespace Photosoil.Service.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TranslationMode")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.ToTable("Classification");
@@ -520,36 +528,31 @@ namespace Photosoil.Service.Migrations
                         {
                             Id = 1,
                             IsMulti = true,
-                            Name = "Отделы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Отделы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 4,
                             IsMulti = true,
-                            Name = "Природная зона",
-                            TranslationMode = 0
+                            Name = "Природная зона"
                         },
                         new
                         {
                             Id = 2,
                             IsMulti = true,
-                            Name = "Подтипы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Подтипы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 3,
                             IsMulti = true,
-                            Name = "Типы почв по Классификации почв России 2004/2008",
-                            TranslationMode = 0
+                            Name = "Типы почв по Классификации почв России 2004/2008"
                         },
                         new
                         {
                             Id = 5,
                             IsMulti = true,
-                            Name = "Основные квалификаторы (WRB 2014)",
-                            TranslationMode = 0
+                            Name = "Основные квалификаторы (WRB 2014)"
                         });
                 });
 
@@ -573,9 +576,6 @@ namespace Photosoil.Service.Migrations
                     b.Property<bool?>("IsVisible")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LastUpdated")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -585,45 +585,6 @@ namespace Photosoil.Service.Migrations
                     b.HasIndex("EcoSystemId");
 
                     b.ToTable("EcoTranslations");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Second.PublicationTranslation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Authors")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Edition")
-                        .HasColumnType("text");
-
-                    b.Property<bool?>("IsEnglish")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("IsVisible")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LastUpdated")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PublicationId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PublicationId");
-
-                    b.ToTable("PublicationTranslations");
                 });
 
             modelBuilder.Entity("Photosoil.Core.Models.Second.SoilTranslation", b =>
@@ -648,9 +609,6 @@ namespace Photosoil.Service.Migrations
 
                     b.Property<bool?>("IsVisible")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("LastUpdated")
-                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2156,6 +2114,9 @@ namespace Photosoil.Service.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("text");
 
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
                     b.Property<string>("Latitude")
                         .HasColumnType("text");
 
@@ -2472,16 +2433,6 @@ namespace Photosoil.Service.Migrations
                     b.Navigation("EcoSystem");
                 });
 
-            modelBuilder.Entity("Photosoil.Core.Models.Second.PublicationTranslation", b =>
-                {
-                    b.HasOne("Photosoil.Core.Models.Publication", "Publication")
-                        .WithMany("Translations")
-                        .HasForeignKey("PublicationId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Publication");
-                });
-
             modelBuilder.Entity("Photosoil.Core.Models.Second.SoilTranslation", b =>
                 {
                     b.HasOne("Photosoil.Core.Models.SoilObject", "SoilObject")
@@ -2564,11 +2515,6 @@ namespace Photosoil.Service.Migrations
                 });
 
             modelBuilder.Entity("Photosoil.Core.Models.EcoSystem", b =>
-                {
-                    b.Navigation("Translations");
-                });
-
-            modelBuilder.Entity("Photosoil.Core.Models.Publication", b =>
                 {
                     b.Navigation("Translations");
                 });

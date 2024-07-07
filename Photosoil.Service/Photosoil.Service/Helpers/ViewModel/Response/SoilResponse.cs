@@ -16,26 +16,18 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
     {
         public int Id { get; set; }
 
-        /// <summary>
-        /// Название объекта
-        /// </summary>
-        [Required(ErrorMessage = "Поле 'Название' является обязательным")]
-        public string Name { get; set; }
+
+        public List<SoilTranslation> Translations { get; set; } = new();
 
         /// <summary>
         /// Изображение
         /// </summary>
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File Photo { get; set; }
+
         public SoilObjectType? ObjectType { get; set; } = SoilObjectType.SoilDynamics;
 
-
         public string? LastUpdated { get; set; }
-        public bool? IsVisible { get; set; } = false;
-
-        public bool? IsEnglish { get; set; } = false;
-
-        public int? OtherLangId { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных

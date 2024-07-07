@@ -1,4 +1,5 @@
-﻿using Photosoil.Core.Models;
+﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,8 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         public string Name { get; set; }
         public bool IsMulti { get; set; } = true;
         public List<string>? Terms { get; set; } = new();
+
+        public TranslationMode TranslationMode { get; set; } = TranslationMode.Neutral;
+
     }
 }
