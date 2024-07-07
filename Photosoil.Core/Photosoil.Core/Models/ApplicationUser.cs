@@ -19,6 +19,7 @@ namespace Photosoil.Core.Models
 
         [Column("RefreshToken")]
         public string? RefreshToken { get; set; }
+
         public List<SoilObject> SoilObjects { get; set; } = new();
         public List<EcoSystem> EcoSystems { get; set; } = new();
         public List<Publication> Publications { get; set; } = new();
