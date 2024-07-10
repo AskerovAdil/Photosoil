@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photosoil.Test", "Photosoil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "Photosoil.Test\Photosoil.MSTest\TestProject1\TestProject1.csproj", "{2BBB8A84-9EF0-4951-9461-2ED41933CC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "asxccdasas", "asxccdasas\asxccdasas.csproj", "{CE552F19-EAC0-4A3A-95D3-2B77CFA77863}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "asxccdasas", "asxccdasas\asxccdasas.csproj", "{CE552F19-EAC0-4A3A-95D3-2B77CFA77863}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{B3A18799-193C-4848-AE5F-BD16EE330F12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{CE552F19-EAC0-4A3A-95D3-2B77CFA77863}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE552F19-EAC0-4A3A-95D3-2B77CFA77863}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE552F19-EAC0-4A3A-95D3-2B77CFA77863}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A18799-193C-4848-AE5F-BD16EE330F12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A18799-193C-4848-AE5F-BD16EE330F12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A18799-193C-4848-AE5F-BD16EE330F12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A18799-193C-4848-AE5F-BD16EE330F12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
