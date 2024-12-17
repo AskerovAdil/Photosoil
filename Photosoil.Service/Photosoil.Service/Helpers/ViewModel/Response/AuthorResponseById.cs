@@ -1,4 +1,5 @@
-﻿using Photosoil.Core.Models;
+﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,11 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
     {
             public int Id { get; set; }
 
-
-
+            public AuthorType AuthorType { get; set; }
 
             public Translation DataEng { get; set; }
             public Translation DataRu { get; set; }
-
-
+            public string? CreatedDate { get; set; }
 
             [Display(Name = "Контакты")]
             public string[]? Contacts { get; set; } = new string[] { };

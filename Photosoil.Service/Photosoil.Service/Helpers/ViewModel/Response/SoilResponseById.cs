@@ -17,8 +17,12 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
     {
         public int Id { get; set; }
         public string? Code { get; set; }
-        public string? LastUpdated { get; set; }
+        public string? CreatedDate { get; set; }
 
+        public bool? IsExternal { get; set; }
+
+
+        public string? UserEmail { get; set; }
 
         /// <summary>
         /// Изображение

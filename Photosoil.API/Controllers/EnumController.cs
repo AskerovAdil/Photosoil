@@ -13,6 +13,12 @@ namespace Photosoil.API.Controllers
         public EnumController(IEnumService enumService) {
             _enumService = enumService;
         }
+        [HttpGet(nameof(Quantity))]
+        public IActionResult Quantity()
+        {
+            var props = _enumService.GetQuantity();
+            return Ok(props.Result);
+        }
 
         [HttpGet(nameof(SoilObjects))]
         public IActionResult SoilObjects()
@@ -31,6 +37,12 @@ namespace Photosoil.API.Controllers
         public IActionResult TranslationMode()
         {
             var props = _enumService.GetTranslationMode();
+            return Ok(props);
+        }
+        [HttpGet(nameof(AuthorType))]
+        public IActionResult AuthorType([FromQuery] string lang)
+        {
+            var props = _enumService.GetAuthorType(lang);
             return Ok(props);
         }
     }

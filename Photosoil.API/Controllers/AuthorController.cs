@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Photosoil.Core.Enum;
-using Photosoil.Core.Models;
-using Photosoil.Service.Abstract;
-using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Services;
 using System.Security.Claims;
@@ -32,9 +28,7 @@ namespace Photosoil.API.Controllers
             string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
             int.TryParse(userId, out var id);
 
-
             var response = _authorService.Get(id, role);
-
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
@@ -73,7 +67,7 @@ namespace Photosoil.API.Controllers
             var response = await _authorService.Put(Id, authorVM);
 
             return response.Error ? BadRequest(response) : Ok(response);
-        }
+            }
         [HttpDelete(nameof(Delete))]
         public IActionResult Delete(int Id)
         {
@@ -84,8 +78,3 @@ namespace Photosoil.API.Controllers
 
     }
 }
-//{
-//  "email": "ASdasdas@asdasd.asd",
-//  "name": "asdadssa",
-//  "password": "striasdadsadsng"
-//}

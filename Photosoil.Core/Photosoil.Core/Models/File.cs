@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,19 +22,38 @@ namespace Photosoil.Core.Models
             TitleRu= titleRu;
             LastUpdated = DateTime.Now.ToString();
         }
+        public File(string path, string pathResize, string titleEng, string titleRu)
+        {
+            Path = path;
+            PathResize = pathResize;
+            TitleEng = titleEng;
+            TitleRu = titleRu;
+            LastUpdated = DateTime.Now.ToString();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Path { get; set; }
+        public string? PathResize { get; set; }
         public string? TitleEng { get; set; }
         public string? TitleRu { get; set; }
         public string? LastUpdated { get; set; }
+
+        [JsonIgnore]
+        public List<News> NewsFiles { get; set; } = new();
+        [JsonIgnore]
+        public List<News> NewsPhoto { get; set; } = new();
 
         [JsonIgnore]
         public List<SoilObject> SoilObjects { get; set; } = new();
 
         [JsonIgnore]
         public List<EcoSystem> EcoSystems { get; set; } = new();
+
+        [JsonIgnore]
+        public List<Rules> Rules { get; set; } = new();
+
 
         [NotMapped]
         public string FileName
@@ -43,6 +63,5 @@ namespace Photosoil.Core.Models
                 return string.IsNullOrEmpty(Path) ? "Без_названия" : Path.Split('/').Last();
             }
         }
-
     }
 }

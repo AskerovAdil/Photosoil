@@ -79,6 +79,8 @@ namespace Photosoil.Service.Services
                 .ThenInclude(x=>x.DataEng)
                 .Include(x=>x.Authors)
                 .ThenInclude(x=>x.DataRu)
+                .Include(x=>x.News)
+                .ThenInclude(x=>x.Translations)
                 .FirstOrDefault(x=>x.Id == UserId);
 
             if (existingUser == null)
@@ -153,6 +155,8 @@ namespace Photosoil.Service.Services
 
             var response = new AuthResponse()
             {
+                Id = user.Id,
+                Email = user.Email,
                 Name = user.Name.ToString(),
                 Role = user.Role,
                 Token = encodedJwt,

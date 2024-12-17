@@ -4,12 +4,12 @@
 
 namespace Photosoil.Service.Migrations
 {
-    public partial class _2 : Migration
+    public partial class order : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "TranslationMode",
+                name: "Order",
                 table: "Classification",
                 type: "integer",
                 nullable: false,
@@ -19,7 +19,7 @@ namespace Photosoil.Service.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "TranslationMode",
+                name: "Order",
                 table: "Classification");
         }
     }

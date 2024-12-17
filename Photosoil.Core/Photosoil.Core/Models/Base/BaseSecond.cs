@@ -13,7 +13,8 @@ namespace Photosoil.Core.Models.Base
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string? NameRu { get; set; }
+        public string? NameEng { get; set; }
 
     }
 }

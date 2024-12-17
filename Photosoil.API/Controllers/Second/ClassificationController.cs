@@ -4,6 +4,7 @@ using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
+using Photosoil.Service.Helpers.ViewModel;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Services;
@@ -45,11 +46,24 @@ namespace Photosoil.API.Controllers.Second
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpPut(nameof(Put) + "/{Id}")]
-        public async Task<IActionResult> Put(int Id, [FromForm] string Name, [FromForm] TranslationMode TranslationMode = TranslationMode.Neutral)
+        public async Task<IActionResult> Put(int Id, [FromForm] string? NameRu, [FromForm] string? NameEng, [FromForm] TranslationMode TranslationMode = TranslationMode.Neutral)
         {
-            var response = await _classificationService.Put(Id, Name,TranslationMode );
+            var response = await _classificationService.Put(Id, NameRu,NameEng,TranslationMode );
 
             return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+        /// <summary>
+        /// Обновить порядковые номера Классификатора
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        [HttpPost(nameof(UpdateOrder))]
+        public async Task<IActionResult> UpdateOrder(List<ClassificationOrder> orders)
+        {
+            var response = await _classificationService.UpdateOrder(orders);
+
+            return response.Error ? BadRequest() : Ok();
         }
 
         [HttpDelete(nameof(Delete))]

@@ -15,8 +15,8 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
     public class SoilObjectVM : Coordinate
     {
 
-        public string? Code { get; set; }
-
+        public bool? IsExternal { get; set; }
+        public string? ExternalSource { get; set; }
 
         public List<SoilTranslation> Translations { get; set; } = new();
 

@@ -12,8 +12,8 @@ using Photosoil.Service.Data;
 namespace Photosoil.Service.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240702163734_i")]
-    partial class i
+    [Migration("20240828173513_int2222255")]
+    partial class int2222255
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -97,6 +97,36 @@ namespace Photosoil.Service.Migrations
                     b.HasIndex("SoilObjectsId");
 
                     b.ToTable("EcoSystemSoilObject");
+                });
+
+            modelBuilder.Entity("FileNews", b =>
+                {
+                    b.Property<int>("FilesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("NewsFilesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FilesId", "NewsFilesId");
+
+                    b.HasIndex("NewsFilesId");
+
+                    b.ToTable("FileNews");
+                });
+
+            modelBuilder.Entity("FileNews1", b =>
+                {
+                    b.Property<int>("NewsPhotoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ObjectPhotoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("NewsPhotoId", "ObjectPhotoId");
+
+                    b.HasIndex("ObjectPhotoId");
+
+                    b.ToTable("FileNews1");
                 });
 
             modelBuilder.Entity("FileSoilObject", b =>
@@ -246,6 +276,21 @@ namespace Photosoil.Service.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NewsTag", b =>
+                {
+                    b.Property<int>("NewsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("NewsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("NewsTag");
+                });
+
             modelBuilder.Entity("Photosoil.Core.Models.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
@@ -359,7 +404,13 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("AuthorType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Contacts")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedDate")
                         .HasColumnType("text");
 
                     b.Property<int>("DataEngId")
@@ -374,7 +425,7 @@ namespace Photosoil.Service.Migrations
                     b.Property<int?>("PhotoId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -399,6 +450,12 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("IsExternal")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Latitude")
                         .HasColumnType("text");
 
@@ -409,7 +466,7 @@ namespace Photosoil.Service.Migrations
                         .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -455,10 +512,15 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Content")
+                    b.Property<string>("CreatedDate")
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("News");
                 });
@@ -474,6 +536,9 @@ namespace Photosoil.Service.Migrations
                     b.Property<string>("Coordinates")
                         .HasColumnType("text");
 
+                    b.Property<string>("CreatedDate")
+                        .HasColumnType("text");
+
                     b.Property<string>("Doi")
                         .HasColumnType("text");
 
@@ -483,7 +548,7 @@ namespace Photosoil.Service.Migrations
                     b.Property<int?>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -506,9 +571,14 @@ namespace Photosoil.Service.Migrations
                     b.Property<bool>("IsMulti")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("NameEng")
                         .HasColumnType("text");
+
+                    b.Property<string>("NameRu")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TranslationMode")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -519,31 +589,46 @@ namespace Photosoil.Service.Migrations
                         {
                             Id = 1,
                             IsMulti = true,
-                            Name = "Отделы почв по Классификации почв России 2004/2008"
+                            NameRu = "Отделы почв по Классификации почв России 2004/2008",
+                            TranslationMode = 2
                         },
                         new
                         {
                             Id = 4,
                             IsMulti = true,
-                            Name = "Природная зона"
+                            NameEng = "Natural zone",
+                            NameRu = "Природная зона",
+                            TranslationMode = 0
                         },
                         new
                         {
                             Id = 2,
                             IsMulti = true,
-                            Name = "Подтипы почв по Классификации почв России 2004/2008"
+                            NameRu = "Подтипы почв по Классификации почв России 2004/2008",
+                            TranslationMode = 2
                         },
                         new
                         {
                             Id = 3,
                             IsMulti = true,
-                            Name = "Типы почв по Классификации почв России 2004/2008"
+                            NameRu = "Типы почв по Классификации почв России 2004/2008",
+                            TranslationMode = 2
                         },
                         new
                         {
                             Id = 5,
                             IsMulti = true,
-                            Name = "Основные квалификаторы (WRB 2014)"
+                            NameEng = "Principal qualifiers (WRB 2014)",
+                            NameRu = "Основные квалификаторы (WRB 2014)",
+                            TranslationMode = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsMulti = true,
+                            NameEng = "Reference Soil Groups (WRB 2014)",
+                            NameRu = "Реферативные почвенные группы (WRB 2014)",
+                            TranslationMode = 0
                         });
                 });
 
@@ -555,11 +640,20 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Comments")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<int?>("EcoSystemId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ExternalSource")
+                        .HasColumnType("text");
 
                     b.Property<bool?>("IsEnglish")
                         .HasColumnType("boolean");
@@ -579,6 +673,43 @@ namespace Photosoil.Service.Migrations
                     b.HasIndex("EcoSystemId");
 
                     b.ToTable("EcoTranslations");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Second.NewsTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Annotation")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<bool?>("IsEnglish")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool?>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastUpdated")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("NewsId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewsId");
+
+                    b.ToTable("NewsTranslations");
                 });
 
             modelBuilder.Entity("Photosoil.Core.Models.Second.PublicationTranslation", b =>
@@ -631,7 +762,13 @@ namespace Photosoil.Service.Migrations
                     b.Property<string>("AssociatedSoilComponents")
                         .HasColumnType("text");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
                     b.Property<string>("Comments")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalSource")
                         .HasColumnType("text");
 
                     b.Property<string>("GeographicLocation")
@@ -669,6 +806,25 @@ namespace Photosoil.Service.Migrations
                     b.ToTable("SoilTranslations");
                 });
 
+            modelBuilder.Entity("Photosoil.Core.Models.Second.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("NameEng")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameRu")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("Photosoil.Core.Models.Second.Term", b =>
                 {
                     b.Property<int>("Id")
@@ -680,8 +836,10 @@ namespace Photosoil.Service.Migrations
                     b.Property<int>("ClassificationId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<string>("NameEng")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NameRu")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -695,1447 +853,1749 @@ namespace Photosoil.Service.Migrations
                         {
                             Id = 1,
                             ClassificationId = 5,
-                            Name = "Cambric"
+                            NameEng = "Abruptic",
+                            NameRu = "Abruptic"
                         },
                         new
                         {
                             Id = 2,
                             ClassificationId = 5,
-                            Name = "Chronic"
+                            NameEng = "Calcaric",
+                            NameRu = "Calcaric"
                         },
                         new
                         {
                             Id = 3,
                             ClassificationId = 5,
-                            Name = "Titanic"
+                            NameEng = "Cambic",
+                            NameRu = "Cambic"
                         },
                         new
                         {
                             Id = 4,
                             ClassificationId = 5,
-                            Name = "Gleyic"
+                            NameEng = "Chromic",
+                            NameRu = "Chromic"
                         },
                         new
                         {
                             Id = 5,
                             ClassificationId = 5,
-                            Name = "Gleyic"
+                            NameEng = "Cutanic",
+                            NameRu = "Cutanic"
                         },
                         new
                         {
                             Id = 6,
                             ClassificationId = 5,
-                            Name = "Orthofluvent"
+                            NameEng = "Greyic",
+                            NameRu = "Greyic"
                         },
                         new
                         {
                             Id = 7,
                             ClassificationId = 5,
-                            Name = "Argillic"
+                            NameEng = "Greyzemic",
+                            NameRu = "Greyzemic"
                         },
                         new
                         {
                             Id = 8,
                             ClassificationId = 5,
-                            Name = "Reductic_glycemic"
+                            NameEng = "Orthofluvic",
+                            NameRu = "Orthofluvic"
                         },
                         new
                         {
                             Id = 9,
                             ClassificationId = 5,
-                            Name = "Rudic"
+                            NameEng = "Protoargic",
+                            NameRu = "Protoargic"
                         },
                         new
                         {
                             Id = 10,
                             ClassificationId = 5,
-                            Name = "Somerc"
+                            NameEng = "Reductigleyic",
+                            NameRu = "Reductigleyic"
                         },
                         new
                         {
                             Id = 11,
                             ClassificationId = 5,
-                            Name = "Polic"
+                            NameEng = "Rustic",
+                            NameRu = "Rustic"
                         },
                         new
                         {
                             Id = 12,
                             ClassificationId = 5,
-                            Name = "Paralithic"
+                            NameEng = "Someric",
+                            NameRu = "Someric"
                         },
                         new
                         {
                             Id = 13,
                             ClassificationId = 5,
-                            Name = "Ironpan"
+                            NameEng = "Spolic",
+                            NameRu = "Spolic"
                         },
                         new
                         {
                             Id = 14,
                             ClassificationId = 5,
-                            Name = "Stagnic"
+                            NameEng = "Sapric",
+                            NameRu = "Sapric"
                         },
                         new
                         {
                             Id = 15,
                             ClassificationId = 5,
-                            Name = "Steinic"
+                            NameEng = "Spodic",
+                            NameRu = "Spodic"
                         },
                         new
                         {
                             Id = 16,
                             ClassificationId = 5,
-                            Name = "Natic"
+                            NameEng = "Stagnic",
+                            NameRu = "Stagnic"
                         },
                         new
                         {
                             Id = 17,
                             ClassificationId = 5,
-                            Name = "Petrocalcic"
+                            NameEng = "Ortsteinic",
+                            NameRu = "Ortsteinic"
                         },
                         new
                         {
                             Id = 18,
                             ClassificationId = 5,
-                            Name = "Limnetic"
+                            NameEng = "Natric",
+                            NameRu = "Natric"
                         },
                         new
                         {
                             Id = 19,
                             ClassificationId = 5,
-                            Name = "Alluvial"
+                            NameEng = "Leptic",
+                            NameRu = "Leptic"
                         },
                         new
                         {
                             Id = 20,
                             ClassificationId = 5,
-                            Name = "Mollisol"
+                            NameEng = "Limnic",
+                            NameRu = "Limnic"
                         },
                         new
                         {
                             Id = 21,
                             ClassificationId = 5,
-                            Name = "Turfic"
+                            NameEng = "Luvic",
+                            NameRu = "Luvic"
                         },
                         new
                         {
                             Id = 22,
                             ClassificationId = 5,
-                            Name = "Umbraept"
+                            NameEng = "Mollic",
+                            NameRu = "Mollic"
                         },
                         new
                         {
                             Id = 23,
                             ClassificationId = 5,
-                            Name = "Umbraept"
+                            NameEng = "Turbic",
+                            NameRu = "Turbic"
                         },
                         new
                         {
                             Id = 24,
                             ClassificationId = 5,
-                            Name = "Vertic"
+                            NameEng = "Umbric",
+                            NameRu = "Umbric"
                         },
                         new
                         {
                             Id = 25,
                             ClassificationId = 5,
-                            Name = "Vitrande"
+                            NameEng = "Vertic",
+                            NameRu = "Vertic"
                         },
                         new
                         {
                             Id = 26,
                             ClassificationId = 5,
-                            Name = "Laminar"
+                            NameEng = "Vitric",
+                            NameRu = "Vitric"
                         },
                         new
                         {
                             Id = 27,
                             ClassificationId = 5,
-                            Name = "Histosols"
+                            NameEng = "Lamellic",
+                            NameRu = "Lamellic"
                         },
                         new
                         {
                             Id = 28,
                             ClassificationId = 5,
-                            Name = "Chernozem"
+                            NameEng = "Histic",
+                            NameRu = "Histic"
                         },
                         new
                         {
                             Id = 29,
                             ClassificationId = 5,
-                            Name = "Circalitoral_Cryozem"
+                            NameEng = "Chernic",
+                            NameRu = "Chernic"
                         },
                         new
                         {
                             Id = 30,
                             ClassificationId = 5,
-                            Name = "Distropic"
+                            NameEng = "Cryic",
+                            NameRu = "Cryic"
                         },
                         new
                         {
                             Id = 31,
                             ClassificationId = 5,
-                            Name = "Calciorthid"
+                            NameEng = "Dystric",
+                            NameRu = "Dystric"
                         },
                         new
                         {
                             Id = 32,
                             ClassificationId = 5,
-                            Name = "Calcic"
+                            NameEng = "Endocalcic",
+                            NameRu = "Endocalcic"
                         },
                         new
                         {
                             Id = 33,
                             ClassificationId = 5,
-                            Name = "Aluminous"
+                            NameEng = "Carbic",
+                            NameRu = "Carbic"
                         },
                         new
                         {
                             Id = 34,
                             ClassificationId = 5,
-                            Name = "Andosol"
+                            NameEng = "Calcic",
+                            NameRu = "Calcic"
                         },
                         new
                         {
                             Id = 35,
                             ClassificationId = 5,
-                            Name = "Brunic"
+                            NameEng = "Alic",
+                            NameRu = "Alic"
                         },
                         new
                         {
                             Id = 36,
                             ClassificationId = 5,
-                            Name = "Entectic"
+                            NameEng = "Andic",
+                            NameRu = "Andic"
                         },
                         new
                         {
                             Id = 37,
                             ClassificationId = 5,
-                            Name = "Eutric"
+                            NameEng = "Brunic",
+                            NameRu = "Brunic"
                         },
                         new
                         {
                             Id = 38,
                             ClassificationId = 5,
-                            Name = "Gleyic"
+                            NameEng = "Entic",
+                            NameRu = "Entic"
                         },
                         new
                         {
                             Id = 39,
                             ClassificationId = 5,
-                            Name = "Glossic"
+                            NameEng = "Eutric",
+                            NameRu = "Eutric"
                         },
                         new
                         {
                             Id = 40,
                             ClassificationId = 5,
-                            Name = "Gypseous"
+                            NameEng = "Gleyic",
+                            NameRu = "Gleyic"
                         },
                         new
                         {
                             Id = 41,
                             ClassificationId = 5,
-                            Name = "Hydrosols"
+                            NameEng = "Glossic",
+                            NameRu = "Glossic"
                         },
                         new
                         {
                             Id = 42,
                             ClassificationId = 5,
-                            Name = "Glaciomoraine"
+                            NameEng = "Gypsic",
+                            NameRu = "Gypsic"
                         },
                         new
                         {
                             Id = 43,
                             ClassificationId = 5,
-                            Name = "Fragmental"
+                            NameEng = "Hemic",
+                            NameRu = "Hemic"
                         },
                         new
                         {
                             Id = 44,
                             ClassificationId = 5,
-                            Name = "Fibrist"
+                            NameEng = "Glacic",
+                            NameRu = "Glacic"
                         },
                         new
                         {
                             Id = 45,
                             ClassificationId = 5,
-                            Name = "Fluvisols"
+                            NameEng = "Fragic",
+                            NameRu = "Fragic"
                         },
                         new
                         {
                             Id = 46,
                             ClassificationId = 5,
-                            Name = "Foliaceous"
+                            NameEng = "Fibric",
+                            NameRu = "Fibric"
                         },
                         new
                         {
                             Id = 47,
                             ClassificationId = 5,
-                            Name = "Albic"
+                            NameEng = "Fluvic",
+                            NameRu = "Fluvic"
                         },
                         new
                         {
                             Id = 48,
-                            ClassificationId = 3,
-                            Name = "Абразёмы глинисто-иллювиированные"
+                            ClassificationId = 5,
+                            NameEng = "Folic",
+                            NameRu = "Folic"
                         },
                         new
                         {
                             Id = 49,
-                            ClassificationId = 3,
-                            Name = "Агроабразёмы"
+                            ClassificationId = 5,
+                            NameEng = "Albic",
+                            NameRu = "Albic"
                         },
                         new
                         {
                             Id = 50,
-                            ClassificationId = 3,
-                            Name = "Агродерново-подзолисто-глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Acrisols",
+                            NameRu = "Acrisols"
                         },
                         new
                         {
                             Id = 51,
-                            ClassificationId = 3,
-                            Name = "Агродерново-подзолистые"
+                            ClassificationId = 6,
+                            NameEng = "Alisols",
+                            NameRu = "Alisols"
                         },
                         new
                         {
                             Id = 52,
-                            ClassificationId = 3,
-                            Name = "Агрозёмы"
+                            ClassificationId = 6,
+                            NameEng = "Andosols",
+                            NameRu = "Andosols"
                         },
                         new
                         {
                             Id = 53,
-                            ClassificationId = 3,
-                            Name = "Агроземы текстурно-карбонатные"
+                            ClassificationId = 6,
+                            NameEng = "Anthrosols",
+                            NameRu = "Anthrosols"
                         },
                         new
                         {
                             Id = 54,
-                            ClassificationId = 3,
-                            Name = "Агросолоди"
+                            ClassificationId = 6,
+                            NameEng = "Arenosols",
+                            NameRu = "Arenosols"
                         },
                         new
                         {
                             Id = 55,
-                            ClassificationId = 3,
-                            Name = "Агростратозем"
+                            ClassificationId = 6,
+                            NameEng = "Calcisols",
+                            NameRu = "Calcisols"
                         },
                         new
                         {
                             Id = 56,
-                            ClassificationId = 3,
-                            Name = "Агростратозёмы темногумусовые"
+                            ClassificationId = 6,
+                            NameEng = "Cambisols",
+                            NameRu = "Cambisols"
                         },
                         new
                         {
                             Id = 57,
-                            ClassificationId = 3,
-                            Name = "Агротёмно-серые"
+                            ClassificationId = 6,
+                            NameEng = "Chernozems",
+                            NameRu = "Chernozems"
                         },
                         new
                         {
                             Id = 58,
-                            ClassificationId = 3,
-                            Name = "Агротёмно-серые глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Cryosols",
+                            NameRu = "Cryosols"
                         },
                         new
                         {
                             Id = 59,
-                            ClassificationId = 3,
-                            Name = "Агротёмно-серые метаморфические"
+                            ClassificationId = 6,
+                            NameEng = "Durisols",
+                            NameRu = "Durisols"
                         },
                         new
                         {
                             Id = 60,
-                            ClassificationId = 3,
-                            Name = "Агрочернозем текстурно-карбонатный"
+                            ClassificationId = 6,
+                            NameEng = "Ferralsols",
+                            NameRu = "Ferralsols"
                         },
                         new
                         {
                             Id = 61,
-                            ClassificationId = 3,
-                            Name = "Агрочерноземы"
+                            ClassificationId = 6,
+                            NameEng = "Fluvisols",
+                            NameRu = "Fluvisols"
                         },
                         new
                         {
                             Id = 62,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные"
+                            ClassificationId = 6,
+                            NameEng = "Gleysols",
+                            NameRu = "Gleysols"
                         },
                         new
                         {
                             Id = 63,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные гумусовые (дерновые)"
+                            ClassificationId = 6,
+                            NameEng = "Gypsisols",
+                            NameRu = "Gypsisols"
                         },
                         new
                         {
                             Id = 64,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные гумусовые глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Histosols",
+                            NameRu = "Histosols"
                         },
                         new
                         {
                             Id = 65,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные перегнойно-глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Kastanozems",
+                            NameRu = "Kastanozems"
                         },
                         new
                         {
                             Id = 66,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные тёмногумусовые"
+                            ClassificationId = 6,
+                            NameEng = "Leptosols",
+                            NameRu = "Leptosols"
                         },
                         new
                         {
                             Id = 67,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные тёмногумусовые глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Lixisols",
+                            NameRu = "Lixisols"
                         },
                         new
                         {
                             Id = 68,
-                            ClassificationId = 3,
-                            Name = "Аллювиальные торфянно-глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Luvisols",
+                            NameRu = "Luvisols"
                         },
                         new
                         {
                             Id = 69,
-                            ClassificationId = 3,
-                            Name = "Бурая (аридная)"
+                            ClassificationId = 6,
+                            NameEng = "Nitisols",
+                            NameRu = "Nitisols"
                         },
                         new
                         {
                             Id = 70,
-                            ClassificationId = 3,
-                            Name = "Бурозёмы"
+                            ClassificationId = 6,
+                            NameEng = "Phaeozems",
+                            NameRu = "Phaeozems"
                         },
                         new
                         {
                             Id = 71,
-                            ClassificationId = 3,
-                            Name = "Бурозёмы грубогумусовые"
+                            ClassificationId = 6,
+                            NameEng = "Planosols",
+                            NameRu = "Planosols"
                         },
                         new
                         {
                             Id = 72,
-                            ClassificationId = 3,
-                            Name = "Бурозёмы тёмногумусовые"
+                            ClassificationId = 6,
+                            NameEng = "Plinthosols",
+                            NameRu = "Plinthosols"
                         },
                         new
                         {
                             Id = 73,
-                            ClassificationId = 3,
-                            Name = "Глеезёмы"
+                            ClassificationId = 6,
+                            NameEng = "Podzols",
+                            NameRu = "Podzols"
                         },
                         new
                         {
                             Id = 74,
-                            ClassificationId = 3,
-                            Name = "Глееземы криометаморфические"
+                            ClassificationId = 6,
+                            NameEng = "Regosols",
+                            NameRu = "Regosols"
                         },
                         new
                         {
                             Id = 75,
-                            ClassificationId = 3,
-                            Name = "Гумусово-гидрометаморфические"
+                            ClassificationId = 6,
+                            NameEng = "Retisols",
+                            NameRu = "Retisols"
                         },
                         new
                         {
                             Id = 76,
-                            ClassificationId = 3,
-                            Name = "Дерново подзолы"
+                            ClassificationId = 6,
+                            NameEng = "Solonchaks",
+                            NameRu = "Solonchaks"
                         },
                         new
                         {
                             Id = 77,
-                            ClassificationId = 3,
-                            Name = "Дерново-брусно-подзолистые"
+                            ClassificationId = 6,
+                            NameEng = "Solonetz",
+                            NameRu = "Solonetz"
                         },
                         new
                         {
                             Id = 78,
-                            ClassificationId = 3,
-                            Name = "Дерново-криометаморфические"
+                            ClassificationId = 6,
+                            NameEng = "Stagnosols",
+                            NameRu = "Stagnosols"
                         },
                         new
                         {
                             Id = 79,
-                            ClassificationId = 3,
-                            Name = "Дерново-подбуры"
+                            ClassificationId = 6,
+                            NameEng = "Technosols",
+                            NameRu = "Technosols"
                         },
                         new
                         {
                             Id = 80,
-                            ClassificationId = 3,
-                            Name = "Дерново-подбуры глеевые"
+                            ClassificationId = 6,
+                            NameEng = "Umbrisols",
+                            NameRu = "Umbrisols"
                         },
                         new
                         {
                             Id = 81,
-                            ClassificationId = 3,
-                            Name = "Дерново-подбуры элювоземы"
+                            ClassificationId = 6,
+                            NameEng = "Vertisols",
+                            NameRu = "Vertisols"
                         },
                         new
                         {
                             Id = 82,
                             ClassificationId = 3,
-                            Name = "Дерново-подзол-глеевые"
+                            NameRu = "Абразёмы глинисто-иллювиированные"
                         },
                         new
                         {
                             Id = 83,
                             ClassificationId = 3,
-                            Name = "Дерново-подзолистые"
+                            NameRu = "Агроабразёмы"
                         },
                         new
                         {
                             Id = 84,
                             ClassificationId = 3,
-                            Name = "Дерново-подзолы глеевые"
+                            NameRu = "Агродерново-подзолисто-глеевые"
                         },
                         new
                         {
                             Id = 85,
                             ClassificationId = 3,
-                            Name = "Дерново-солоди"
+                            NameRu = "Агродерново-подзолистые"
                         },
                         new
                         {
                             Id = 86,
                             ClassificationId = 3,
-                            Name = "Дерново-элювиально-метаморфические"
+                            NameRu = "Агрозёмы"
                         },
                         new
                         {
                             Id = 87,
                             ClassificationId = 3,
-                            Name = "Дерново-элювозем"
+                            NameRu = "Агроземы текстурно-карбонатные"
                         },
                         new
                         {
                             Id = 88,
                             ClassificationId = 3,
-                            Name = "Карбо-петрозём"
+                            NameRu = "Агросолоди"
                         },
                         new
                         {
                             Id = 89,
                             ClassificationId = 3,
-                            Name = "Каштановые"
+                            NameRu = "Агростратозем"
                         },
                         new
                         {
                             Id = 90,
                             ClassificationId = 3,
-                            Name = "Криогумусовые"
+                            NameRu = "Агростратозёмы темногумусовые"
                         },
                         new
                         {
                             Id = 91,
                             ClassificationId = 3,
-                            Name = "Криозёмы"
+                            NameRu = "Агротёмно-серые"
                         },
                         new
                         {
                             Id = 92,
                             ClassificationId = 3,
-                            Name = "Криозёмы грубогумусовые"
+                            NameRu = "Агротёмно-серые глеевые"
                         },
                         new
                         {
                             Id = 93,
                             ClassificationId = 3,
-                            Name = "Криометаморфические"
+                            NameRu = "Агротёмно-серые метаморфические"
                         },
                         new
                         {
                             Id = 94,
                             ClassificationId = 3,
-                            Name = "Криометаморфические грубогумусовые"
+                            NameRu = "Агрочернозем текстурно-карбонатный"
                         },
                         new
                         {
                             Id = 95,
                             ClassificationId = 3,
-                            Name = "Литозем грубогумусовый"
+                            NameRu = "Агрочерноземы"
                         },
                         new
                         {
                             Id = 96,
                             ClassificationId = 3,
-                            Name = "Органо-ржавозёмы"
+                            NameRu = "Аллювиальные"
                         },
                         new
                         {
                             Id = 97,
                             ClassificationId = 3,
-                            Name = "Охристые"
+                            NameRu = "Аллювиальные гумусовые (дерновые)"
                         },
                         new
                         {
                             Id = 98,
                             ClassificationId = 3,
-                            Name = "Палевые"
+                            NameRu = "Аллювиальные гумусовые глеевые"
                         },
                         new
                         {
                             Id = 99,
                             ClassificationId = 3,
-                            Name = "Пелозем"
+                            NameRu = "Аллювиальные перегнойно-глеевые"
                         },
                         new
                         {
                             Id = 100,
                             ClassificationId = 3,
-                            Name = "Пелоземы гумусовые"
+                            NameRu = "Аллювиальные тёмногумусовые"
                         },
                         new
                         {
                             Id = 101,
                             ClassificationId = 3,
-                            Name = "Перегнойно-глеевые"
+                            NameRu = "Аллювиальные тёмногумусовые глеевые"
                         },
                         new
                         {
                             Id = 102,
                             ClassificationId = 3,
-                            Name = "Перегnoonно-криометаморфические"
+                            NameRu = "Аллювиальные торфянно-глеевые"
                         },
                         new
                         {
                             Id = 103,
                             ClassificationId = 3,
-                            Name = "Перегнойно-охристая"
+                            NameRu = "Бурая (аридная)"
                         },
                         new
                         {
                             Id = 104,
                             ClassificationId = 3,
-                            Name = "Перегнойно-темногумусовые"
+                            NameRu = "Бурозёмы"
                         },
                         new
                         {
                             Id = 105,
                             ClassificationId = 3,
-                            Name = "Перегнойные"
+                            NameRu = "Бурозёмы грубогумусовые"
                         },
                         new
                         {
                             Id = 106,
                             ClassificationId = 3,
-                            Name = "Петроземы"
+                            NameRu = "Бурозёмы тёмногумусовые"
                         },
                         new
                         {
                             Id = 107,
                             ClassificationId = 3,
-                            Name = "Подбуры"
+                            NameRu = "Глеезёмы"
                         },
                         new
                         {
                             Id = 108,
                             ClassificationId = 3,
-                            Name = "Подбуры глеевые"
+                            NameRu = "Глееземы криометаморфические"
                         },
                         new
                         {
                             Id = 109,
                             ClassificationId = 3,
-                            Name = "Подзол-элювозёмы"
+                            NameRu = "Гумусово-гидрометаморфические"
                         },
                         new
                         {
                             Id = 110,
                             ClassificationId = 3,
-                            Name = "Подзолисто-глеевые"
+                            NameRu = "Дерново подзолы"
                         },
                         new
                         {
                             Id = 111,
                             ClassificationId = 3,
-                            Name = "Подзолистые"
+                            NameRu = "Дерново-брусно-подзолистые"
                         },
                         new
                         {
                             Id = 112,
                             ClassificationId = 3,
-                            Name = "Подзолы"
+                            NameRu = "Дерново-криометаморфические"
                         },
                         new
                         {
                             Id = 113,
                             ClassificationId = 3,
-                            Name = "Подзолы глеевые"
+                            NameRu = "Дерново-подбуры"
                         },
                         new
                         {
                             Id = 114,
                             ClassificationId = 3,
-                            Name = "Псаммоземы"
+                            NameRu = "Дерново-подбуры глеевые"
                         },
                         new
                         {
                             Id = 115,
                             ClassificationId = 3,
-                            Name = "Ржавозёмы"
+                            NameRu = "Дерново-подбуры элювоземы"
                         },
                         new
                         {
                             Id = 116,
                             ClassificationId = 3,
-                            Name = "Ржавозёмы грубогумусовые"
+                            NameRu = "Дерново-подзол-глеевые"
                         },
                         new
                         {
                             Id = 117,
                             ClassificationId = 3,
-                            Name = "Светлогумусовые"
+                            NameRu = "Дерново-подзолистые"
                         },
                         new
                         {
                             Id = 118,
                             ClassificationId = 3,
-                            Name = "Серая метаморфическая"
+                            NameRu = "Дерново-подзолы глеевые"
                         },
                         new
                         {
                             Id = 119,
                             ClassificationId = 3,
-                            Name = "Серогумусовые (дерновые)"
+                            NameRu = "Дерново-солоди"
                         },
                         new
                         {
                             Id = 120,
                             ClassificationId = 3,
-                            Name = "Серые"
+                            NameRu = "Дерново-элювиально-метаморфические"
                         },
                         new
                         {
                             Id = 121,
                             ClassificationId = 3,
-                            Name = "Слоисто-пепловые"
+                            NameRu = "Дерново-элювозем"
                         },
                         new
                         {
                             Id = 122,
                             ClassificationId = 3,
-                            Name = "Солоди темногумусовые"
+                            NameRu = "Карбо-петрозём"
                         },
                         new
                         {
                             Id = 123,
                             ClassificationId = 3,
-                            Name = "Солонцы светлые"
+                            NameRu = "Каштановые"
                         },
                         new
                         {
                             Id = 124,
                             ClassificationId = 3,
-                            Name = "Солонцы темные"
+                            NameRu = "Криогумусовые"
                         },
                         new
                         {
                             Id = 125,
                             ClassificationId = 3,
-                            Name = "Солончаки"
+                            NameRu = "Криозёмы"
                         },
                         new
                         {
                             Id = 126,
                             ClassificationId = 3,
-                            Name = "Солончаки глеевые"
+                            NameRu = "Криозёмы грубогумусовые"
                         },
                         new
                         {
                             Id = 127,
                             ClassificationId = 3,
-                            Name = "Стратозёмы серогумусовые"
+                            NameRu = "Криометаморфические"
                         },
                         new
                         {
                             Id = 128,
                             ClassificationId = 3,
-                            Name = "Сухо-торфяные"
+                            NameRu = "Криометаморфические грубогумусовые"
                         },
                         new
                         {
                             Id = 129,
                             ClassificationId = 3,
-                            Name = "Сухоторфяно-подбуры"
+                            NameRu = "Литозем грубогумусовый"
                         },
                         new
                         {
                             Id = 130,
                             ClassificationId = 3,
-                            Name = "Сухоторфяно-подзолы"
+                            NameRu = "Органо-ржавозёмы"
                         },
                         new
                         {
                             Id = 131,
                             ClassificationId = 3,
-                            Name = "Сухоторфяные"
+                            NameRu = "Охристые"
                         },
                         new
                         {
                             Id = 132,
                             ClassificationId = 3,
-                            Name = "Темно-серые"
+                            NameRu = "Палевые"
                         },
                         new
                         {
                             Id = 133,
                             ClassificationId = 3,
-                            Name = "Темно-серые глеевые"
+                            NameRu = "Пелозем"
                         },
                         new
                         {
                             Id = 134,
                             ClassificationId = 3,
-                            Name = "Темно-serые метаморфические"
+                            NameRu = "Пелоземы гумусовые"
                         },
                         new
                         {
                             Id = 135,
                             ClassificationId = 3,
-                            Name = "Темногумусово-глеевые"
+                            NameRu = "Перегнойно-глеевые"
                         },
                         new
                         {
                             Id = 136,
                             ClassificationId = 3,
-                            Name = "Темногумусовые"
+                            NameRu = "Перегnoonно-криометаморфические"
                         },
                         new
                         {
                             Id = 137,
                             ClassificationId = 3,
-                            Name = "Темногумусовые подбелы"
+                            NameRu = "Перегнойно-охристая"
                         },
                         new
                         {
                             Id = 138,
                             ClassificationId = 3,
-                            Name = "Торфозёмы"
+                            NameRu = "Перегнойно-темногумусовые"
                         },
                         new
                         {
                             Id = 139,
                             ClassificationId = 3,
-                            Name = "Торфяно-глеезёмы"
+                            NameRu = "Перегнойные"
                         },
                         new
                         {
                             Id = 140,
                             ClassificationId = 3,
-                            Name = "Торфяно-криозёмы"
+                            NameRu = "Петроземы"
                         },
                         new
                         {
                             Id = 141,
                             ClassificationId = 3,
-                            Name = "Торфяно-подзолисто-глеевые"
+                            NameRu = "Подбуры"
                         },
                         new
                         {
                             Id = 142,
                             ClassificationId = 3,
-                            Name = "Торфяно-подзолы"
+                            NameRu = "Подбуры глеевые"
                         },
                         new
                         {
                             Id = 143,
                             ClassificationId = 3,
-                            Name = "Торфяно-подзолы глеевые"
+                            NameRu = "Подзол-элювозёмы"
                         },
                         new
                         {
                             Id = 144,
                             ClassificationId = 3,
-                            Name = "Торфяные олиготрофные"
+                            NameRu = "Подзолисто-глеевые"
                         },
                         new
                         {
                             Id = 145,
                             ClassificationId = 3,
-                            Name = "Торфяные олиготрофные глеевые"
+                            NameRu = "Подзолистые"
                         },
                         new
                         {
                             Id = 146,
                             ClassificationId = 3,
-                            Name = "Торфяные эутрофные"
+                            NameRu = "Подзолы"
                         },
                         new
                         {
                             Id = 147,
                             ClassificationId = 3,
-                            Name = "Торфяные эутрофные глеевые"
+                            NameRu = "Подзолы глеевые"
                         },
                         new
                         {
                             Id = 148,
-                            ClassificationId = 2,
-                            Name = "Артииндустратный"
+                            ClassificationId = 3,
+                            NameRu = "Псаммоземы"
                         },
                         new
                         {
                             Id = 149,
-                            ClassificationId = 2,
-                            Name = "Глее-подзолистые"
+                            ClassificationId = 3,
+                            NameRu = "Ржавозёмы"
                         },
                         new
                         {
                             Id = 150,
-                            ClassificationId = 2,
-                            Name = "Глееватые"
+                            ClassificationId = 3,
+                            NameRu = "Ржавозёмы грубогумусовые"
                         },
                         new
                         {
                             Id = 151,
-                            ClassificationId = 2,
-                            Name = "Глеевые"
+                            ClassificationId = 3,
+                            NameRu = "Светлогумусовые"
                         },
                         new
                         {
                             Id = 152,
-                            ClassificationId = 2,
-                            Name = "Глинисто-иллювиированные"
+                            ClassificationId = 3,
+                            NameRu = "Серая метаморфическая"
                         },
                         new
                         {
                             Id = 153,
-                            ClassificationId = 2,
-                            Name = "Глинофибровые"
+                            ClassificationId = 3,
+                            NameRu = "Серогумусовые (дерновые)"
                         },
                         new
                         {
                             Id = 154,
-                            ClassificationId = 2,
-                            Name = "Грубо-гумусированные"
+                            ClassificationId = 3,
+                            NameRu = "Серые"
                         },
                         new
                         {
                             Id = 155,
-                            ClassificationId = 2,
-                            Name = "Гумусово-слаборазвитый"
+                            ClassificationId = 3,
+                            NameRu = "Слоисто-пепловые"
                         },
                         new
                         {
                             Id = 156,
-                            ClassificationId = 2,
-                            Name = "Дисперсно-карбонатный"
+                            ClassificationId = 3,
+                            NameRu = "Солоди темногумусовые"
                         },
                         new
                         {
                             Id = 157,
-                            ClassificationId = 2,
-                            Name = "Железисто-гранулированные (гранузёмы)"
+                            ClassificationId = 3,
+                            NameRu = "Солонцы светлые"
                         },
                         new
                         {
                             Id = 158,
-                            ClassificationId = 2,
-                            Name = "Засоленные"
+                            ClassificationId = 3,
+                            NameRu = "Солонцы темные"
                         },
                         new
                         {
                             Id = 159,
-                            ClassificationId = 2,
-                            Name = "Иллювиально-гумусовые"
+                            ClassificationId = 3,
+                            NameRu = "Солончаки"
                         },
                         new
                         {
                             Id = 160,
-                            ClassificationId = 2,
-                            Name = "Иллювиально-железистые"
+                            ClassificationId = 3,
+                            NameRu = "Солончаки глеевые"
                         },
                         new
                         {
                             Id = 161,
-                            ClassificationId = 2,
-                            Name = "Иллювиально-ожелезненные"
+                            ClassificationId = 3,
+                            NameRu = "Стратозёмы серогумусовые"
                         },
                         new
                         {
                             Id = 162,
-                            ClassificationId = 2,
-                            Name = "Иллювиально-гумусированные"
+                            ClassificationId = 3,
+                            NameRu = "Сухо-торфяные"
                         },
                         new
                         {
                             Id = 163,
-                            ClassificationId = 2,
-                            Name = "Иловато-перегнойные"
+                            ClassificationId = 3,
+                            NameRu = "Сухоторфяно-подбуры"
                         },
                         new
                         {
                             Id = 164,
-                            ClassificationId = 2,
-                            Name = "Иловато-торфяные"
+                            ClassificationId = 3,
+                            NameRu = "Сухоторфяно-подзолы"
                         },
                         new
                         {
                             Id = 165,
-                            ClassificationId = 2,
-                            Name = "Квазиглееватые"
+                            ClassificationId = 3,
+                            NameRu = "Сухоторфяные"
                         },
                         new
                         {
                             Id = 166,
-                            ClassificationId = 2,
-                            Name = "Конкреционные"
+                            ClassificationId = 3,
+                            NameRu = "Темно-серые"
                         },
                         new
                         {
                             Id = 167,
-                            ClassificationId = 2,
-                            Name = "Контактно-осветленные"
+                            ClassificationId = 3,
+                            NameRu = "Темно-серые глеевые"
                         },
                         new
                         {
                             Id = 168,
-                            ClassificationId = 2,
-                            Name = "Крио-гомогенные"
+                            ClassificationId = 3,
+                            NameRu = "Темно-serые метаморфические"
                         },
                         new
                         {
                             Id = 169,
-                            ClassificationId = 2,
-                            Name = "Криогенно-ожелезненные"
+                            ClassificationId = 3,
+                            NameRu = "Темногумусово-глеевые"
                         },
                         new
                         {
                             Id = 170,
-                            ClassificationId = 2,
-                            Name = "Криометаморфические"
+                            ClassificationId = 3,
+                            NameRu = "Темногумусовые"
                         },
                         new
                         {
                             Id = 171,
-                            ClassificationId = 2,
-                            Name = "Криотурбированные"
+                            ClassificationId = 3,
+                            NameRu = "Темногумусовые подбелы"
                         },
                         new
                         {
                             Id = 172,
-                            ClassificationId = 2,
-                            Name = "Мерзлотные"
+                            ClassificationId = 3,
+                            NameRu = "Торфозёмы"
                         },
                         new
                         {
                             Id = 173,
-                            ClassificationId = 2,
-                            Name = "Миграционно-мицелярный"
+                            ClassificationId = 3,
+                            NameRu = "Торфяно-глеезёмы"
                         },
                         new
                         {
                             Id = 174,
-                            ClassificationId = 2,
-                            Name = "Миграционно-сегрегационные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяно-криозёмы"
                         },
                         new
                         {
                             Id = 175,
-                            ClassificationId = 2,
-                            Name = "Минерально-торфяные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяно-подзолисто-глеевые"
                         },
                         new
                         {
                             Id = 176,
-                            ClassificationId = 2,
-                            Name = "Омергеленные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяно-подзолы"
                         },
                         new
                         {
                             Id = 177,
-                            ClassificationId = 2,
-                            Name = "Оподзоленные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяно-подзолы глеевые"
                         },
                         new
                         {
                             Id = 178,
-                            ClassificationId = 2,
-                            Name = "Оруденелые"
+                            ClassificationId = 3,
+                            NameRu = "Торфяные олиготрофные"
                         },
                         new
                         {
                             Id = 179,
-                            ClassificationId = 2,
-                            Name = "Осолоделые"
+                            ClassificationId = 3,
+                            NameRu = "Торфяные олиготрофные глеевые"
                         },
                         new
                         {
                             Id = 180,
-                            ClassificationId = 2,
-                            Name = "Остаточно-карбонатные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяные эутрофные"
                         },
                         new
                         {
                             Id = 181,
-                            ClassificationId = 2,
-                            Name = "Остаточно-эутрофные"
+                            ClassificationId = 3,
+                            NameRu = "Торфяные эутрофные глеевые"
                         },
                         new
                         {
                             Id = 182,
                             ClassificationId = 2,
-                            Name = "Палево-метаморфизованные"
+                            NameRu = "Артииндустратный"
                         },
                         new
                         {
                             Id = 183,
                             ClassificationId = 2,
-                            Name = "Палево-подзолистые"
+                            NameRu = "Глее-подзолистые"
                         },
                         new
                         {
                             Id = 184,
                             ClassificationId = 2,
-                            Name = "Палевые"
+                            NameRu = "Глееватые"
                         },
                         new
                         {
                             Id = 185,
                             ClassificationId = 2,
-                            Name = "Перегнойно-грубогумусовые"
+                            NameRu = "Глеевые"
                         },
                         new
                         {
                             Id = 186,
                             ClassificationId = 2,
-                            Name = "Перегнойно-торфяные"
+                            NameRu = "Глинисто-иллювиированные"
                         },
                         new
                         {
                             Id = 187,
                             ClassificationId = 2,
-                            Name = "Перегнойные"
+                            NameRu = "Глинофибровые"
                         },
                         new
                         {
                             Id = 188,
                             ClassificationId = 2,
-                            Name = "Перегнойные (глеевые)"
+                            NameRu = "Грубо-гумусированные"
                         },
                         new
                         {
                             Id = 189,
                             ClassificationId = 2,
-                            Name = "Потечно-гумусовые"
+                            NameRu = "Гумусово-слаборазвитый"
                         },
                         new
                         {
                             Id = 190,
                             ClassificationId = 2,
-                            Name = "Псевдофибровые"
+                            NameRu = "Дисперсно-карбонатный"
                         },
                         new
                         {
                             Id = 191,
                             ClassificationId = 2,
-                            Name = "С микропрофилем подзола"
+                            NameRu = "Железисто-гранулированные (гранузёмы)"
                         },
                         new
                         {
                             Id = 192,
                             ClassificationId = 2,
-                            Name = "Сегрегационные"
+                            NameRu = "Засоленные"
                         },
                         new
                         {
                             Id = 193,
                             ClassificationId = 2,
-                            Name = "Со вторым гумусовым горизонтом"
+                            NameRu = "Иллювиально-гумусовые"
                         },
                         new
                         {
                             Id = 194,
                             ClassificationId = 2,
-                            Name = "Солонцеватые"
+                            NameRu = "Иллювиально-железистые"
                         },
                         new
                         {
                             Id = 195,
                             ClassificationId = 2,
-                            Name = "Языковатые"
+                            NameRu = "Иллювиально-ожелезненные"
                         },
                         new
                         {
                             Id = 196,
-                            ClassificationId = 4,
-                            Name = "Влажные экваториальные леса"
+                            ClassificationId = 2,
+                            NameRu = "Иллювиально-гумусированные"
                         },
                         new
                         {
                             Id = 197,
-                            ClassificationId = 4,
-                            Name = "Горные территории с высотной поясностью"
+                            ClassificationId = 2,
+                            NameRu = "Иловато-перегнойные"
                         },
                         new
                         {
                             Id = 198,
-                            ClassificationId = 4,
-                            Name = "Субтропические вечно-зеленые леса и кустарники"
+                            ClassificationId = 2,
+                            NameRu = "Иловато-торфяные"
                         },
                         new
                         {
                             Id = 199,
-                            ClassificationId = 4,
-                            Name = "Типичная тундра (подзона)"
+                            ClassificationId = 2,
+                            NameRu = "Квазиглееватые"
                         },
                         new
                         {
                             Id = 200,
-                            ClassificationId = 4,
-                            Name = "Южная тундра (подзона)"
+                            ClassificationId = 2,
+                            NameRu = "Конкреционные"
                         },
                         new
                         {
                             Id = 201,
-                            ClassificationId = 4,
-                            Name = "Лесотундра"
+                            ClassificationId = 2,
+                            NameRu = "Контактно-осветленные"
                         },
                         new
                         {
                             Id = 202,
-                            ClassificationId = 4,
-                            Name = "Северная тайга (подзона)"
+                            ClassificationId = 2,
+                            NameRu = "Крио-гомогенные"
                         },
                         new
                         {
                             Id = 203,
-                            ClassificationId = 4,
-                            Name = "Средняя тайга (подзона)"
+                            ClassificationId = 2,
+                            NameRu = "Криогенно-ожелезненные"
                         },
                         new
                         {
                             Id = 204,
-                            ClassificationId = 4,
-                            Name = "Южная тайга"
+                            ClassificationId = 2,
+                            NameRu = "Криометаморфические"
                         },
                         new
                         {
                             Id = 205,
-                            ClassificationId = 4,
-                            Name = "Хвойно-широколиственные леса"
+                            ClassificationId = 2,
+                            NameRu = "Криотурбированные"
                         },
                         new
                         {
                             Id = 206,
-                            ClassificationId = 4,
-                            Name = "Широколиственные леса"
+                            ClassificationId = 2,
+                            NameRu = "Мерзлотные"
                         },
                         new
                         {
                             Id = 207,
-                            ClassificationId = 4,
-                            Name = "Подтайга (мелколиственно-светлохвойная или хвойно-широколиственная)"
+                            ClassificationId = 2,
+                            NameRu = "Миграционно-мицелярный"
                         },
                         new
                         {
                             Id = 208,
-                            ClassificationId = 4,
-                            Name = "Лесостепь"
+                            ClassificationId = 2,
+                            NameRu = "Миграционно-сегрегационные"
                         },
                         new
                         {
                             Id = 209,
-                            ClassificationId = 4,
-                            Name = "Степь (подзоны луговых и настоящих степей)"
+                            ClassificationId = 2,
+                            NameRu = "Минерально-торфяные"
                         },
                         new
                         {
                             Id = 210,
-                            ClassificationId = 4,
-                            Name = "Сухая и опустыненная степь"
+                            ClassificationId = 2,
+                            NameRu = "Омергеленные"
                         },
                         new
                         {
                             Id = 211,
-                            ClassificationId = 4,
-                            Name = "Полупустыни и пустыни"
+                            ClassificationId = 2,
+                            NameRu = "Оподзоленные"
                         },
                         new
                         {
                             Id = 212,
-                            ClassificationId = 4,
-                            Name = "Субтропических саванн и редколесий"
+                            ClassificationId = 2,
+                            NameRu = "Оруденелые"
                         },
                         new
                         {
                             Id = 213,
-                            ClassificationId = 1,
-                            Name = "Торфяные почвы"
+                            ClassificationId = 2,
+                            NameRu = "Осолоделые"
                         },
                         new
                         {
                             Id = 214,
-                            ClassificationId = 1,
-                            Name = "Турбозёмы"
+                            ClassificationId = 2,
+                            NameRu = "Остаточно-карбонатные"
                         },
                         new
                         {
                             Id = 215,
-                            ClassificationId = 1,
-                            Name = "Хемозёмы"
+                            ClassificationId = 2,
+                            NameRu = "Остаточно-эутрофные"
                         },
                         new
                         {
                             Id = 216,
-                            ClassificationId = 1,
-                            Name = "Торфозёмы"
+                            ClassificationId = 2,
+                            NameRu = "Палево-метаморфизованные"
                         },
                         new
                         {
                             Id = 217,
-                            ClassificationId = 1,
-                            Name = "Текстурно-дифференцированные почвы"
+                            ClassificationId = 2,
+                            NameRu = "Палево-подзолистые"
                         },
                         new
                         {
                             Id = 218,
-                            ClassificationId = 1,
-                            Name = "Стратозёмы"
+                            ClassificationId = 2,
+                            NameRu = "Палевые"
                         },
                         new
                         {
                             Id = 219,
-                            ClassificationId = 1,
-                            Name = "Структурно-метаморфические почвы"
+                            ClassificationId = 2,
+                            NameRu = "Перегнойно-грубогумусовые"
                         },
                         new
                         {
                             Id = 220,
-                            ClassificationId = 1,
-                            Name = "Химически-преобразованные"
+                            ClassificationId = 2,
+                            NameRu = "Перегнойно-торфяные"
                         },
                         new
                         {
                             Id = 221,
-                            ClassificationId = 1,
-                            Name = "Щелочно-глинисто-дифференцированные почвы"
+                            ClassificationId = 2,
+                            NameRu = "Перегнойные"
                         },
                         new
                         {
                             Id = 222,
-                            ClassificationId = 1,
-                            Name = "Элювиальные почвы"
+                            ClassificationId = 2,
+                            NameRu = "Перегнойные (глеевые)"
                         },
                         new
                         {
                             Id = 223,
-                            ClassificationId = 1,
-                            Name = "Слаборазвитые почвы"
+                            ClassificationId = 2,
+                            NameRu = "Потечно-гумусовые"
                         },
                         new
                         {
                             Id = 224,
-                            ClassificationId = 1,
-                            Name = "Светлогумусовые аккумулятивно-карбонатные почвы"
+                            ClassificationId = 2,
+                            NameRu = "Псевдофибровые"
                         },
                         new
                         {
                             Id = 225,
-                            ClassificationId = 1,
-                            Name = "Аллювиальные почвы"
+                            ClassificationId = 2,
+                            NameRu = "С микропрофилем подзола"
                         },
                         new
                         {
                             Id = 226,
-                            ClassificationId = 1,
-                            Name = "Альфегумусовые почвы"
+                            ClassificationId = 2,
+                            NameRu = "Сегрегационные"
                         },
                         new
                         {
                             Id = 227,
-                            ClassificationId = 1,
-                            Name = "Вулканические почвы"
+                            ClassificationId = 2,
+                            NameRu = "Со вторым гумусовым горизонтом"
                         },
                         new
                         {
                             Id = 228,
-                            ClassificationId = 1,
-                            Name = "Аккумулятивно-гумусовые почвы"
+                            ClassificationId = 2,
+                            NameRu = "Солонцеватые"
                         },
                         new
                         {
                             Id = 229,
-                            ClassificationId = 1,
-                            Name = "Аквазёмы"
+                            ClassificationId = 2,
+                            NameRu = "Языковатые"
                         },
                         new
                         {
                             Id = 230,
-                            ClassificationId = 1,
-                            Name = "Агроабразёмы"
+                            ClassificationId = 4,
+                            NameEng = "Humid equatorial forests",
+                            NameRu = "Влажные экваториальные леса"
                         },
                         new
                         {
                             Id = 231,
-                            ClassificationId = 1,
-                            Name = "Агрозёмы"
+                            ClassificationId = 4,
+                            NameEng = "Mountains with altitudinal zonations",
+                            NameRu = "Горные территории с высотной поясностью"
                         },
                         new
                         {
                             Id = 232,
-                            ClassificationId = 1,
-                            Name = "Галоморфные почвы"
+                            ClassificationId = 4,
+                            NameEng = "Subtropical evergreen forests and shrubs",
+                            NameRu = "Субтропические вечно-зеленые леса и кустарники"
                         },
                         new
                         {
                             Id = 233,
-                            ClassificationId = 1,
-                            Name = "Гидрометаморфические почвы"
+                            ClassificationId = 4,
+                            NameEng = "Typical tundra (subzone)",
+                            NameRu = "Типичная тундра (подзона)"
                         },
                         new
                         {
                             Id = 234,
-                            ClassificationId = 1,
-                            Name = "Литозёмы"
+                            ClassificationId = 4,
+                            NameEng = "South tundra (subzone)",
+                            NameRu = "Южная тундра (подзона)"
                         },
                         new
                         {
                             Id = 235,
-                            ClassificationId = 1,
-                            Name = "Органо-аккумулятивные почвы"
+                            ClassificationId = 4,
+                            NameEng = "Forest Tundra",
+                            NameRu = "Лесотундра"
                         },
                         new
                         {
                             Id = 236,
-                            ClassificationId = 1,
-                            Name = "Палево-метаморфические почвы"
+                            ClassificationId = 4,
+                            NameEng = "Northern taiga (subzone)",
+                            NameRu = "Северная тайга (подзона)"
                         },
                         new
                         {
                             Id = 237,
-                            ClassificationId = 1,
-                            Name = "Криометаморфические почвы"
+                            ClassificationId = 4,
+                            NameEng = "Middle taiga (subzone)",
+                            NameRu = "Средняя тайга (подзона)"
                         },
                         new
                         {
                             Id = 238,
-                            ClassificationId = 1,
-                            Name = "Криогенные почвы (Криозёмы)"
+                            ClassificationId = 4,
+                            NameEng = "Southern taiga (subzone)",
+                            NameRu = "Южная тайга"
                         },
                         new
                         {
                             Id = 239,
-                            ClassificationId = 1,
-                            Name = "Глеевые почвы"
+                            ClassificationId = 4,
+                            NameEng = "Coniferous-deciduous forests",
+                            NameRu = "Хвойно-широколиственные леса"
                         },
                         new
                         {
                             Id = 240,
-                            ClassificationId = 1,
-                            Name = "Железисто-метаморфические почвы"
+                            ClassificationId = 4,
+                            NameEng = "Broad-leaved forests (deciduous forests)",
+                            NameRu = "Широколиственные леса"
                         },
                         new
                         {
                             Id = 241,
+                            ClassificationId = 4,
+                            NameEng = "Continental subboreal forests (hemiboreal)",
+                            NameRu = "Подтайга (мелколиственно-светлохвойная или хвойно-широколиственная)"
+                        },
+                        new
+                        {
+                            Id = 242,
+                            ClassificationId = 4,
+                            NameEng = "Forest steppe",
+                            NameRu = "Лесостепь"
+                        },
+                        new
+                        {
+                            Id = 243,
+                            ClassificationId = 4,
+                            NameEng = "Steppe (subzones meadow and true steppes)",
+                            NameRu = "Степь (подзоны луговых и настоящих степей)"
+                        },
+                        new
+                        {
+                            Id = 244,
+                            ClassificationId = 4,
+                            NameEng = "Dry and deserted steppe",
+                            NameRu = "Сухая и опустыненная степь"
+                        },
+                        new
+                        {
+                            Id = 245,
+                            ClassificationId = 4,
+                            NameEng = "Deserts and semi-deserts",
+                            NameRu = "Полупустыни и пустыни"
+                        },
+                        new
+                        {
+                            Id = 246,
+                            ClassificationId = 4,
+                            NameEng = "Subtropical savannahs and woodlands",
+                            NameRu = "Субтропических саванн и редколесий"
+                        },
+                        new
+                        {
+                            Id = 247,
                             ClassificationId = 1,
-                            Name = "Абразёмы"
+                            NameRu = "Торфяные почвы"
+                        },
+                        new
+                        {
+                            Id = 248,
+                            ClassificationId = 1,
+                            NameRu = "Турбозёмы"
+                        },
+                        new
+                        {
+                            Id = 249,
+                            ClassificationId = 1,
+                            NameRu = "Хемозёмы"
+                        },
+                        new
+                        {
+                            Id = 250,
+                            ClassificationId = 1,
+                            NameRu = "Торфозёмы"
+                        },
+                        new
+                        {
+                            Id = 251,
+                            ClassificationId = 1,
+                            NameRu = "Текстурно-дифференцированные почвы"
+                        },
+                        new
+                        {
+                            Id = 252,
+                            ClassificationId = 1,
+                            NameRu = "Стратозёмы"
+                        },
+                        new
+                        {
+                            Id = 253,
+                            ClassificationId = 1,
+                            NameRu = "Структурно-метаморфические почвы"
+                        },
+                        new
+                        {
+                            Id = 254,
+                            ClassificationId = 1,
+                            NameRu = "Химически-преобразованные"
+                        },
+                        new
+                        {
+                            Id = 255,
+                            ClassificationId = 1,
+                            NameRu = "Щелочно-глинисто-дифференцированные почвы"
+                        },
+                        new
+                        {
+                            Id = 256,
+                            ClassificationId = 1,
+                            NameRu = "Элювиальные почвы"
+                        },
+                        new
+                        {
+                            Id = 257,
+                            ClassificationId = 1,
+                            NameRu = "Слаборазвитые почвы"
+                        },
+                        new
+                        {
+                            Id = 258,
+                            ClassificationId = 1,
+                            NameRu = "Светлогумусовые аккумулятивно-карбонатные почвы"
+                        },
+                        new
+                        {
+                            Id = 259,
+                            ClassificationId = 1,
+                            NameRu = "Аллювиальные почвы"
+                        },
+                        new
+                        {
+                            Id = 260,
+                            ClassificationId = 1,
+                            NameRu = "Альфегумусовые почвы"
+                        },
+                        new
+                        {
+                            Id = 261,
+                            ClassificationId = 1,
+                            NameRu = "Вулканические почвы"
+                        },
+                        new
+                        {
+                            Id = 262,
+                            ClassificationId = 1,
+                            NameRu = "Аккумулятивно-гумусовые почвы"
+                        },
+                        new
+                        {
+                            Id = 263,
+                            ClassificationId = 1,
+                            NameRu = "Аквазёмы"
+                        },
+                        new
+                        {
+                            Id = 264,
+                            ClassificationId = 1,
+                            NameRu = "Агроабразёмы"
+                        },
+                        new
+                        {
+                            Id = 265,
+                            ClassificationId = 1,
+                            NameRu = "Агрозёмы"
+                        },
+                        new
+                        {
+                            Id = 266,
+                            ClassificationId = 1,
+                            NameRu = "Галоморфные почвы"
+                        },
+                        new
+                        {
+                            Id = 267,
+                            ClassificationId = 1,
+                            NameRu = "Гидрометаморфические почвы"
+                        },
+                        new
+                        {
+                            Id = 268,
+                            ClassificationId = 1,
+                            NameRu = "Литозёмы"
+                        },
+                        new
+                        {
+                            Id = 269,
+                            ClassificationId = 1,
+                            NameRu = "Органо-аккумулятивные почвы"
+                        },
+                        new
+                        {
+                            Id = 270,
+                            ClassificationId = 1,
+                            NameRu = "Палево-метаморфические почвы"
+                        },
+                        new
+                        {
+                            Id = 271,
+                            ClassificationId = 1,
+                            NameRu = "Криометаморфические почвы"
+                        },
+                        new
+                        {
+                            Id = 272,
+                            ClassificationId = 1,
+                            NameRu = "Криогенные почвы (Криозёмы)"
+                        },
+                        new
+                        {
+                            Id = 273,
+                            ClassificationId = 1,
+                            NameRu = "Глеевые почвы"
+                        },
+                        new
+                        {
+                            Id = 274,
+                            ClassificationId = 1,
+                            NameRu = "Железисто-метаморфические почвы"
+                        },
+                        new
+                        {
+                            Id = 275,
+                            ClassificationId = 1,
+                            NameRu = "Абразёмы"
                         });
                 });
 
@@ -2147,8 +2607,11 @@ namespace Photosoil.Service.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Code")
+                    b.Property<string>("CreatedDate")
                         .HasColumnType("text");
+
+                    b.Property<bool?>("IsExternal")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Latitude")
                         .HasColumnType("text");
@@ -2163,7 +2626,7 @@ namespace Photosoil.Service.Migrations
                         .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -2312,6 +2775,36 @@ namespace Photosoil.Service.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FileNews", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.News", null)
+                        .WithMany()
+                        .HasForeignKey("NewsFilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FileNews1", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.News", null)
+                        .WithMany()
+                        .HasForeignKey("NewsPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("ObjectPhotoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FileSoilObject", b =>
                 {
                     b.HasOne("Photosoil.Core.Models.File", null)
@@ -2378,6 +2871,21 @@ namespace Photosoil.Service.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NewsTag", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.News", null)
+                        .WithMany()
+                        .HasForeignKey("NewsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Photosoil.Core.Models.Second.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Photosoil.Core.Models.Article", b =>
                 {
                     b.HasOne("Photosoil.Core.Models.File", "Photo")
@@ -2408,8 +2916,7 @@ namespace Photosoil.Service.Migrations
                     b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
                         .WithMany("Authors")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("DataEng");
 
@@ -2431,10 +2938,19 @@ namespace Photosoil.Service.Migrations
                     b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
                         .WithMany("EcoSystems")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Photo");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.News", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
+                        .WithMany("News")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });
@@ -2448,8 +2964,7 @@ namespace Photosoil.Service.Migrations
                     b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
                         .WithMany("Publications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("File");
 
@@ -2464,6 +2979,16 @@ namespace Photosoil.Service.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("EcoSystem");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.Second.NewsTranslation", b =>
+                {
+                    b.HasOne("Photosoil.Core.Models.News", "News")
+                        .WithMany("Translations")
+                        .HasForeignKey("NewsId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("News");
                 });
 
             modelBuilder.Entity("Photosoil.Core.Models.Second.PublicationTranslation", b =>
@@ -2508,8 +3033,7 @@ namespace Photosoil.Service.Migrations
                     b.HasOne("Photosoil.Core.Models.ApplicationUser", "User")
                         .WithMany("SoilObjects")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Photo");
 
@@ -2552,12 +3076,19 @@ namespace Photosoil.Service.Migrations
 
                     b.Navigation("EcoSystems");
 
+                    b.Navigation("News");
+
                     b.Navigation("Publications");
 
                     b.Navigation("SoilObjects");
                 });
 
             modelBuilder.Entity("Photosoil.Core.Models.EcoSystem", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("Photosoil.Core.Models.News", b =>
                 {
                     b.Navigation("Translations");
                 });

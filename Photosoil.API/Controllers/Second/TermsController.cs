@@ -22,7 +22,6 @@ namespace Photosoil.API.Controllers.Second
             _termsService = termsService;
         }
 
-
         [HttpPost(nameof(Post))]
         public async Task<IActionResult> Post([FromForm] TermsVM term)
         {
@@ -33,9 +32,9 @@ namespace Photosoil.API.Controllers.Second
 
 
         [HttpPut(nameof(Put) + "/{Id}")]
-        public async Task<IActionResult> Put(int Id, [FromForm] string Name)
+        public async Task<IActionResult> Put(int Id, [FromForm] string NameRu, [FromForm] string NameEng)
         {
-            var response = await _termsService.Put(Id, Name);
+            var response = await _termsService.Put(Id, NameRu, NameEng);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

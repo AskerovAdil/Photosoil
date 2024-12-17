@@ -22,6 +22,15 @@ namespace Photosoil.API.Controllers
             _publicationService = publicationService;
         }
 
+        [HttpGet(nameof(GetBase))]
+        public IActionResult GetBase()
+        {
+            var response = _publicationService.GetBaseAll();
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+
         [HttpGet(nameof(GetAdminAll))]
         [Authorize]
         public IActionResult GetAdminAll()

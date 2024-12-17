@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Photosoil.Core.Enum;
-using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
-using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
+using Photosoil.Service.Helpers.ViewModel;
 using Photosoil.Service.Helpers.ViewModel.Request;
 
 namespace Photosoil.Service.Services.Second
@@ -47,8 +40,11 @@ namespace Photosoil.Service.Services.Second
                 var classification = _mapper.Map<Classification>(classificationVm);
                 _context.Set<Classification>().Add(classification);
 
-                foreach (var id in classificationVm.Terms)
-                    classification.Terms.Add(new Term(){Name = id});
+                foreach (var term in classificationVm.Terms)
+                    classification.Terms.Add(new Term(){NameRu = term.NameRu, NameEng = term.NameEng});
+
+                var maxOrder = _context.Classification.Max(x=>x.Order);
+                classification.Order = ++maxOrder;
 
                 await _context.SaveChangesAsync();
 
@@ -60,12 +56,14 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
-        public async Task<ServiceResponse<Classification>> Put(int id, string name)
+        public async Task<ServiceResponse<Classification>> Put(int id, string? nameRu,string? nameEng, TranslationMode TranslationMode = TranslationMode.Neutral)
         {
             try
             {
                 var classification = await _context.Classification.FirstOrDefaultAsync(x => x.Id == id);
-                classification.Name = name;
+                classification.NameRu = nameRu;
+                classification.NameEng = nameEng;
+                classification.TranslationMode = TranslationMode;
 
                 _context.Classification.Update(classification);
                 _context.SaveChanges();
@@ -77,6 +75,28 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
+        public async Task<ServiceResponse> UpdateOrder(List<ClassificationOrder> orders)
+        {
+            try
+            {
+                foreach(var el in orders)
+                {
+                    var classification = await _context.Classification.FirstOrDefaultAsync(x => x.Id == el.Id);
+                    if(classification == null)
+                        return ServiceResponse<Classification>.BadResponse("Классификатор не найден");
+
+                    classification.Order = el.Order;
+                    _context.Classification.Update(classification);
+                }
+                _context.SaveChanges();
+                return ServiceResponse.OkResponse;
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse.BadResponse(ex.Message);
+            }
+        }
+
 
         public ServiceResponse Delete(int id)
         {
@@ -85,6 +105,10 @@ namespace Photosoil.Service.Services.Second
             try
             {
                 if (classification != null) _context.Classification.Remove(classification);
+                var orders = _context.Classification.Where(x => x.Order > classification.Order);
+                foreach (var el in orders)
+                    el.Order--;
+
                 _context.SaveChanges();
                 return ServiceResponse.OkResponse;
             }

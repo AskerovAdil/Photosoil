@@ -25,6 +25,7 @@ namespace Photosoil.Core.Models
 
 
         public string? Coordinates { get; set; }
+        public string? CreatedDate { get; set; }
 
         public int? FileId { get; set; }
 
@@ -36,7 +37,7 @@ namespace Photosoil.Core.Models
         
         public List<PublicationTranslation> Translations { get; set; } = new();
         
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         
         public ApplicationUser? User { get; set; }
     }
@@ -45,7 +46,11 @@ namespace Photosoil.Core.Models
         [Display(Name = "Статья")]
         Article,
         [Display(Name = "Тезисы докладов")]
-        Paper
+        Paper,
+        [Display(Name = "Монографии")]
+        Monographs,
+        [Display(Name = "Другое")]
+        Other
     }
 }
 

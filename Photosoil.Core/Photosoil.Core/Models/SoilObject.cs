@@ -20,6 +20,8 @@ namespace Photosoil.Core.Models
         public int Id { get; set; }
 
         public int? PhotoId { get; set; }
+        
+        public bool? IsExternal{ get; set; }
 
         /// <summary>
         /// Изображение
@@ -27,9 +29,8 @@ namespace Photosoil.Core.Models
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File? Photo{ get; set; }
 
-        public string? Code { get; set; }
 
-
+        public string? CreatedDate { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных
@@ -53,7 +54,8 @@ namespace Photosoil.Core.Models
         [JsonIgnore]
         public List<Publication> Publications { get; set; } = new();
 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public ApplicationUser? User { get; set; }
+
     }
 }

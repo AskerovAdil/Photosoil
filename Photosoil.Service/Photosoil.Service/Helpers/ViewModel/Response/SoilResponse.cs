@@ -16,8 +16,10 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
     {
         public int Id { get; set; }
 
+        public bool? IsExternal { get; set; }
 
         public List<SoilTranslation> Translations { get; set; } = new();
+        public int[]? Authors { get; set; } = { };
 
         /// <summary>
         /// Изображение
@@ -27,7 +29,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
 
         public SoilObjectType? ObjectType { get; set; } = SoilObjectType.SoilDynamics;
 
-        public string? LastUpdated { get; set; }
+        public string? CreatedDate { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных

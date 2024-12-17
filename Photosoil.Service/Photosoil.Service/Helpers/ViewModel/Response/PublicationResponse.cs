@@ -21,8 +21,8 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 
         public string? Doi { get; set; }
 
-        public string? LastUpdated { get; set; }
-
+        public string? CreatedDate { get; set; }
+        
         public PublicationType? Type { get; set; }
 
         public File? File { get; set; }

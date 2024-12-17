@@ -19,7 +19,10 @@ namespace Photosoil.Core.Models.Second
         public bool? IsVisible { get; set; } = false;
         public bool? IsEnglish { get; set; } = false;
         public string? LastUpdated { get; set; }
+        public string? Comments { get; set; }
 
+        public string? Code { get; set; }
+        public string? ExternalSource { get; set; }
 
         public int? EcoSystemId { get; set; }
         public EcoSystem? EcoSystem { get; set; }

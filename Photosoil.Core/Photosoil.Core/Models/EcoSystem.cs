@@ -21,7 +21,10 @@ namespace Photosoil.Core.Models
         public int Id { get; set; }
 
         public int? PhotoId { get; set; }
+        
+        public bool? IsExternal { get; set; }
 
+        public string? CreatedDate { get; set; }
 
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File? Photo { get; set; }
@@ -34,7 +37,7 @@ namespace Photosoil.Core.Models
         /// Фотографии объекта
         /// </summary>
         public List<File> ObjectPhoto { get; set; } = new();
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public ApplicationUser? User { get; set; }
 
     }

@@ -1,39 +1,29 @@
-﻿    using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Photosoil.Service.Migrations
 {
-    public partial class _60 : Migration
+    public partial class int2222255 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "SoilObjects");
 
             migrationBuilder.DropColumn(
-                name: "LastUpdated",
-                table: "Publication");
-
-            migrationBuilder.DropColumn(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "EcoSystem");
 
             migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "SoilTranslations",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
-                table: "PublicationTranslations",
-                type: "text",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "EcoTranslations",
                 type: "text",
                 nullable: true);
@@ -42,31 +32,21 @@ namespace Photosoil.Service.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "SoilTranslations");
 
             migrationBuilder.DropColumn(
-                name: "LastUpdated",
-                table: "PublicationTranslations");
-
-            migrationBuilder.DropColumn(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "EcoTranslations");
 
             migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "SoilObjects",
                 type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
-                table: "Publication",
-                type: "text",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "LastUpdated",
+                name: "ExternalSource",
                 table: "EcoSystem",
                 type: "text",
                 nullable: true);

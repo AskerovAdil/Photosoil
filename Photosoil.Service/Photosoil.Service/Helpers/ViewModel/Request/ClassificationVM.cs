@@ -12,11 +12,17 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 {
     public class ClassificationVM
     {
-        public string Name { get; set; }
+        public string? NameRu { get; set; }
+        public string? NameEng { get; set; }
         public bool IsMulti { get; set; } = true;
-        public List<string>? Terms { get; set; } = new();
+        public List<TermVM>? Terms { get; set; } = new();
 
         public TranslationMode TranslationMode { get; set; } = TranslationMode.Neutral;
+    }
 
+    public class TermVM
+    {
+        public string? NameRu { get; set; }
+        public string? NameEng { get; set; }
     }
 }

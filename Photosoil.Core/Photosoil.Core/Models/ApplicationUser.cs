@@ -24,6 +24,7 @@ namespace Photosoil.Core.Models
         public List<EcoSystem> EcoSystems { get; set; } = new();
         public List<Publication> Publications { get; set; } = new();
         public List<Author> Authors { get; set; } = new();
+        public List<News> News{ get; set; } = new();
     }
 
     public enum Roles

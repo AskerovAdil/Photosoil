@@ -20,6 +20,13 @@ namespace Photosoil.API.Controllers
         public EcoSystemController(EcoSystemService ecoSystemService) {
             _ecoSystemService = ecoSystemService;
         }
+        [HttpGet(nameof(GetBase))]
+        public IActionResult GetBase()
+        {
+            var response = _ecoSystemService.GetBaseAll();
+
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
 
         [HttpGet(nameof(GetAdminAll))]
         [Authorize]
@@ -55,7 +62,7 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
 
-        [HttpGet(nameof(GetForUpdate))]
+           [HttpGet(nameof(GetForUpdate))]
         public IActionResult GetForUpdate(int Id)
         {
             var response = _ecoSystemService.GetForUpdate(Id);

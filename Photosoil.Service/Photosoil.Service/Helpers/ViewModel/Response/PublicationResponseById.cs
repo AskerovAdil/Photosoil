@@ -6,15 +6,15 @@ using Photosoil.Core.Models.Second;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
-    public class PublicationResponseById
+    public class    PublicationResponseById
     {
         public int Id { get; set; }
         public string? Doi { get; set; }
-        public string? LastUpdated { get; set; }
+        public string? CreatedDate { get; set; }
 
+        public string? UserEmail { get; set; }
 
-        public Coordinate[]? Coordinates { get; set; } = new Coordinate[] { };
-
+        public string? Coordinates { get; set; } 
         public PublicationType? Type { get; set; }
 
         public File? File { get; set; }

@@ -47,7 +47,7 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
-        public async Task<ServiceResponse<Term>> Put(int Id, [FromForm] string Name)
+        public async Task<ServiceResponse<Term>> Put(int Id, string NameRu, string NameEng)
         {
             try
             {
@@ -56,7 +56,8 @@ namespace Photosoil.Service.Services.Second
                 if(term == null)
                     return ServiceResponse<Term>.BadResponse("Термин не найден");
 
-                term.Name = Name;
+                term.NameRu = NameRu;
+                term.NameEng = NameEng;
 
                 _context.Term.Update(term);
                 _context.SaveChanges();

@@ -4,22 +4,23 @@
 
 namespace Photosoil.Service.Migrations
 {
-    public partial class _59 : Migration
+    public partial class resizePhtot : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "IsEnglish",
-                table: "PublicationTranslations",
-                type: "boolean",
-                nullable: true);
+            migrationBuilder.AddColumn<string>(
+                name: "PathResize",
+                table: "Photo",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "IsEnglish",
-                table: "PublicationTranslations");
+                name: "PathResize",
+                table: "Photo");
         }
     }
 }

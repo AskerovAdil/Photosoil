@@ -52,7 +52,7 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
         [HttpPost("Login")]
-        public async Task<IActionResult> LoginUser(LoginViewModel model)
+        public async Task<IActionResult> LoginUser(LoginViewModel    model)
         {
             var response = await _accountService.AuthenticateUserAsync(model);
             return response.Error ? BadRequest(response) : Ok(response);

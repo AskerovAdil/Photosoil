@@ -26,7 +26,13 @@ namespace Photosoil.API.Controllers
             _soilObjectService = soilObject;
 
         }
+        [HttpGet(nameof(GetBase))]
+        public IActionResult GetBase()
+        {
+            var response = _soilObjectService.GetBaseAll();
 
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
         [HttpGet(nameof(GetAdminAll))]
         [Authorize]
         public IActionResult GetAdminAll()
@@ -43,7 +49,11 @@ namespace Photosoil.API.Controllers
         [HttpGet(nameof(GetAll))]
         public IActionResult GetAll()
         {
-            var response = _soilObjectService.Get();
+            string? userId = User.FindFirstValue("Id");
+            string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
+            int.TryParse(userId, out var id);
+
+            var response = _soilObjectService.Get(id, role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

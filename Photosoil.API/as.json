@@ -1,0 +1,180 @@
+{
+      "translations": [
+        {
+          "id": 1,
+          "name": "Calcic Kastanozem (Aric)",
+          "geographicLocation": "Russia, Altai region, Mikhailovsky district, agricultural fields near the village of Rakity",
+          "plantCommunity": "Field after sunflower with weeds",
+          "isVisible": true,
+          "isEnglish": true,
+          "lastUpdated": "07/23/2024 09:58:58",
+          "soilId": 1,
+          "soilObject": {
+            "id": 1,
+            "photoId": 9,
+            "photo": {
+              "id": 9,
+              "path": "/Storage/53c-bd2d-471f-8d8e-6cd08b1ee163/soil3 — копия (2).jpg",
+              "titleEng": "Dry and deserted steppe",
+              "lastUpdated": "07/23/2024 09:53:06",
+              "fileName": "soil3 — копия (2).jpg"
+            },
+            "objectType": 0,
+            "translations": [
+              {
+                "id": 2,
+                "name": "Агрочернозем текстурно-карбонатный",
+                "geographicLocation": "Россия, Алтайский край, Михайловский район, сельскохозяйственные поля вблизи поселка Ракиты",
+                "reliefLocation": "Микроповышение на пологонаклонной равнины расчлененной неглубокими ложбинами",
+                "plantCommunity": "Поле после подсолнечника с сорняками",
+                "isVisible": true,
+                "isEnglish": false,
+                "lastUpdated": "07/23/2024 09:58:58",
+                "soilId": 1
+              }
+            ],
+            "authors": [
+              {
+                "id": 1,
+                "authorType": 3,
+                "otherProfiles": "[\"https://www.researchgate.net/profile/Anastasiya-Shmatova\",\"https://istina.msu.ru/profile/a.shmatova/\"]",
+                "contacts": "[\"a.shmatova@yandex.ru\"]",
+                "photoId": 3,
+                "soilObjects": [],
+                "ecoSystems": [],
+                "userId": 1
+              },
+              {
+                "id": 2,
+                "authorType": 2,
+                "otherProfiles": "[\"https://istina.msu.ru/profile/INSemenkov/\",\"https://www.researchgate.net/profile/Ivan_Semenkov\"]",
+                "contacts": "[\"semenkov@geogr.msu.ru\"]",
+                "photoId": 4,
+                "soilObjects": [],
+                "ecoSystems": [],
+                "userId": 1
+              }
+            ],
+            "objectPhoto": [
+              {
+                "id": 13,
+                "path": "/Storage/922-17ff-49c3-a076-59a8bd152f3d/dsc_2882szh_0.jpg",
+                "lastUpdated": "07/23/2024 09:56:43",
+                "fileName": "dsc_2882szh_0.jpg"
+              },
+              {
+                "id": 14,
+                "path": "/Storage/730-396f-4033-a2a2-554348d44ad9/soil3 — копия.jpg",
+                "lastUpdated": "07/23/2024 09:56:43",
+                "fileName": "soil3 — копия.jpg"
+              },
+              {
+                "id": 15,
+                "path": "/Storage/f39-431b-456a-8202-9ea52c5f58c3/http___photosoil.tsu.ru_sites_default_files_dscf1212.jpg",
+                "lastUpdated": "07/23/2024 09:56:44",
+                "fileName": "http___photosoil.tsu.ru_sites_default_files_dscf1212.jpg"
+              }
+            ],
+            "terms": [],
+            "userId": 1
+          }
+        },
+        {
+          "id": 2,
+          "name": "Агрочернозем текстурно-карбонатный",
+          "geographicLocation": "Россия, Алтайский край, Михайловский район, сельскохозяйственные поля вблизи поселка Ракиты",
+          "reliefLocation": "Микроповышение на пологонаклонной равнины расчлененной неглубокими ложбинами",
+          "plantCommunity": "Поле после подсолнечника с сорняками",
+          "isVisible": true,
+          "isEnglish": false,
+          "lastUpdated": "07/23/2024 09:58:58",
+          "soilId": 1,
+          "soilObject": {
+            "id": 1,
+            "photoId": 9,
+            "photo": {
+              "id": 9,
+              "path": "/Storage/53c-bd2d-471f-8d8e-6cd08b1ee163/soil3 — копия (2).jpg",
+              "titleEng": "Dry and deserted steppe",
+              "lastUpdated": "07/23/2024 09:53:06",
+              "fileName": "soil3 — копия (2).jpg"
+            },
+            "objectType": 0,
+            "translations": [
+              {
+                "id": 1,
+                "name": "Calcic Kastanozem (Aric)",
+                "geographicLocation": "Russia, Altai region, Mikhailovsky district, agricultural fields near the village of Rakity",
+                "plantCommunity": "Field after sunflower with weeds",
+                "isVisible": true,
+                "isEnglish": true,
+                "lastUpdated": "07/23/2024 09:58:58",
+                "soilId": 1
+              }
+            ],
+            "authors": [
+              {
+                "id": 1,
+                "authorType": 3,
+                "otherProfiles": "[\"https://www.researchgate.net/profile/Anastasiya-Shmatova\",\"https://istina.msu.ru/profile/a.shmatova/\"]",
+                "contacts": "[\"a.shmatova@yandex.ru\"]",
+                "photoId": 3,
+                "soilObjects": [],
+                "ecoSystems": [],
+                "userId": 1
+              },
+              {
+                "id": 2,
+                "authorType": 2,
+                "otherProfiles": "[\"https://istina.msu.ru/profile/INSemenkov/\",\"https://www.researchgate.net/profile/Ivan_Semenkov\"]",
+                "contacts": "[\"semenkov@geogr.msu.ru\"]",
+                "photoId": 4,
+                "soilObjects": [],
+                "ecoSystems": [],
+                "userId": 1
+              }
+            ],
+            "objectPhoto": [
+              {
+                "id": 13,
+                "path": "/Storage/922-17ff-49c3-a076-59a8bd152f3d/dsc_2882szh_0.jpg",
+                "lastUpdated": "07/23/2024 09:56:43",
+                "fileName": "dsc_2882szh_0.jpg"
+              },
+              {
+                "id": 14,
+                "path": "/Storage/730-396f-4033-a2a2-554348d44ad9/soil3 — копия.jpg",
+                "lastUpdated": "07/23/2024 09:56:43",
+                "fileName": "soil3 — копия.jpg"
+              },
+              {
+                "id": 15,
+                "path": "/Storage/f39-431b-456a-8202-9ea52c5f58c3/http___photosoil.tsu.ru_sites_default_files_dscf1212.jpg",
+                "lastUpdated": "07/23/2024 09:56:44",
+                "fileName": "http___photosoil.tsu.ru_sites_default_files_dscf1212.jpg"
+              }
+            ],
+            "terms": [],
+            "userId": 1
+          }
+        }
+      ],
+      "photoId": 9,
+      "authors": [
+        1,
+        2
+      ],
+      "objectType": 0,
+      "objectPhoto": [
+        13,
+        14,
+        15
+      ],
+      "soilTerms": [],
+      "publications": [
+        1
+      ],
+      "ecoSystems": [
+        1
+      ]
+    }

@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    <PackageReference Include="Imageflow.Net" Version="0.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.24" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.26" />
@@ -24,6 +25,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.22" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
   </ItemGroup>
 

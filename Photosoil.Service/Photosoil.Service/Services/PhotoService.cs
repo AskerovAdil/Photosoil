@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Photosoil.Core.Models;
-using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
-using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using File = Photosoil.Core.Models.File;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp;
 
 namespace Photosoil.Service.Services
 {
@@ -35,7 +27,6 @@ namespace Photosoil.Service.Services
 
             return ServiceResponse<List<Core.Models.File>>.OkResponse(soilPhoto);
         }
-
 
         public ServiceResponse<List<File>> GetBySoilId(int soilId)
         {
@@ -58,17 +49,44 @@ namespace Photosoil.Service.Services
             try
             {
                 var path = await FileHelper.SavePhoto(photoVM.Photo);
-                var photo = new Core.Models.File(path, photoVM.TitleEng, photoVM.TitleRu);
-                
+                var photo = new File();
+                if (photoVM.Photo.ContentType.Contains("image"))
+                {
+                    var pahtResize = await CompressAndSaveImageAsync(photoVM.Photo, path);
+                    photo.PathResize = pahtResize; 
+                }
+                photo.TitleEng = photoVM.TitleEng;
+                photo.TitleRu= photoVM.TitleRu;
+                photo.Path = path;
+
+
                 _context.Photo.AddRange(photo);
                 await _context.SaveChangesAsync();
 
-                return ServiceResponse<Core.Models.File>.OkResponse(photo);
+                return ServiceResponse<File>.OkResponse(photo);
             }
             catch (Exception ex)
             {
-                return ServiceResponse<Core.Models.File>.BadResponse(ex.Message);
+                return ServiceResponse<File>.BadResponse(ex.Message);
             }
+        }
+
+        public async Task<string> CompressAndSaveImageAsync(IFormFile imageFile, string path, int quality = 10)
+        {
+            string compressedPath = Path.Combine(
+                Path.GetDirectoryName(path),
+                $"resize-{Path.GetFileNameWithoutExtension(path)}{Path.GetExtension(path)}"
+            ).Replace("\\", "/");
+
+            using var imageStream = imageFile.OpenReadStream();
+            using var image = Image.Load(imageStream);
+            var encoder = new JpegEncoder
+            {
+                Quality = quality, 
+            };
+
+            await Task.Run(() => image.Save(compressedPath, encoder));
+            return compressedPath;
         }
 
         public async Task<ServiceResponse<File>> Put(int id,string? TitleEng, string? TitleRu)

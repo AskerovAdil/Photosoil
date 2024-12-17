@@ -11,6 +11,7 @@ using Photosoil.Service.Helpers.ViewModel.Response;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Newtonsoft.Json;
 using Photosoil.Core.Models.Base;
+using Photosoil.Service.Models;
 
 namespace Photosoil.Service.Helpers
 {
@@ -37,7 +38,17 @@ namespace Photosoil.Service.Helpers
             CreateMap<Classification, ClassificationVM>().ReverseMap()
                 .ForMember(x => x.Terms, x => x.MapFrom(x => x.Terms));
 
-            CreateMap<SoilObject, SoilResponseById>();
+            CreateMap<SoilObject, SoilResponseById>()
+                .ForMember(x => x.UserEmail, x => x.MapFrom(x=>x.User.Email ))
+                ;
+
+            CreateMap<News, NewsResponseById>()
+    .ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email))
+    ;
+
+            CreateMap<EcoSystem, EcoSystemResponseById>()
+.ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email))
+;
             CreateMap<SoilObject, SoilObjectVM>()
                 .ForMember(x=>x.Authors, x=>x.MapFrom(y=>y.Authors.Select(x=>x.Id)))
                 .ForMember(x=>x.EcoSystems, x=>x.MapFrom(y=>y.EcoSystems.Select(x=>x.Id)))
@@ -62,8 +73,14 @@ namespace Photosoil.Service.Helpers
 
 
             CreateMap<SoilResponse,SoilObject>().ReverseMap()
-                .ForMember(x => x.Terms, x => x.MapFrom(x => x.Terms.Select(x=>x.Id)));
+                .ForMember(x=>x.Authors, x=>x.MapFrom(x=>x.Authors.Select(x=>x.Id)))
+                .ForMember(x => x.Terms, x => x.MapFrom(x => x.Terms.Select(x=>x.Id))
+                );
 
+
+            CreateMap<EcoSystemResponseAll, EcoSystem>().ReverseMap()
+                .ForMember(x => x.Authors, x => x.MapFrom(x => x.Authors.Select(x => x.Id))
+                );
 
 
 
@@ -90,7 +107,20 @@ namespace Photosoil.Service.Helpers
                 .ForMember(x => x.ObjectPhoto, x => x.MapFrom(y => y.ObjectPhoto.Select(x => x.Id)))
                 .ForMember(x => x.Authors, x => x.MapFrom(y => y.Authors.Select(x => x.Id)))
                 .ForMember(x => x.Publications, x => x.MapFrom(y => y.Publications.Select(x => x.Id)))
+                .ForMember(x => x.SoilObjects, x => x.MapFrom(y => y.SoilObjects.Select(x => x.Id)))
                 .ForMember(x => x.PhotoId, x => x.MapFrom(y => y.PhotoId));
+
+
+            CreateMap<News, NewsVM>()
+                .ForMember(x => x.ObjectPhoto, x => x.MapFrom(y => y.ObjectPhoto.Select(x => x.Id)))
+                .ForMember(x => x.Files, x => x.MapFrom(y => y.Files.Select(x => x.Id)))
+                .ForMember(x => x.Tags, x => x.MapFrom(y => y.Tags.Select(x => x.Id)));
+            CreateMap<RulesVM, Rules>()
+                .ForMember(x => x.Files, x => x.Ignore());
+            CreateMap<NewsVM, News>()
+                .ForMember(x => x.ObjectPhoto, x => x.Ignore())
+                .ForMember(x => x.Tags, x => x.Ignore())
+                .ForMember(x => x.Files, x => x.Ignore());
 
             CreateMap<EcoSystem, EcoSystem>()
                 .ForMember(x => x.Id, x => x.Ignore())
@@ -102,6 +132,8 @@ namespace Photosoil.Service.Helpers
 
 
             CreateMap<Publication, PublicationVM>()
+                .ForMember(x => x.EcoSystems, x => x.MapFrom(y => y.EcoSystems.Select(x => x.Id)))
+                .ForMember(x => x.SoilObjects, x => x.MapFrom(y => y.SoilObjects.Select(x => x.Id)))
                 .ForMember(x => x.FileId, x => x.MapFrom(x => x.FileId));
 
             CreateMap<PublicationVM, Publication>()
@@ -112,9 +144,9 @@ namespace Photosoil.Service.Helpers
                 .ForMember(x => x.SoilObjects, x => x.Ignore());
             CreateMap<Publication, PublicationResponseById>()
                                 .ForMember(x => x.File, x => x.MapFrom(x => x.File))
-                                .ForMember(x => x.Coordinates, x => x.Ignore())
 
                 //.ForMember(x => x.Coordinates, x => x.MapFrom(y => JsonConvert.DeserializeObject<Coordinate[]>(y.Coordinates)))
+                .ForMember(x => x.UserEmail, x => x.MapFrom(x=>x.User.Email ))
                 .ForMember(x => x.EcoSystems, x => x.MapFrom(x=>x.EcoSystems))
                 .ForMember(x => x.SoilObjects, x => x.MapFrom(x=>x.SoilObjects));
 
@@ -130,8 +162,9 @@ namespace Photosoil.Service.Helpers
             CreateMap<AuthorVM, Author>()
                 .ForMember(x => x.OtherProfiles, x => x.MapFrom(y => JsonConvert.SerializeObject(y.OtherProfiles)))
                 .ForMember(x => x.Contacts, x => x.MapFrom(y => JsonConvert.SerializeObject(y.Contacts)))
-                .ForMember(x => x.Photo, x => x.Ignore())
                 .ForMember(x => x.PhotoId, x => x.Ignore());
+
+
 
 
             CreateMap<Author, AuthorResponseById>()

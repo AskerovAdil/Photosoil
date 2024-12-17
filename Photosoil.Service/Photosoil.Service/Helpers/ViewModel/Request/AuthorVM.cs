@@ -1,4 +1,5 @@
-﻿using Photosoil.Core.Models;
+﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 {
     public class AuthorVM
     {
+        public AuthorType AuthorType { get; set; }
 
         public Translation DataEng { get; set; }
         public Translation DataRu { get; set; }

@@ -51,6 +51,8 @@ namespace Photosoil.Core.Models.Second
         public bool? IsVisible { get; set; } = false;
         public bool? IsEnglish { get; set; } = false;
         public string? LastUpdated { get; set; }
+            public string? Code { get; set; }
+            public string? ExternalSource { get; set; }
 
         public int? SoilId{ get; set; }
         public SoilObject? SoilObject { get; set; }

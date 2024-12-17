@@ -55,7 +55,7 @@ namespace Photosoil.Service.Services.Second
         {
             try
             {
-                var soilDepartment = new T(){Name = Name};
+                var soilDepartment = new T(){NameRu = Name};
 
 
                 _context.Set<T>().Add(soilDepartment);
@@ -76,7 +76,7 @@ namespace Photosoil.Service.Services.Second
                 _context.SaveChanges();
                 return ServiceResponse<T>.OkResponse(soil);
             }
-            catch (Exception ex)
+            catch (Exception ex)    
             {
                 return ServiceResponse<T>.BadResponse(ex.Message);
             }

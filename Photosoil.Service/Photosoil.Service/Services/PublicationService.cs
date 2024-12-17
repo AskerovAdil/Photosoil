@@ -8,9 +8,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Photosoil.Core.Models;
+using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
+using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using File = Photosoil.Core.Models.File;
 
@@ -25,19 +27,57 @@ namespace Photosoil.Service.Services
             _mapper = mapper;
             _context = context;
         }
+        public ServiceResponse<List<BaseData>> GetBaseAll()
+        {
+            var ecoSystem = _context.Publication.Include(x => x.Translations)
+                .ToList();
+            List<BaseData> baseData = new();
+
+            foreach (var el in ecoSystem)
+            {
+
+                var data = new BaseData(el.Id);
+                foreach (var trans in el.Translations)
+                {
+                    if (trans.IsEnglish == true)
+                    {
+                        data.NameEng = trans.Name;
+                    }
+                    else
+                    {
+                        data.NameRu = trans.Name;
+                    }
+                }
+                baseData.Add(data);
+
+            }
+
+            return ServiceResponse<List<BaseData>>.OkResponse(baseData);
+        }
+        public ServiceResponse<List<PublicationTranslation>> GetAdminAll(int? userId = 0, string? role = "")
+        {
+
+            IQueryable<PublicationTranslation> soilObjects;
+            if (role == "Moderator")
+                soilObjects = _context.PublicationTranslations.Include(x => x.Publication).ThenInclude(x => x.User).Where(x => x.Publication.UserId == userId);
+            else //role == admin
+                soilObjects = _context.PublicationTranslations.Include(x => x.Publication).ThenInclude(x => x.User);
+
+            return ServiceResponse<List<PublicationTranslation>>.OkResponse(soilObjects.ToList());
+        }
+
 
         public  ServiceResponse<List<Publication>> GetAll(int? userId = 0, string? role = "")
         {
             var datArticles = new List<Publication>();
-            if (role == "")
-                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
-                    .Where(x=>x.IsVisible == true).ToList();
-            else if (role == "Admin")
-                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
-                    .ToList();
-            else if (role == "Moderator")
-                datArticles = _context.Publication.Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
-                    .Where(x=>x.UserId == userId).ToList();
+            if (role == "Admin" || role == "Moderator" )
+                datArticles = _context.Publication.Include(x=>x.Translations).Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                    .AsNoTracking().ToList();
+            else
+                datArticles = _context.Publication.Include(x => x.Translations.Where(x => x.IsVisible == true))
+                    .Where(x => x.Translations.Count(x => x.IsVisible == true) > 0)
+                    .Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                    .AsNoTracking().ToList();
 
 
             return ServiceResponse<List<Publication>>.OkResponse(datArticles);
@@ -45,9 +85,14 @@ namespace Photosoil.Service.Services
 
         public ServiceResponse<PublicationResponseById> GetById(int articleId)
         {
-            var article = _context.Publication.Include(x=>x.File)
-                .Include (x => x.EcoSystems)
-                .Include(x=>x.SoilObjects)
+            var article = _context.Publication.Include(x => x.File)
+                .Include(x => x.User)
+                .Include(x => x.EcoSystems).ThenInclude(x => x.Translations)
+                .Include(x => x.EcoSystems).ThenInclude(x => x.Photo)
+                .Include(x => x.Translations)
+                .Include(x => x.SoilObjects).ThenInclude(x => x.Translations)
+                .Include(x => x.SoilObjects).ThenInclude(x => x.Photo)
+                .AsNoTracking()
                 .FirstOrDefault(x=>x.Id == articleId);
 
             var result = _mapper.Map<PublicationResponseById>(article); 
@@ -59,6 +104,9 @@ namespace Photosoil.Service.Services
         {
             var soilObject = _context.Publication
                 .AsNoTracking()
+                .Include(x => x.Translations)
+                .Include(x => x.SoilObjects)
+                .Include(x => x.EcoSystems)
                 .FirstOrDefault(x => x.Id == id);
 
             var soilObjectResponse = _mapper.Map<PublicationVM>(soilObject);
@@ -70,71 +118,57 @@ namespace Photosoil.Service.Services
         }
 
 
-        public async Task<ServiceResponse<List<Publication>>> Post(int userId, List<PublicationVM> publicationVM)
+        public async Task<ServiceResponse<Publication>> Post(int userId, PublicationVM publicationVM)
         {
             try
             {
-                var result = new List<Publication>();
 
-                foreach (var el in publicationVM)
+                var publication = _mapper.Map<Publication>(publicationVM);
+                publication.FileId = publicationVM.FileId;
+                publication.UserId = userId;
+
+                publicationVM.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                publication.Translations = publicationVM.Translations;
+                publication.CreatedDate = DateTime.Now.ToString();
+                foreach (var id in publicationVM.SoilObjects)
                 {
-                    var publication = _mapper.Map<Publication>(el);
-                    publication.FileId = el.FileId;
-                    publication.UserId = userId;
-
-                    publication.LastUpdated = DateTime.Now.ToString();
-
-                    _context.Publication.Add(publication);
-                    await _context.SaveChangesAsync();
-
-                    result.Add(publication);
-
+                    var q = _context.SoilObjects.FirstOrDefault(x => x.Id == id);
+                    publication.SoilObjects.Add(q);
                 }
-                if (result.Count > 1)
-                    await MergeLang(result);
+                foreach (var id in publicationVM.EcoSystems)
+                {
+                    var q = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
+                    publication.EcoSystems.Add(q);
+                }
 
-                return ServiceResponse<List<Publication>>.OkResponse(result);
+                _context.Publication.Add(publication);
+                await _context.SaveChangesAsync();
+
+                return ServiceResponse<Publication>.OkResponse(publication);
             }
             catch (Exception ex)
             {
-                return ServiceResponse<List<Publication>>.BadResponse(ex.Message);
+                return ServiceResponse<Publication>.BadResponse(ex.Message);
             }
         }
-
-
-        private async Task<List<Publication>> MergeLang(List<Publication> publications)
-        {
-            var Ru = publications.FirstOrDefault();
-            var Eng = publications.LastOrDefault();
-
-            Ru.OtherLangId = Eng.Id;
-            Eng.OtherLangId = Ru.Id;
-
-            _context.Update(Ru);
-            _context.Update(Eng);
-
-            _context.SaveChanges();
-
-            return publications;
-        }
-
 
         public async Task<ServiceResponse<Publication>> PutVisible(int id, bool isVisible)
         {
             try
             {
-                var publication = await _context.Publication
+                var trans = await _context.PublicationTranslations
+                    .Include(x=>x.Publication)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                publication.LastUpdated = DateTime.Now.ToString();
-                publication.IsVisible = isVisible;
+                trans.LastUpdated = DateTime.Now.ToString();
+                trans.IsVisible = isVisible;
 
-                if (publication == null)
+                if (trans == null)
                     return ServiceResponse<Publication>.BadResponse("Публикация не найдена!");
 
-                _context.Publication.Update(publication);
+                _context.PublicationTranslations.Update(trans);
                 _context.SaveChanges();
-                return ServiceResponse<Publication>.OkResponse(publication);
+                return ServiceResponse<Publication>.OkResponse(trans.Publication);
             }
             catch (Exception ex)
             {
@@ -147,24 +181,47 @@ namespace Photosoil.Service.Services
             try
             {
                 var publication = await _context.Publication.Include(x=>x.File)
+                    .Include(x=>x.EcoSystems)
+                    .Include(x=>x.SoilObjects)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 
-                publication.LastUpdated = DateTime.Now.ToString();
+                publication.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
                 
                 publication.FileId = publicationVm.FileId;
+
+                foreach (var el in publicationVm.Translations)
+                {
+                    el.PublicationId = id;
+                    el.LastUpdated = DateTime.Now.ToString();
+                    el.Publication = null;
+
+                    if (_context.PublicationTranslations.Any(x => x.Id == el.Id))
+                        _context.PublicationTranslations.Update(el);
+                    else
+                        _context.PublicationTranslations.Add(el);
+                }
+
 
                 if (publication == null)
                     return ServiceResponse<Publication>.BadResponse("Публикация не найдена!");
 
-
-               //if (publicationVm.File?.File != null)
-               //{
-               //    var path = await FileHelper.SavePhoto(publicationVm.File.File);
-               //    var file = new File(path, publicationVm.File.Title);
-               //    publication.File = file;
-               //}
-
                 _mapper.Map(publicationVm, publication);
+
+
+
+                var newSoils = publicationVm.SoilObjects
+                    .Select(soilId => _context.SoilObjects.FirstOrDefault(x => x.Id == soilId))
+                    .ToList();
+
+                var newSystem = publicationVm.EcoSystems
+                    .Select(ecoId => _context.EcoSystem.FirstOrDefault(x => x.Id == ecoId))
+                    .ToList();
+
+                publication.SoilObjects = new List<SoilObject>();
+                publication.EcoSystems = new List<EcoSystem>();
+
+                publication.SoilObjects.AddRange(newSoils);
+                publication.EcoSystems.AddRange(newSystem);
 
                 _context.Publication.Update(publication);
                 _context.SaveChanges();
@@ -173,16 +230,28 @@ namespace Photosoil.Service.Services
             catch (Exception ex)
             {
                 return ServiceResponse<Publication>.BadResponse(ex.Message);
-            }
+            }   
         }
 
-        public ServiceResponse Delete(int id)
+
+        public ServiceResponse Delete(int TranslationId)
         {
-            var publication = _context.Publication.FirstOrDefault(x => x.Id == id);
+            var translation = _context.PublicationTranslations
+                .Include(x => x.Publication).ThenInclude(x => x.Translations).FirstOrDefault(x => x.Id == TranslationId);
 
             try
             {
-                if (publication != null) _context.Publication.Remove(publication);
+                if (translation != null)
+                {
+                    if (translation.Publication.Translations.Count <= 1)
+                    {
+                        _context.Remove(translation);
+                        _context.Publication.Remove(translation.Publication);
+                    }
+                    else
+                        _context.Remove(translation);
+                }
+
                 _context.SaveChanges();
                 return ServiceResponse.OkResponse;
             }
@@ -192,7 +261,6 @@ namespace Photosoil.Service.Services
             }
 
         }
-
 
     }
 }

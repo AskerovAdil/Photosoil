@@ -59,6 +59,8 @@ namespace PhotosoilAPI
 
 
             builder.Services.AddScoped<ISoilObjectService, SoilObjectService>();
+            builder.Services.AddScoped<TagsService>();
+            builder.Services.AddScoped<NewsService>();
             builder.Services.AddScoped<PhotoService>();
             builder.Services.AddScoped<ClassificationService>();
             builder.Services.AddScoped<PublicationService>();
@@ -69,6 +71,8 @@ namespace PhotosoilAPI
             builder.Services.AddScoped<ArticleService>();
             builder.Services.AddScoped<AuthorService>();
             builder.Services.AddScoped<NewsService>();
+            builder.Services.AddScoped<RulesService>();
+            builder.Services.AddScoped<AuthorRequestService>();
 
 
 

@@ -17,6 +17,7 @@ using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
 using Photosoil.Service.Helpers.ViewModel;
+using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Helpers.ViewModel.Response;
 using File = Photosoil.Core.Models.File;
@@ -33,22 +34,64 @@ namespace Photosoil.Service.Services
             _context = context;
 
         }
-        public  ServiceResponse<List<SoilResponse>> Get(string lang = "", int? userId = 0, string? role = "")
+        public ServiceResponse<List<BaseData>> GetBaseAll()
+        {
+            var ecoSystem = _context.SoilObjects.Include(x => x.Translations)
+                .ToList();
+            List<BaseData> baseData = new();
+
+            foreach (var el in ecoSystem)
+            {
+
+                var data = new BaseData(el.Id);
+                foreach (var trans in el.Translations)
+                {
+                    if (trans.IsEnglish == true)
+                    {
+                        data.CodeEng = trans.Code;
+                        data.NameEng = trans.Name;
+                    }
+                    else
+                    {
+                        data.CodeRu = trans.Code;
+                        data.NameRu = trans.Name;
+                    }
+                }
+                baseData.Add(data);
+            }
+
+            return ServiceResponse<List<BaseData>>.OkResponse(baseData);
+        }
+        public ServiceResponse<List<SoilTranslation>> GetAdminAll(int? userId = 0, string? role = "")
+        {
+            IQueryable<SoilTranslation> soilObjects;
+            if (role == "Moderator")
+                soilObjects = _context.SoilTranslations.Include(x => x.SoilObject).ThenInclude(x=>x.User).Where(x => x.SoilObject.UserId == userId);
+            else if (role == "Admin")
+                soilObjects = _context.SoilTranslations.Include(x => x.SoilObject).ThenInclude(x => x.User);
+            else
+                soilObjects = _context.SoilTranslations.Include(x => x.SoilObject).ThenInclude(x => x.User);
+
+
+
+            var responseSoils = new List<SoilTranslation>();
+
+            return ServiceResponse<List<SoilTranslation>>.OkResponse(soilObjects.ToList());
+        }
+
+        public ServiceResponse<List<SoilResponse>> Get(int? userId = 0, string? role = "")
         {
 
             IQueryable<SoilObject> soilObjects;
-            if(role == "Moderator")
-                soilObjects = _context.SoilObjects.Include(x => x.Photo).Include(x => x.Terms)
-                    .Where(x => x.UserId == userId);
-            else if (role == "Admin")
-               soilObjects = _context.SoilObjects.Include(x => x.Photo).Include(x => x.Terms);
+            if (role == "Admin" || role == "Moderator")
+                soilObjects = _context.SoilObjects.Include(x => x.Authors).Include(x => x.Translations).Include(x => x.Photo).Include(x => x.Terms).AsNoTracking();
             else
-                soilObjects = _context.SoilObjects.Include(x => x.Photo).Include(x => x.Terms).Where(x => x.IsVisible == true);
+                soilObjects = _context.SoilObjects.Include(x=>x.Authors)
+                    .Include(x => x.Translations.Where(x => x.IsVisible == true))
+                    .Where(x => x.Translations.Count(x => x.IsVisible == true) > 0)
+                    .Include(x => x.Photo)
+                    .Include(x => x.Terms).AsNoTracking();
 
-            if (lang == "en")
-                soilObjects = soilObjects.Where(x => x.IsEnglish == true);
-            else if(lang == "ru")
-                soilObjects = soilObjects.Where(x => x.IsEnglish == false);
 
 
             var responseSoils = new List<SoilResponse>();
@@ -66,15 +109,24 @@ namespace Photosoil.Service.Services
         public ServiceResponse<SoilResponseById>GetById(int id)
         {
             var soilObject =_context.SoilObjects
-
                 .AsNoTracking()
-                .Include(x=>x.Photo)
+                .Include(x => x.Photo)
+                .Include(x=>x.User)
+                .Include(x => x.Translations)
                 .Include(x => x.ObjectPhoto)
-                .Include(x => x.Authors)
+                .Include(x => x.Authors).ThenInclude(x => x.Photo)
+                .Include(x => x.Authors).ThenInclude(x=>x.DataEng)
+                .Include(x => x.Authors).ThenInclude(x=>x.DataRu)
                 .Include(x => x.EcoSystems).ThenInclude(x => x.Photo)
+                .Include(x => x.EcoSystems).ThenInclude(x => x.Translations)
                 .Include(x => x.Publications).ThenInclude(x => x.File)
+                .Include(x => x.Publications).ThenInclude(x => x.Translations)
                 .Include(x => x.Terms).ThenInclude(x=>x.Classification)
+                .AsNoTracking()
                 .FirstOrDefault(x=>x.Id == id);
+
+            if (soilObject == null)
+                ServiceResponse<SoilResponseById>.BadResponse(ErrorMessage.NoContent);
 
             var soilObjectResponse = _mapper.Map<SoilResponseById>(soilObject);
 
@@ -82,7 +134,9 @@ namespace Photosoil.Service.Services
                 .GroupBy(t => t.ClassificationId)
                 .Select(g => new ClassificationResponse
                 {
-                    Name = g.First().Classification.Name,
+                    NameRu = g.First().Classification.NameRu,
+                    NameEng = g.First().Classification.NameEng,
+                    TranslationMode = g.First().Classification.TranslationMode,
                     Terms = g.Select(t=>_mapper.Map<TermsResponse>(t)).ToList()
                 })
                 .ToList();
@@ -101,6 +155,7 @@ namespace Photosoil.Service.Services
             var soilObject = _context.SoilObjects
                 .AsNoTracking()
                 .Include(x => x.Photo)
+                .Include(x => x.Translations)
                 .Include(x => x.ObjectPhoto)
                 .Include(x => x.Authors)
                 .Include(x => x.EcoSystems).ThenInclude(x => x.Photo)
@@ -116,6 +171,218 @@ namespace Photosoil.Service.Services
                 : ServiceResponse<SoilObjectVM>.BadResponse(ErrorMessage.NoContent);
         }
 
+
+
+
+        //Проверить как отработает несозданный Translation создастся ли и замапится ли?
+        public async Task<ServiceResponse<SoilObject>> Post(int userId, SoilObjectVM soil)
+        {
+            try
+            {
+                var newSoil = _mapper.Map<SoilObject>(soil);
+                newSoil.PhotoId = soil.PhotoId;
+                newSoil.UserId = userId;
+
+                foreach (var id in soil.ObjectPhoto)
+                {
+                    var q = _context.Photo.FirstOrDefault(x => x.Id == id);
+                    newSoil.ObjectPhoto.Add(q);
+                }
+                foreach (var id in soil.Authors)
+                {
+                    var q = _context.Author.FirstOrDefault(x => x.Id == id);
+                    newSoil.Authors.Add(q);
+                }
+                foreach (var id in soil.SoilTerms)
+                {
+                    var q = _context.Term.FirstOrDefault(x => x.Id == id);
+                    newSoil.Terms.Add(q);
+                }
+                foreach (var id in soil.Publications)
+                {
+                    var q = _context.Publication.FirstOrDefault(x => x.Id == id);
+                    newSoil.Publications.Add(q);
+                }
+                foreach (var id in soil.EcoSystems)
+                {
+                    var q = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
+                    newSoil.EcoSystems.Add(q);
+                }
+                soil.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                    
+                newSoil.Translations = soil.Translations;
+                newSoil.CreatedDate = DateTime.Now.ToString();
+                _context.SoilObjects.Add(newSoil);
+
+                await _context.SaveChangesAsync();
+
+
+
+                return ServiceResponse<SoilObject>.OkResponse(newSoil);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
+            }
+        }
+
+
+        public async Task<ServiceResponse<SoilObject>> PutVisible(int id, bool isVisible)
+        {
+            try
+            {
+                var translation = _context.SoilTranslations.Include(x=>x.SoilObject).FirstOrDefault(x => x.Id == id);
+                if(translation == null)
+                    return ServiceResponse<SoilObject>.BadResponse("Данные не найдены");
+
+                translation.LastUpdated = DateTime.Now.ToString();
+                translation.IsVisible = isVisible;
+
+                _context.SoilObjects.Update(translation.SoilObject);
+                await _context.SaveChangesAsync();
+                return ServiceResponse<SoilObject>.OkResponse(translation.SoilObject);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
+            }
+        }
+        public async Task<ServiceResponse<SoilObject>> Put(int id, SoilObjectVM soilObjectVm)
+        {
+            try
+            {
+                var soilObject = _context.SoilObjects
+                    .Include(x => x.Terms)
+                    .Include(x => x.EcoSystems)
+                    .Include(x => x.Publications)
+                    .Include(x => x.Authors)
+                    .Include(x => x.ObjectPhoto).FirstOrDefault(x => x.Id == id);
+
+
+                _mapper.Map(soilObjectVm, soilObject);
+
+                var photos = soilObjectVm.ObjectPhoto
+                    .Select(photoId => _context.Photo.FirstOrDefault(x => x.Id == photoId))
+                    .ToList();
+
+                var authors = soilObjectVm.Authors
+                    .Select(authorId => _context.Author.FirstOrDefault(x => x.Id == authorId))
+                    .ToList();
+
+                var newTerms = soilObjectVm.SoilTerms
+                    .Select(idSoilTerm => _context.Term.FirstOrDefault(x => x.Id == idSoilTerm))
+                    .ToList();
+
+                var newPublication = soilObjectVm.Publications
+                    .Select(publId => _context.Publication.FirstOrDefault(x => x.Id == publId))
+                    .ToList();
+
+                var newSystem = soilObjectVm.EcoSystems
+                    .Select(ecoId => _context.EcoSystem.FirstOrDefault(x => x.Id == ecoId))
+                    .ToList();
+
+                var newTranslations= soilObjectVm.EcoSystems
+                    .Select(ecoId => _context.EcoSystem.FirstOrDefault(x => x.Id == ecoId))
+                    .ToList();
+
+
+
+                //У перевода может быть ID - тогда просто добавляем его в новый массив переводов
+                //Может не быть ID - тогда создаем его заново
+                foreach(var el in soilObjectVm.Translations)
+                {
+                    el.SoilId = id;
+                    el.LastUpdated = DateTime.Now.ToString();
+                    el.SoilObject = null;
+                    if (_context.SoilTranslations.Any(x=>x.Id == el.Id))
+                        _context.SoilTranslations.Update(el);
+                    else
+                        _context.SoilTranslations.Add(el);
+                }
+
+                soilObject.ObjectPhoto= new List<File>();
+                soilObject.Authors = new List<Author>();
+                soilObject.Terms= new List<Term>();
+                soilObject.Publications = new List<Publication>();
+                soilObject.EcoSystems = new List<EcoSystem>();
+
+
+                soilObject.EcoSystems.AddRange(newSystem);
+                soilObject.Publications.AddRange(newPublication);
+                soilObject.EcoSystems.AddRange(newSystem);
+                soilObject.Terms.AddRange(newTerms);
+                soilObject.Authors.AddRange(authors);
+                soilObject.ObjectPhoto.AddRange(photos);
+
+                soilObject.PhotoId = soilObjectVm.PhotoId;
+
+
+                _context.SoilObjects.Update(soilObject);
+                _context.SaveChanges();
+
+                await _context.SaveChangesAsync();
+                return ServiceResponse<SoilObject>.OkResponse(soilObject);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
+            }
+        }
+       
+        public async Task<ServiceResponse<SoilObject>> PostMass(SoilMass soil)
+        {
+            try
+            {
+                var path = await FileHelper.SavePhoto(soil.Photo.File);
+                var photo = new Core.Models.File(path, soil.Photo.TitleEng, soil.Photo.TitleRu);
+
+                var newSoil = _mapper.Map<SoilObject>(soil);
+                newSoil.Photo = photo;
+                _context.SoilObjects.Add(newSoil);
+                await _context.SaveChangesAsync();
+
+                return ServiceResponse<SoilObject>.OkResponse(newSoil);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
+            }
+        }
+
+        public ServiceResponse Delete(int TranslationId)
+        {
+            var translation = _context.SoilTranslations
+                .Include(x => x.SoilObject).ThenInclude(x => x.Translations)
+                .Include(x => x.SoilObject).ThenInclude(x => x.Publications)
+                .Include(x => x.SoilObject).ThenInclude(x => x.User)
+                .Include(x => x.SoilObject).ThenInclude(x => x.Authors)
+                .Include(x => x.SoilObject).ThenInclude(x => x.EcoSystems)
+                .Include(x => x.SoilObject).ThenInclude(x => x.ObjectPhoto)
+                .Include(x => x.SoilObject).ThenInclude(x => x.Terms)
+                .FirstOrDefault(x=>x.Id == TranslationId);
+
+            try
+            {
+                if (translation != null)
+                {
+                    if (translation.SoilObject.Translations.Count <= 1)
+                    {
+                        _context.Remove(translation);
+                        _context.SoilObjects.Remove(translation.SoilObject);
+                    }
+                    else
+                        _context.Remove(translation);
+                }
+                
+                _context.SaveChanges();
+                return ServiceResponse.OkResponse;
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse.BadResponse(ex.Message);
+            }
+
+        }
 
         public ServiceResponse<List<SoilResponse>> GetByType(SoilObjectType soilType)
         {
@@ -147,7 +414,7 @@ namespace Photosoil.Service.Services
                 .Include(x => x.Terms)
                 .ToList();
 
-            var soilObjects = 
+            var soilObjects =
                 soils.Where(soilObject => ids.All(x => soilObject.Terms.Exists(term => term.Id == x))).ToList();
 
             var responseSoils = new List<SoilResponse>();
@@ -160,247 +427,6 @@ namespace Photosoil.Service.Services
 
 
             return ServiceResponse<List<SoilResponse>>.OkResponse(responseSoils);
-
-        }
-
-        //public async Task<ServiceResponse<SoilObject>> Post(SoilObjectVM soil)
-        //{
-        //    try
-        //    {
-        //
-        //        var newSoil = _mapper.Map<SoilObject>(soil);
-        //        newSoil.LastUpdated = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-        //        newSoil.PhotoId = soil.PhotoId;
-        //
-        //        foreach (var id in soil.ObjectPhoto)
-        //        {
-        //            var q = _context.Photo.FirstOrDefault(x => x.Id == id);
-        //            newSoil.ObjectPhoto.Add(q);
-        //        }
-        //        foreach (var id in soil.Authors)
-        //        {
-        //            var q = _context.Author.FirstOrDefault(x => x.Id == id);
-        //            newSoil.Authors.Add(q);
-        //        }
-        //        foreach (var id in soil.SoilTerms)
-        //        {
-        //            var q = _context.Term.FirstOrDefault(x => x.Id == id);
-        //            newSoil.Terms.Add(q);
-        //        }
-        //        foreach (var id in soil.Publications)
-        //        {
-        //            var q = _context.Publication.FirstOrDefault(x => x.Id == id);
-        //            newSoil.Publications.Add(q);
-        //        }
-        //        foreach (var id in soil.EcoSystems)
-        //        {
-        //            var q = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
-        //            newSoil.EcoSystems.Add(q);
-        //        }
-        //        _context.SoilObjects.Add(newSoil);
-        //        await _context.SaveChangesAsync();
-        //        
-        //        return ServiceResponse<SoilObject>.OkResponse(newSoil);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ServiceResponse<SoilObject>.BadResponse(ex.Message);
-        //    }
-        //}
-
-        public async Task<ServiceResponse<List<SoilObject>>> Post(int userId, List<SoilObjectVM> soils)
-        {
-            try
-            {
-                var result = new List<SoilObject>();
-                for(int i =0; i< soils.Count; i++)
-                {
-                    var newSoil = _mapper.Map<SoilObject>(soils[i]);
-                    newSoil.LastUpdated = DateTime.Now.ToString(CultureInfo.InvariantCulture);
-                    newSoil.PhotoId = soils[i].PhotoId;
-                    newSoil.UserId = userId;
-
-                    foreach (var id in soils[i].ObjectPhoto)
-                    {
-                        var q = _context.Photo.FirstOrDefault(x => x.Id == id);
-                        newSoil.ObjectPhoto.Add(q);
-                    }
-                    foreach (var id in soils[i].Authors)
-                    {
-                        var q = _context.Author.FirstOrDefault(x => x.Id == id);
-                        newSoil.Authors.Add(q);
-                    }
-                    foreach (var id in soils[i].SoilTerms)
-                    {
-                        var q = _context.Term.FirstOrDefault(x => x.Id == id);
-                        newSoil.Terms.Add(q);
-                    }
-                    foreach (var id in soils[i].Publications)
-                    {
-                        var q = _context.Publication.FirstOrDefault(x => x.Id == id);
-                        newSoil.Publications.Add(q);
-                    }
-                    foreach (var id in soils[i].EcoSystems)
-                    {
-                        var q = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
-                        newSoil.EcoSystems.Add(q);
-                    }
-                    _context.SoilObjects.Add(newSoil);
-                    
-                    await _context.SaveChangesAsync();
-                    result.Add(newSoil);
-                }
-
-                if(result.Count > 1)
-                    await MergeLang(result);
-
-                return ServiceResponse<List<SoilObject>>.OkResponse(result);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResponse<List<SoilObject>>.BadResponse(ex.Message);
-            }
-        }
-
-        private async Task<List<SoilObject>> MergeLang(List<SoilObject> soilObjects)
-        {
-            var soilRu = soilObjects.FirstOrDefault(); 
-            var soilEng = soilObjects.LastOrDefault();
-
-            soilRu.OtherLangId = soilEng.Id;
-            soilEng.OtherLangId = soilRu.Id;
-
-            _context.Update(soilRu);
-            _context.Update(soilEng);
-
-            _context.SaveChanges();
-
-            return soilObjects;
-        }
-
-        public async Task<ServiceResponse<SoilObject>> PutVisible(int id, bool isVisible)
-        {
-            try
-            {
-                var soilObject = _context.SoilObjects.FirstOrDefault(x => x.Id == id);
-                if(soilObject == null)
-                    return ServiceResponse<SoilObject>.BadResponse("Данные не найдены");
-
-                soilObject.LastUpdated = DateTime.Now.ToString();
-                soilObject.IsVisible = isVisible;
-
-                _context.SoilObjects.Update(soilObject);
-                await _context.SaveChangesAsync();
-                return ServiceResponse<SoilObject>.OkResponse(soilObject);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
-            }
-        }
-        public async Task<ServiceResponse<SoilObject>> Put(int id, SoilObjectVM soilObjectVm)
-        {
-            try
-            {
-                var soilObject = _context.SoilObjects
-                    .Include(x => x.Terms)
-                    .Include(x => x.EcoSystems)
-                    .Include(x => x.Publications)
-                    .Include(x => x.Authors)
-                    .Include(x => x.ObjectPhoto).FirstOrDefault(x=>x.Id == id);
-
-                soilObject.ObjectPhoto = new List<File>();
-                soilObject.Authors = new List<Author>();
-                soilObject.Publications = new List<Publication>();
-                soilObject.EcoSystems = new List<EcoSystem>();
-                soilObject.Terms = new List<Term>();
-                soilObject.PhotoId = soilObjectVm.PhotoId;
-
-                _context.SoilObjects.Update(soilObject);
-                _context.SaveChanges();
-
-                soilObjectVm.CopySoilObjectFields(soilObject);
-
-
-                var photos = soilObjectVm.ObjectPhoto
-                    .Select(photoId => _context.Photo.FirstOrDefault(x => x.Id == photoId))
-                    .ToList();
-                soilObject.ObjectPhoto.AddRange(photos);
-
-
-                
-                var authors = soilObjectVm.Authors
-                    .Select(authorId => _context.Author.FirstOrDefault(x => x.Id == authorId))
-                    .ToList();
-                
-                soilObject.Authors.AddRange(authors);
-                
-                var newTerms = soilObjectVm.SoilTerms
-                    .Select(idSoilTerm => _context.Term.FirstOrDefault(x => x.Id == idSoilTerm))
-                    .ToList();
-                
-                soilObject.Terms.AddRange(newTerms);
-                
-                
-                var newPublication= soilObjectVm.Publications
-                    .Select(publId=> _context.Publication.FirstOrDefault(x => x.Id == publId))
-                    .ToList();
-                
-                soilObject.Publications.AddRange(newPublication);
-                
-                var newSystem= soilObjectVm.EcoSystems
-                    .Select(ecoId => _context.EcoSystem.FirstOrDefault(x => x.Id == ecoId))
-                    .ToList();
-                
-                soilObject.EcoSystems.AddRange(newSystem);
-
-           
-
-                _context.SoilObjects.Update(soilObject);
-                await _context.SaveChangesAsync();
-                return ServiceResponse<SoilObject>.OkResponse(soilObject);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
-            }
-        }
-        public async Task<ServiceResponse<SoilObject>> PostMass(SoilMass soil)
-        {
-            try
-            {
-                var path = await FileHelper.SavePhoto(soil.Photo.File);
-                var photo = new Core.Models.File(path, soil.Photo.TitleEng, soil.Photo.TitleRu);
-
-                var newSoil = _mapper.Map<SoilObject>(soil);
-                newSoil.Photo = photo;
-                _context.SoilObjects.Add(newSoil);
-                await _context.SaveChangesAsync();
-
-                return ServiceResponse<SoilObject>.OkResponse(newSoil);
-            }
-            catch (Exception ex)
-            {
-                return ServiceResponse<SoilObject>.BadResponse(ex.Message);
-            }
-        }
-
-        public ServiceResponse Delete(int id)
-        {
-            var soilObject = _context.SoilObjects.AsNoTracking()
-                .Include(x=>x.ObjectPhoto)
-                .Include(x=>x.Photo).FirstOrDefault(x => x.Id == id);
-
-            try
-            {
-                if (soilObject != null) _context.Remove(soilObject);
-                _context.SaveChanges();
-                return ServiceResponse.OkResponse;
-            }
-            catch (Exception ex)
-            {
-                return ServiceResponse.BadResponse(ex.Message);
-            }
 
         }
     }
