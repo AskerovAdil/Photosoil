@@ -19,9 +19,18 @@ namespace Photosoil.Core.Models.Second
 
         public bool? IsVisible { get; set; } = false;
         public bool? IsEnglish { get; set; } = false;
-        public string? LastUpdated { get; set; }
+        public long LastUpdated { get; set; }
 
         public int? NewsId { get; set; }
         public News? News{ get; set; }
+
+        [NotMapped]
+        public User? UserInfo => News is not null && News.User is not null ? new User
+        {
+            Id = News.User.Id,
+            Name = News.User.Name,
+            Role = News.User.Role,
+            Email = News.User.Email,
+        } : null;
     }
 }

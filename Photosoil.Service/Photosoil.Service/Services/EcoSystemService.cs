@@ -74,9 +74,11 @@ namespace Photosoil.Service.Services
         {
             IQueryable<EcoSystem> ecoSystems;
             if (role == "Admin" || role == "Moderator")
-                ecoSystems = _context.EcoSystem.Include(x => x.Authors).Include(x => x.Translations).Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects).AsNoTracking();
+                ecoSystems = _context.EcoSystem.Include(x => x.User).Include(x => x.Authors).Include(x => x.Translations).Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects).AsNoTracking();
             else
-                ecoSystems = _context.EcoSystem.Include(x => x.Authors).Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects)
+                ecoSystems = _context.EcoSystem
+                    .Include(x => x.User)
+                    .Include(x => x.Authors).Include(x => x.Photo).Include(x => x.Publications).Include(x => x.SoilObjects)
                     .Include(x=>x.Translations.Where(x => x.IsVisible == true))
                     .Where(x => x.Translations.Count(x => x.IsVisible == true) > 0)
                     .AsNoTracking();
@@ -97,6 +99,7 @@ namespace Photosoil.Service.Services
         {
             var ecoSystem = _context.EcoSystem
                     .Include(x => x.Translations)
+                    .Include(x => x.User)
                     .Include(x => x.Photo).Include(x=>x.User)
                     .Include(x => x.Publications).ThenInclude(x=>x.Translations)
                     .Include(x => x.ObjectPhoto)
@@ -143,7 +146,7 @@ namespace Photosoil.Service.Services
                 ecoSystem.PhotoId = ecoSystemVM.PhotoId;
                 ecoSystem.UserId = userId;
 
-                ecoSystemVM.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                ecoSystemVM.Translations.ForEach(x => x.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 foreach (var id in ecoSystemVM.Publications)
                 {
                     var publication = _context.Publication.FirstOrDefault(x => x.Id == id);
@@ -166,7 +169,7 @@ namespace Photosoil.Service.Services
                 }
 
                 ecoSystem.Translations = ecoSystemVM.Translations;
-                ecoSystem.CreatedDate = DateTime.Now.ToString();
+                ecoSystem.CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();    
 
                 _context.EcoSystem.Add(ecoSystem);
                 await _context.SaveChangesAsync();
@@ -190,7 +193,7 @@ namespace Photosoil.Service.Services
                 if (eco == null)
                     return ServiceResponse<EcoSystem>.BadResponse("Экосистема не найдена!");
 
-                eco.LastUpdated = DateTime.Now.ToString();
+                eco.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 eco.IsVisible = isVisible;
 
                 _context.EcoTranslations.Update(eco);
@@ -233,7 +236,7 @@ namespace Photosoil.Service.Services
                 foreach (var el in ecoSystemVM.Translations)
                 {
                     el.EcoSystemId = id;
-                    el.LastUpdated = DateTime.Now.ToString();
+                    el.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     el.EcoSystem = null;
 
                     if (_context.EcoTranslations.Any(x => x.Id == el.Id))

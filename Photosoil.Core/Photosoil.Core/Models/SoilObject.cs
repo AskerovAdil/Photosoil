@@ -30,7 +30,7 @@ namespace Photosoil.Core.Models
         public File? Photo{ get; set; }
 
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных
@@ -55,7 +55,16 @@ namespace Photosoil.Core.Models
         public List<Publication> Publications { get; set; } = new();
 
         public int? UserId { get; set; }
+        [JsonIgnore]
         public ApplicationUser? User { get; set; }
 
+        [NotMapped]
+        public User? UserInfo => User is not null ? new User
+        {
+            Id = User.Id,
+            Name = User.Name,
+            Role = User.Role,
+            Email = User.Email,
+        } : null;
     }
 }

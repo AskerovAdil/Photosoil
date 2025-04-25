@@ -1,12 +1,4 @@
 ﻿using Photosoil.Core.Enum;
-using Photosoil.Core.Models;
-using Photosoil.Service.Helpers.ViewModel.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
@@ -14,14 +6,17 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
     {
         public string? NameRu { get; set; }
         public string? NameEng { get; set; }
+        public bool? IsAlphabeticallOrder { get; set; } = true;
         public bool IsMulti { get; set; } = true;
-        public List<TermVM>? Terms { get; set; } = new();
+        public List<TermVM> Terms { get; set; } = new();
 
         public TranslationMode TranslationMode { get; set; } = TranslationMode.Neutral;
     }
 
     public class TermVM
     {
+        public int? Id { get; set; }
+        public int Order { get; set; } = 1;
         public string? NameRu { get; set; }
         public string? NameEng { get; set; }
     }

@@ -1,0 +1,28 @@
+﻿using Photosoil.Core.Enum;
+using Photosoil.Core.Models;
+using Photosoil.Service.Helpers.ViewModel.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Photosoil.Service.Helpers.ViewModel.Request
+{
+    public class ClassificationVM
+    {
+        public string NameRu { get; set; }
+        public string NameEng { get; set; }
+        public bool IsMulti { get; set; } = true;
+        public List<TermVM> Terms { get; set; } = new List<TermVM>();
+
+        public TranslationMode TranslationMode { get; set; } = TranslationMode.Neutral;
+    }
+
+    public class TermVM
+    {
+        public string NameRu { get; set; }
+        public string NameEng { get; set; }
+    }
+}

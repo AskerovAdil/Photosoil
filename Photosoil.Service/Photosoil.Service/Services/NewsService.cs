@@ -87,9 +87,9 @@ namespace Photosoil.Service.Services
             {
                 var news = _mapper.Map<News>(newsVM);
 
-                news.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                news.Translations.ForEach(x => x.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 news.UserId = userId;
-                news.CreatedDate = DateTime.Now.ToString();
+                news.CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 foreach (var id in newsVM.Tags)
                 {
                     var q = _context.Tags.FirstOrDefault(x => x.Id == id);
@@ -128,7 +128,7 @@ namespace Photosoil.Service.Services
                 if (news == null)
                     return ServiceResponse<NewsTranslation>.BadResponse("Новость не найдена!");
 
-                news.LastUpdated = DateTime.Now.ToString();
+                news.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 news.IsVisible = isVisible;
 
                 _context.NewsTranslations.Update(news);
@@ -165,7 +165,7 @@ namespace Photosoil.Service.Services
                 foreach (var el in newsVM.Translations)
                 {
                     el.NewsId = id;
-                    el.LastUpdated = DateTime.Now.ToString();
+                    el.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     el.News = null;
                     if (_context.NewsTranslations.Any(x => x.Id == el.Id))
                         _context.NewsTranslations.Update(el);

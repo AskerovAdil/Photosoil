@@ -21,7 +21,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 
         public string? Doi { get; set; }
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
         
         public PublicationType? Type { get; set; }
 

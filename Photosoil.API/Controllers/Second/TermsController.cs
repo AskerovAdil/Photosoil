@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
+using Photosoil.Service.Helpers.ViewModel;
 using Photosoil.Service.Helpers.ViewModel.Base;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Helpers.ViewModel.Response;
@@ -37,6 +38,19 @@ namespace Photosoil.API.Controllers.Second
             var response = await _termsService.Put(Id, NameRu, NameEng);
 
             return response.Error ? BadRequest(response) : Ok(response);
+        }
+
+        /// <summary>
+        /// Обновить порядковые номера
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns></returns>
+        [HttpPost(nameof(UpdateOrder))]
+        public async Task<IActionResult> UpdateOrder(List<OrderVM> orders)
+        {
+            var response = await _termsService.UpdateOrder(orders);
+
+            return response.Error ? BadRequest() : Ok();
         }
 
         [HttpDelete(nameof(Delete))]

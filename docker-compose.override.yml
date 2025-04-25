@@ -4,7 +4,7 @@ services:
   photosoil.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:443;http://+:80
     ports:
       - "1616:80"
       - "1515:443"

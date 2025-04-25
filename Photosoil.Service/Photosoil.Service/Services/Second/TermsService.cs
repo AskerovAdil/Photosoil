@@ -12,6 +12,7 @@ using Photosoil.Core.Models.Second;
 using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
+using Photosoil.Service.Helpers.ViewModel;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Helpers.ViewModel.Response;
 
@@ -34,8 +35,14 @@ namespace Photosoil.Service.Services.Second
                 var term = _mapper.Map<Term>(termsVm);
                 _context.Set<Term>().Add(term);
 
-                var classification = _context.Classification.FirstOrDefault(x => x.Id == termsVm.ClassificationId);
+                var classification = _context.Classification.Include(x=>x.Terms).FirstOrDefault(x => x.Id == termsVm.ClassificationId);
+                if (classification == null)
+                    throw new ArgumentException("classification not found!");
+
                 term.Classification = classification;
+
+                var maxOrder = classification.Terms.Max(x => x.Order);
+                term.Order = ++maxOrder;
 
                 await _context.SaveChangesAsync();
 
@@ -68,6 +75,27 @@ namespace Photosoil.Service.Services.Second
                 return ServiceResponse<Term>.BadResponse(ex.Message);
             }
         }
+        public async Task<ServiceResponse> UpdateOrder(List<OrderVM> orders)
+        {
+            try
+            {
+                foreach (var el in orders)
+                {
+                    var term = await _context.Term.FirstOrDefaultAsync(x => x.Id == el.Id);
+                    if (term == null)
+                        return ServiceResponse<Classification>.BadResponse("Классификатор не найден");
+
+                    term.Order = el.Order;
+                    _context.Term.Update(term);
+                }
+                _context.SaveChanges();
+                return ServiceResponse.OkResponse;
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse.BadResponse(ex.Message);
+            }
+        }
 
         public ServiceResponse Delete(int id)
         {
@@ -76,8 +104,12 @@ namespace Photosoil.Service.Services.Second
 
             try
             {
-
                 if (term != null) _context.Term.Remove(term);
+                var orders = _context.Classification.Include(x=>x.Terms).FirstOrDefault(x=>x.Id == term.ClassificationId)?
+                    .Terms.Where(x => x.Order > term.Order);
+
+                foreach (var el in orders) el.Order--;
+                
                 _context.SaveChanges();
                 return ServiceResponse.OkResponse;
             }

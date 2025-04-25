@@ -10,7 +10,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
     {
         public int Id { get; set; }
         public string? Doi { get; set; }
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         public string? UserEmail { get; set; }
 

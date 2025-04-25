@@ -20,7 +20,4 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         public int? PhotoId { get; set; }
 
     }
-
-
-
 }

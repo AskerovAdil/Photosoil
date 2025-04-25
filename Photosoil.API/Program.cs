@@ -98,7 +98,7 @@ namespace PhotosoilAPI
                 {
                     builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
 
-                })
+                }).EnableSensitiveDataLogging()
             );
 
             builder.Services.AddAuthentication(options =>
@@ -223,7 +223,6 @@ namespace PhotosoilAPI
             //        options.Password.RequiredLength = 8;
             //    }).AddEntityFrameworkStores<ApplicationDbContext>().AddRoles<IdentityRole>();
 
-
             builder.Services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -253,14 +252,16 @@ namespace PhotosoilAPI
                 app.UseSwaggerUI();
 
             //app.UseHttpsRedirection();
+            app.UseCors();
 
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(
-                    "/Storage"),
-                RequestPath = "/Storage"
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                    ctx.Context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
+                }
             });
-            app.UseCors();
 
 
             app.MapControllers();

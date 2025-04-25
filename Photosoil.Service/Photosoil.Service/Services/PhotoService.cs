@@ -20,7 +20,7 @@ namespace Photosoil.Service.Services
             _context = context;
         }
 
-        public ServiceResponse<List<File>> GetAll ()
+        public ServiceResponse<List<File>> GetAll()
         {
 
             var soilPhoto = _context.Photo.ToList();
@@ -71,6 +71,29 @@ namespace Photosoil.Service.Services
             }
         }
 
+        public async Task<ServiceResponse> ResizeAllPhoto()
+        {
+            try
+            {
+                var images = _context.Photo.ToList();
+                foreach (var image in images)
+                {
+                    if(image.FileName.EndsWith(".jpg") || image.FileName.EndsWith(".png") || image.FileName.EndsWith(".jpeg"))
+                    {
+                        var pathResize = await CompressAndSaveImageAsync(image.Path);
+                        image.PathResize = pathResize;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                return ServiceResponse.OkResponse;
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<File>.BadResponse(ex.Message);
+            }
+        }
+
         public async Task<string> CompressAndSaveImageAsync(IFormFile imageFile, string path, int quality = 10)
         {
             string compressedPath = Path.Combine(
@@ -88,6 +111,29 @@ namespace Photosoil.Service.Services
             await Task.Run(() => image.Save(compressedPath, encoder));
             return compressedPath;
         }
+
+        public async Task<string> CompressAndSaveImageAsync(string sourcePath, int quality = 10)
+        {
+            var compressedPath = Path.Combine(
+                Path.GetDirectoryName(sourcePath),
+                "resize/",
+                $"{Path.GetFileNameWithoutExtension(sourcePath)}{Path.GetExtension(sourcePath)}"
+            ).Replace("\\", "/");
+
+            if (!System.IO.File.Exists(compressedPath))
+            {
+                using var image = Image.Load(sourcePath);
+                var encoder = new JpegEncoder
+                {
+                    Quality = quality
+                };
+
+                await Task.Run(() => image.Save(compressedPath, encoder));
+            }
+
+            return compressedPath;
+        }
+
 
         public async Task<ServiceResponse<File>> Put(int id,string? TitleEng, string? TitleRu)
         {

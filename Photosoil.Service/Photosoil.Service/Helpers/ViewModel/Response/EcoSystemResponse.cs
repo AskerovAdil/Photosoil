@@ -4,6 +4,7 @@ using Photosoil.Core.Models.Second;
 using Photosoil.Core.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Photosoil.Service.Helpers.ViewModel.Response;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
@@ -11,7 +12,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
     {
         public int Id { get; set; }
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
         public File? Photo { get; set; }
 
         public bool? IsExternal { get; set; }
@@ -31,7 +32,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
 
         public int? PhotoId { get; set; }
         public bool? IsExternal { get; set; }
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File? Photo { get; set; }
@@ -46,7 +47,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         /// </summary>
         public List<File> ObjectPhoto { get; set; } = new();
         public int? UserId { get; set; }
-        public ApplicationUser? User { get; set; }
+        public AccountResponse? User { get; set; }
 
     }
 }

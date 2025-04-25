@@ -1,0 +1,884 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\SixLabors.ImageSharp.3.1.5\build\SixLabors.ImageSharp.props" Condition="Exists('..\packages\SixLabors.ImageSharp.3.1.5\build\SixLabors.ImageSharp.props')" />
+  <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Photosoil.Exporter</RootNamespace>
+    <AssemblyName>Photosoil.Exporter</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.3.1\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.26.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.26.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4, Version=1.3.8.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.1.3.8\lib\net462\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams, Version=1.3.8.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Compression.LZ4.Streams.1.3.8\lib\net462\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash, Version=1.0.8.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
+      <HintPath>..\packages\K4os.Hash.xxHash.1.0.8\lib\net462\K4os.Hash.xxHash.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.4\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Cookies, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Cookies.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Core.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Cryptography.Internal, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.Internal.9.0.0\lib\net462\Microsoft.AspNetCore.Cryptography.Internal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.KeyDerivation.9.0.0\lib\net462\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.DataProtection, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.DataProtection.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.DataProtection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.DataProtection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.DataProtection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.DataProtection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Server.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Extensions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Identity, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Identity.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.3.1.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.9.0.0\lib\net462\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=3.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.3.1.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.9.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Hosting.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Hosting.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Identity.Core, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Identity.Core.9.0.0\lib\net462\Microsoft.Extensions.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Identity.Stores, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Identity.Stores.9.0.0\lib\net462\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.9.0.0\lib\net462\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.9.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.ObjectPool, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.2.2.0\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.9.0.0\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.9.0.0\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.WebEncoders, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.WebEncoders.2.2.0\lib\netstandard2.0\Microsoft.Extensions.WebEncoders.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Net.Http.Headers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.Headers.2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Registry.4.5.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=9.1.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.9.1.0\lib\net462\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.EntityFramework, Version=9.1.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.EntityFramework.9.1.0\lib\net462\MySql.Data.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.EntityFrameworkCore, Version=8.0.22.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.EntityFrameworkCore.8.0.22\lib\netstandard2.0\MySql.Data.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="MySqlConnector, Version=2.0.0.0, Culture=neutral, PublicKeyToken=d33d3e53aa5f8c92, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlConnector.2.4.0\lib\net471\MySqlConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=6.0.13.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.6.0.13\lib\netstandard2.0\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.6.0.0\lib\net461\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.8.0.0\lib\net462\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Data.SqlXml" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Pipelines, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.5.0.2\lib\net461\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.4.5.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Xml, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.4.5.0\lib\net461\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Permissions.4.5.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.5.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.6.0.10\lib\net461\System.Text.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Channels, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Channels.6.0.0\lib\net461\System.Threading.Channels.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="ZstdSharp, Version=0.8.0.0, Culture=neutral, PublicKeyToken=8d151af33a4ad5cf, processorArchitecture=MSIL">
+      <HintPath>..\packages\ZstdSharp.Port.0.8.0\lib\net462\ZstdSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\accesslog.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\actions.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\authmap.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\batch.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\block.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\blocked_ips.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\block_custom.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\block_node_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\block_role.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_block.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_bootstrap.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_features.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_field.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_filter.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_form.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_image.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_libraries.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_media_xml.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_menu.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_page.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_panels.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_path.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_token.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_variable.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_views.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\cache_views_data.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ckeditor_input_format.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ckeditor_settings.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\comment.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ctools_css_cache.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\ctools_object_cache.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\date_formats.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\date_format_locale.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\date_format_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\entity_translation.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\entity_translation_revision.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_collection_item.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_collection_item_revision.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_config.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_config_instance.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_body.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_comment_body.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_0408rus.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_0408rus_subtypes.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_0408rus_types.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_author.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_author_pic.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_code.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_comments.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_contacts.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_element_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_env_zone.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_file_image_alt_text.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_file_image_title_text.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_flora.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_flora_details.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_flora_stuff.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_image.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_location.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_main_wrb_14.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_photos.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_pic.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_picture.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_position.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_ref_wrb_14.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_relief_position.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_tags.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_video_tags.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_data_field_v_url.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_body.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_comment_body.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_0408rus.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_0408rus_subtypes.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_0408rus_types.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_author.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_author_pic.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_code.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_comments.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_contacts.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_element_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_env_zone.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_file_image_alt_text.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_file_image_title_text.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_flora.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_flora_details.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_flora_stuff.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_image.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_location.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_main_wrb_14.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_photos.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_pic.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_picture.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_position.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_ref_wrb_14.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_relief_position.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_tags.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_video_tags.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\field_revision_field_v_url.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\file_display.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\file_managed.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\file_metadata.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\file_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\file_usage.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\filter.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\filter_format.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\flood.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\GluceverDbContext.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GluceverDbContext.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\GluceverDbContext.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\GluceverDbContext.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GluceverDbContext.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\history.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\i18n_block_language.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\i18n_path.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\i18n_string.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\i18n_translation_set.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\image_effects.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\image_styles.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\languages.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\locales_source.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\locales_target.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\media_filter_usage.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\media_list_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\media_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\menu_custom.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\menu_links.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\menu_router.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node_access.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node_comment_statistics.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node_counter.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node_revision.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\node_type.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\object_log.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_display.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_layout.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_mini.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_node.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_pane.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\panels_renderer_pipeline.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\pathauto_state.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\queue.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\rdf_mapping.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\registry.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\registry_file.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\role.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\role_permission.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\search_dataset.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\search_index.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\search_node_links.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\search_total.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\semaphore.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\sequences.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\sessions.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\shortcut_set.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\shortcut_set_users.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\stylizer.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\system.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\taxonomy_index.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\taxonomy_term_data.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\taxonomy_term_hierarchy.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\taxonomy_vocabulary.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\url_alias.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\users.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\users_roles.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\variable.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\variable_store.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\views_display.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\views_view.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\watchdog.cs">
+      <DependentUpon>GluceverDbContext.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Enum\AuthorType.cs" />
+    <Compile Include="Enum\SoilObjectType.cs" />
+    <Compile Include="Enum\TermTranslation.cs" />
+    <Compile Include="Enum\TranslationMode.cs" />
+    <Compile Include="Models\ApplicationUser.cs" />
+    <Compile Include="Models\Article.cs" />
+    <Compile Include="Models\Author.cs" />
+    <Compile Include="Models\AuthorRequest.cs" />
+    <Compile Include="Models\Base\BaseSecond.cs" />
+    <Compile Include="Models\Base\BaseTranslation.cs" />
+    <Compile Include="Models\Base\Coordinate.cs" />
+    <Compile Include="Models\EcoSystem.cs" />
+    <Compile Include="Models\File.cs" />
+    <Compile Include="Models\LinkModels\SoilObjectTerm.cs" />
+    <Compile Include="Models\News.cs" />
+    <Compile Include="Models\Publication.cs" />
+    <Compile Include="Models\Rules.cs" />
+    <Compile Include="Models\Second\Classification.cs" />
+    <Compile Include="Models\Second\EcoTranslation.cs" />
+    <Compile Include="Models\Second\NewsTranslation.cs" />
+    <Compile Include="Models\Second\PublicationTranslation.cs" />
+    <Compile Include="Models\Second\SoilTranslation.cs" />
+    <Compile Include="Models\Second\Tag.cs" />
+    <Compile Include="Models\Second\Term.cs" />
+    <Compile Include="Models\SoilObject.cs" />
+    <Compile Include="Models\ViewModel\Base\BaseData.cs" />
+    <Compile Include="Models\ViewModel\Base\PhotoBase.cs" />
+    <Compile Include="Models\ViewModel\ClassificationOrder.cs" />
+    <Compile Include="Models\ViewModel\Request\ArticleVM.cs" />
+    <Compile Include="Models\ViewModel\Request\AuthorVM.cs" />
+    <Compile Include="Models\ViewModel\Request\ClassificationVM.cs" />
+    <Compile Include="Models\ViewModel\Request\EcoSystemVM.cs" />
+    <Compile Include="Models\ViewModel\Request\NewsVM.cs" />
+    <Compile Include="Models\ViewModel\Request\PhotoVM.cs" />
+    <Compile Include="Models\ViewModel\Request\PublicationVM.cs" />
+    <Compile Include="Models\ViewModel\Request\RulesVM.cs" />
+    <Compile Include="Models\ViewModel\Request\SoilObjectVM.cs" />
+    <Compile Include="Models\ViewModel\Request\TermsVM.cs" />
+    <Compile Include="Models\ViewModel\SoilMass.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="Data\GluceverDbContext.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>GluceverDbContext.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Data\GluceverDbContext.edmx.diagram">
+      <DependentUpon>GluceverDbContext.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\GluceverDbContext.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GluceverDbContext.edmx</DependentUpon>
+      <LastGenOutput>GluceverDbContext.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Data\GluceverDbContext.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>GluceverDbContext.edmx</DependentUpon>
+      <LastGenOutput>GluceverDbContext.cs</LastGenOutput>
+    </Content>
+    <Content Include="ILLink\ILLink.Descriptors.LibraryBuild.xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\SixLabors.ImageSharp.3.1.5\build\SixLabors.ImageSharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SixLabors.ImageSharp.3.1.5\build\SixLabors.ImageSharp.props'))" />
+  </Target>
+</Project>

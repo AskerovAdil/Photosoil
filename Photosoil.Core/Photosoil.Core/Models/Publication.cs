@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Photosoil.Core.Models.Second;
 
@@ -25,7 +22,7 @@ namespace Photosoil.Core.Models
 
 
         public string? Coordinates { get; set; }
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         public int? FileId { get; set; }
 
@@ -38,8 +35,17 @@ namespace Photosoil.Core.Models
         public List<PublicationTranslation> Translations { get; set; } = new();
         
         public int? UserId { get; set; }
-        
+        [JsonIgnore]
         public ApplicationUser? User { get; set; }
+
+        [NotMapped]
+        public User? UserInfo => User is not null ? new User
+        {
+            Id = User.Id,
+            Name = User.Name,
+            Role = User.Role,
+            Email = User.Email,
+        } : null;
     }
     public enum PublicationType
     {

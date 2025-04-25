@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33213.308
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34301.259
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photosoil.API", "Photosoil.API\Photosoil.API.csproj", "{E68802DB-6152-46DE-B99D-3D25E3FD1B17}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Photosoil.Service", "Photosoil.Service\Photosoil.Service\Photosoil.Service.csproj", "{0BCD9783-62C7-4F34-9751-AE555DDCFCB9}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{0F36B7FE-F599-49D6-951E-5EFDF5F392F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photosoil.Exporter", "Photosoil.Exporter\Photosoil.Exporter.csproj", "{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Photosoil.Export", "Photosoil.Export\Photosoil.Export.csproj", "{26C4184A-5497-435E-B08F-8DC17C053E6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{0F36B7FE-F599-49D6-951E-5EFDF5F392F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F36B7FE-F599-49D6-951E-5EFDF5F392F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F36B7FE-F599-49D6-951E-5EFDF5F392F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4DB64FE-CA7D-40E0-9C13-FA9DF21846BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26C4184A-5497-435E-B08F-8DC17C053E6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26C4184A-5497-435E-B08F-8DC17C053E6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26C4184A-5497-435E-B08F-8DC17C053E6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26C4184A-5497-435E-B08F-8DC17C053E6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

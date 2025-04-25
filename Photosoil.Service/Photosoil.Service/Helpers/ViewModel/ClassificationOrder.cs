@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Photosoil.Service.Helpers.ViewModel
 {
-    public class ClassificationOrder
+    public class OrderVM
     {
         public int Id { get; set; }
         public int Order { get; set; }

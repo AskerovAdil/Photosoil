@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
-using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Helpers.ViewModel.Response;
-using File = Photosoil.Core.Models.File;
 
 namespace Photosoil.Service.Services
 {
@@ -28,9 +18,26 @@ namespace Photosoil.Service.Services
             _context = context;
         }
 
-        public  ServiceResponse<List<AuthorResponse>> Get(int? userId = 0,string? role = "")
+        public ServiceResponse<List<AuthorResponse>> GetAdminAll(int userId = 0, string role = "")
         {
-            var listAuthor = _context.Author.Include(x => x.Photo).Include(x => x.DataRu).Include(x => x.DataEng).ToList();
+            IQueryable<Author> listAuthor;
+            if (role == "Moderator")
+                listAuthor = _context.Author.Include(x => x.Photo).Include(x => x.User).Include(x => x.DataRu).Include(x => x.DataEng).Where(x => x.UserId == userId);
+            else if (role == "Admin")
+                listAuthor = _context.Author.Include(x => x.Photo).Include(x=>x.User).Include(x => x.DataRu).Include(x => x.DataEng);
+            else
+                listAuthor = Enumerable.Empty<Author>().AsQueryable();
+
+            var result = new List<AuthorResponse>();
+            foreach (var el in listAuthor)
+                result.Add(_mapper.Map<AuthorResponse>(el));
+
+            return ServiceResponse<List<AuthorResponse>>.OkResponse(result);
+        }
+
+        public  ServiceResponse<List<AuthorResponse>> Get()
+        {
+            var listAuthor = _context.Author.Include(x => x.Photo).Include(x => x.User).Include(x => x.DataRu).Include(x => x.DataEng).ToList();
             
             var result = new List<AuthorResponse>();
             foreach (var el in listAuthor)
@@ -48,7 +55,10 @@ namespace Photosoil.Service.Services
                 .Include(x => x.EcoSystems).ThenInclude(x => x.Translations)
                 .Include(x => x.SoilObjects).ThenInclude(x => x.Photo)
                 .Include(x => x.SoilObjects).ThenInclude(x => x.Translations)
+                .Include(x => x.SoilObjects).ThenInclude(x => x.User)
+                .Include(x => x.User)
                 .Include(x=>x.Photo).AsNoTracking().FirstOrDefault(x=>x.Id == id);
+
 
             var result = _mapper.Map<AuthorResponseById>(author);
 
@@ -67,7 +77,7 @@ namespace Photosoil.Service.Services
                 var author = _mapper.Map<Author>(authorVM);
                 author.PhotoId = authorVM.PhotoId;
                 author.UserId = userId;
-                author.CreatedDate = DateTime.Now.ToString();
+                author.CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 _context.Author.Add(author);
                 await _context.SaveChangesAsync();
                 

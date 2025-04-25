@@ -16,7 +16,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
         public int Id { get; set; }
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         public List<NewsTranslation> Translations { get; set; } = new();
         public List<Tag> Tags { get; set; } = new();

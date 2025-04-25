@@ -28,7 +28,7 @@ namespace Photosoil.API.Controllers
             string? role = User.FindFirstValue(ClaimsIdentity.DefaultRoleClaimType);
             int.TryParse(userId, out var id);
 
-            var response = _authorService.Get(id, role);
+            var response = _authorService.GetAdminAll(id, role);
 
             return response.Error ? BadRequest(response) : Ok(response);
         }

@@ -2,11 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 
 namespace Photosoil.Core.Models
@@ -20,7 +15,7 @@ namespace Photosoil.Core.Models
             Path = path;
             TitleEng = titleEng;
             TitleRu= titleRu;
-            LastUpdated = DateTime.Now.ToString();
+            LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
         public File(string path, string pathResize, string titleEng, string titleRu)
         {
@@ -28,7 +23,7 @@ namespace Photosoil.Core.Models
             PathResize = pathResize;
             TitleEng = titleEng;
             TitleRu = titleRu;
-            LastUpdated = DateTime.Now.ToString();
+            LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         }
 
         [Key]
@@ -38,7 +33,7 @@ namespace Photosoil.Core.Models
         public string? PathResize { get; set; }
         public string? TitleEng { get; set; }
         public string? TitleRu { get; set; }
-        public string? LastUpdated { get; set; }
+        public long LastUpdated { get; set; }
 
         [JsonIgnore]
         public List<News> NewsFiles { get; set; } = new();

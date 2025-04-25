@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Photosoil.Core.Enum;
-using System;
-using System.Collections.Generic;
+using Photosoil.Core.Models.Second;
+
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Photosoil.Core.Models
 {
@@ -15,10 +12,12 @@ namespace Photosoil.Core.Models
         [Key]
         public int Id { get; set; }
 
-        public Translation DataEng { get; set; }
-        public Translation DataRu { get; set; }
+        public int? DataEngId { get; set; }
+        public Translation? DataEng { get; set; }
+        public Translation? DataRu { get; set; }
+        public int? DataRuId { get; set; }
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         public AuthorType AuthorType { get; set; }
 
@@ -33,8 +32,17 @@ namespace Photosoil.Core.Models
         public List<EcoSystem> EcoSystems{ get; set; } = new();
 
         public int? UserId { get; set; }
+        [JsonIgnore]
         public ApplicationUser? User { get; set; }
 
+        [NotMapped]
+        public User? UserInfo => User is not null ? new User
+        {
+            Id = User.Id,
+            Name = User.Name,
+            Role = User.Role,
+            Email = User.Email,
+        } : null;
     }
 
     public class Translation

@@ -17,7 +17,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
     {
         public int Id { get; set; }
         public string? Code { get; set; }
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         public bool? IsExternal { get; set; }
 

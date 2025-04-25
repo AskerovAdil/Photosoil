@@ -15,6 +15,7 @@ using Photosoil.Service.Helpers;
 using Photosoil.Service.Helpers.ViewModel.Response;
 using Photosoil.Service.Data;
 using Newtonsoft.Json.Linq;
+using AutoMapper;
 
 namespace Photosoil.Service.Services
 {
@@ -23,11 +24,13 @@ namespace Photosoil.Service.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AccountService(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public AccountService(IMapper mapper, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse> Delete(int Id)
@@ -38,7 +41,9 @@ namespace Photosoil.Service.Services
                 return ServiceResponse.BadResponse("Not Found");
 
             await _userManager.DeleteAsync(existingUser);
-            return ServiceResponse<ApplicationUser>.OkResponse(existingUser);
+
+            var response = _mapper.Map<AccountResponse>(existingUser);
+            return ServiceResponse<AccountResponse>.OkResponse(response);
         }
         public async Task<ServiceResponse> MakeAdmin(int Id, bool isAdmin)
         {
@@ -53,8 +58,9 @@ namespace Photosoil.Service.Services
 
             await _userManager.UpdateAsync(existingUser);
 
+            var response = _mapper.Map<AccountResponse>(existingUser);
 
-            return ServiceResponse<ApplicationUser>.OkResponse(existingUser);
+            return ServiceResponse<AccountResponse>.OkResponse(response);
         }
         public async Task<ServiceResponse> GetAll()
         {
@@ -62,8 +68,9 @@ namespace Photosoil.Service.Services
 
             if (existingUser == null)
                 return ServiceResponse.BadResponse("Not Found");
+            var response = _mapper.Map<IList<AccountResponse>>(existingUser);
 
-            return ServiceResponse<IList<ApplicationUser>>.OkResponse(existingUser);
+            return ServiceResponse<IList<AccountResponse>>.OkResponse(response);
         }
 
         public async Task<ServiceResponse> GetById(int UserId)
@@ -85,8 +92,9 @@ namespace Photosoil.Service.Services
 
             if (existingUser == null)
                 return ServiceResponse.BadResponse("Not Found");
+            var response = _mapper.Map<AccountResponse>(existingUser);
 
-            return ServiceResponse<ApplicationUser>.OkResponse(existingUser);
+            return ServiceResponse<AccountResponse>.OkResponse(response);
         }
 
 
@@ -121,11 +129,15 @@ namespace Photosoil.Service.Services
             }
 
             var response = GenerateToken(user);
-
-            user.RefreshToken = response.RefreshToken;
+            if(user.RefreshToken != null)
+                response.RefreshToken = user.RefreshToken;
+            else
+            {
+                user.RefreshToken = GenerateRefreshToken();
+                response.RefreshToken = user.RefreshToken;
+            }
 
             await _userManager.UpdateAsync(user);
-     
             return ServiceResponse<AuthResponse>.OkResponse(response);
         }
 
@@ -150,7 +162,7 @@ namespace Photosoil.Service.Services
                 expires: deadTime,
                 signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            var refreshToken = GenerateRefreshToken();
+            //var refreshToken = GenerateRefreshToken();
             var second = (deadTime - DateTime.Now).TotalSeconds;
 
             var response = new AuthResponse()
@@ -160,7 +172,7 @@ namespace Photosoil.Service.Services
                 Name = user.Name.ToString(),
                 Role = user.Role,
                 Token = encodedJwt,
-                RefreshToken = refreshToken,
+                //RefreshToken = refreshToken,
                 DeadTime = second.ToString()
             };
 

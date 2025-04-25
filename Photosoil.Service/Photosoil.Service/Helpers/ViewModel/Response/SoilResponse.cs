@@ -29,7 +29,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
 
         public SoilObjectType? ObjectType { get; set; } = SoilObjectType.SoilDynamics;
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         /// <summary>
         /// Тип объекта базы данных

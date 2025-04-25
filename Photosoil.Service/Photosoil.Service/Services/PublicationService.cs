@@ -71,10 +71,10 @@ namespace Photosoil.Service.Services
         {
             var datArticles = new List<Publication>();
             if (role == "Admin" || role == "Moderator" )
-                datArticles = _context.Publication.Include(x=>x.Translations).Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
+                datArticles = _context.Publication.Include(x => x.User).Include(x=>x.Translations).Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
                     .AsNoTracking().ToList();
             else
-                datArticles = _context.Publication.Include(x => x.Translations.Where(x => x.IsVisible == true))
+                datArticles = _context.Publication.Include(x => x.User).Include(x => x.Translations.Where(x => x.IsVisible == true))
                     .Where(x => x.Translations.Count(x => x.IsVisible == true) > 0)
                     .Include(x => x.File).Include(x => x.EcoSystems).Include(x => x.SoilObjects)
                     .AsNoTracking().ToList();
@@ -127,9 +127,9 @@ namespace Photosoil.Service.Services
                 publication.FileId = publicationVM.FileId;
                 publication.UserId = userId;
 
-                publicationVM.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                publicationVM.Translations.ForEach(x => x.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 publication.Translations = publicationVM.Translations;
-                publication.CreatedDate = DateTime.Now.ToString();
+                publication.CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 foreach (var id in publicationVM.SoilObjects)
                 {
                     var q = _context.SoilObjects.FirstOrDefault(x => x.Id == id);
@@ -160,7 +160,7 @@ namespace Photosoil.Service.Services
                     .Include(x=>x.Publication)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
-                trans.LastUpdated = DateTime.Now.ToString();
+                trans.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 trans.IsVisible = isVisible;
 
                 if (trans == null)
@@ -185,14 +185,14 @@ namespace Photosoil.Service.Services
                     .Include(x=>x.SoilObjects)
                     .FirstOrDefaultAsync(x => x.Id == id);
                 
-                publication.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                publication.Translations.ForEach(x => x.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                 
                 publication.FileId = publicationVm.FileId;
 
                 foreach (var el in publicationVm.Translations)
                 {
                     el.PublicationId = id;
-                    el.LastUpdated = DateTime.Now.ToString();
+                    el.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     el.Publication = null;
 
                     if (_context.PublicationTranslations.Any(x => x.Id == el.Id))

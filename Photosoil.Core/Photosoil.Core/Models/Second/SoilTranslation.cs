@@ -50,11 +50,28 @@ namespace Photosoil.Core.Models.Second
 
         public bool? IsVisible { get; set; } = false;
         public bool? IsEnglish { get; set; } = false;
-        public string? LastUpdated { get; set; }
-            public string? Code { get; set; }
-            public string? ExternalSource { get; set; }
+        public long LastUpdated { get; set; }
+        public string? Code { get; set; }
+        public string? ExternalSource { get; set; }
 
         public int? SoilId{ get; set; }
+        [JsonIgnore]
         public SoilObject? SoilObject { get; set; }
+        
+        [NotMapped]
+        public User? UserInfo => SoilObject is not null && SoilObject.User is not null ? new User
+        {
+            Id = SoilObject.User.Id,
+            Name = SoilObject.User.Name,
+            Role = SoilObject.User.Role,
+            Email = SoilObject.User.Email,
+        } :null;
+    }
+    public class User
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Role { get; set; }
+        public string? Email { get; set; }
     }
 }

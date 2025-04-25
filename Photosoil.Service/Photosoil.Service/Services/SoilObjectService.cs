@@ -10,6 +10,7 @@ using AutoMapper;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Photosoil.Core.Enum;
 using Photosoil.Core.Models;
 using Photosoil.Core.Models.Second;
@@ -84,11 +85,12 @@ namespace Photosoil.Service.Services
 
             IQueryable<SoilObject> soilObjects;
             if (role == "Admin" || role == "Moderator")
-                soilObjects = _context.SoilObjects.Include(x => x.Authors).Include(x => x.Translations).Include(x => x.Photo).Include(x => x.Terms).AsNoTracking();
+                soilObjects = _context.SoilObjects.Include(x => x.User).Include(x => x.Authors).Include(x => x.Translations).Include(x => x.Photo).Include(x => x.Terms).AsNoTracking();
             else
                 soilObjects = _context.SoilObjects.Include(x=>x.Authors)
                     .Include(x => x.Translations.Where(x => x.IsVisible == true))
                     .Where(x => x.Translations.Count(x => x.IsVisible == true) > 0)
+                    .Include(x=>x.User)
                     .Include(x => x.Photo)
                     .Include(x => x.Terms).AsNoTracking();
 
@@ -208,10 +210,10 @@ namespace Photosoil.Service.Services
                     var q = _context.EcoSystem.FirstOrDefault(x => x.Id == id);
                     newSoil.EcoSystems.Add(q);
                 }
-                soil.Translations.ForEach(x => x.LastUpdated = DateTime.Now.ToString());
+                soil.Translations.ForEach(x => x.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds());
                     
                 newSoil.Translations = soil.Translations;
-                newSoil.CreatedDate = DateTime.Now.ToString();
+                newSoil.CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 _context.SoilObjects.Add(newSoil);
 
                 await _context.SaveChangesAsync();
@@ -235,7 +237,7 @@ namespace Photosoil.Service.Services
                 if(translation == null)
                     return ServiceResponse<SoilObject>.BadResponse("Данные не найдены");
 
-                translation.LastUpdated = DateTime.Now.ToString();
+                translation.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 translation.IsVisible = isVisible;
 
                 _context.SoilObjects.Update(translation.SoilObject);
@@ -292,7 +294,7 @@ namespace Photosoil.Service.Services
                 foreach(var el in soilObjectVm.Translations)
                 {
                     el.SoilId = id;
-                    el.LastUpdated = DateTime.Now.ToString();
+                    el.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                     el.SoilObject = null;
                     if (_context.SoilTranslations.Any(x=>x.Id == el.Id))
                         _context.SoilTranslations.Update(el);

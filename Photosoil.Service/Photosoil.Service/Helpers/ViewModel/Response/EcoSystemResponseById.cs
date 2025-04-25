@@ -23,7 +23,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
 
         public int? PhotoId { get; set; }
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
         public bool? IsExternal { get; set; }
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File? Photo { get; set; }

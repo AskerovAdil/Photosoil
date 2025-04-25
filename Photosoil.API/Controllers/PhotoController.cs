@@ -47,6 +47,14 @@ namespace Photosoil.API.Controllers
 
             return response.Error ? BadRequest(response) : Ok(response);
         }
+
+        [HttpPost(nameof(ResizeAllPhoto))]
+        public async Task<IActionResult> ResizeAllPhoto()
+        {
+            await _photoService.ResizeAllPhoto();
+            // Немедленный возврат ответа
+            return Accepted();
+        }
         [HttpPut(nameof(Put) + "/{Id}")]
         public async Task<IActionResult> Put(int Id, [FromForm] string? TitleEng, [FromForm] string? TitleRu)
         {

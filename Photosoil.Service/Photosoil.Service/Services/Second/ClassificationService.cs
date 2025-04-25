@@ -21,14 +21,14 @@ namespace Photosoil.Service.Services.Second
 
         public ServiceResponse<List<Classification>> GetAll()
         {
-            var soilObjects = _context.Classification.Include(x => x.Terms)
+            var soilObjects = _context.Classification.Include(x => x.Terms.OrderBy(x=>x.Order))
                 .ToList();
             return ServiceResponse<List<Classification>>.OkResponse(soilObjects);
         }
 
         public ServiceResponse<Classification> GetById(int id)
         {
-            var soilObjects = _context.Classification.Include(x => x.Terms)
+            var soilObjects = _context.Classification.Include(x => x.Terms.OrderBy(x => x.Order))
                 .FirstOrDefault(x => x.Id == id);
             return ServiceResponse<Classification>.OkResponse(soilObjects);
         }
@@ -39,9 +39,11 @@ namespace Photosoil.Service.Services.Second
             {
                 var classification = _mapper.Map<Classification>(classificationVm);
                 _context.Set<Classification>().Add(classification);
-
+                
+                var maxTermOrder = 0;
                 foreach (var term in classificationVm.Terms)
-                    classification.Terms.Add(new Term(){NameRu = term.NameRu, NameEng = term.NameEng});
+                    classification.Terms.Add(new Term() { Order = term.Order, NameRu = term.NameRu, NameEng = term.NameEng });
+                    //classification.Terms.Add(new Term() { Order = ++maxTermOrder, NameRu = term.NameRu, NameEng = term.NameEng });
 
                 var maxOrder = _context.Classification.Max(x=>x.Order);
                 classification.Order = ++maxOrder;
@@ -55,7 +57,87 @@ namespace Photosoil.Service.Services.Second
                 return ServiceResponse<Classification>.BadResponse(ex.Message);
             }
         }
+        public async Task<ServiceResponse> SyncOrderTerm()
+        {
+            try
+            {
+                var classifications = _context.Classification.Include(x=>x.Terms).ToList();
+                foreach(var classification in classifications)
+                {
+                    var termOrder = 0;
+                    foreach(var term in classification.Terms)
+                    {
+                        term.Order = ++termOrder;
+                    }
+                }
 
+                await _context.SaveChangesAsync();
+
+                return ServiceResponse.OkResponse;
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<Classification>.BadResponse(ex.Message);
+            }
+        }
+
+        public async Task<ServiceResponse<Classification>> PutData(int Id, ClassificationVM classificationVm)
+        {
+            try
+            {
+                var classification = _context.Classification
+                    .Include(x => x.Terms)
+                    .FirstOrDefault(x => x.Id == Id)
+                    ?? throw new ArgumentException("Классификатор не найден!");
+
+                // Удаляем термины, которые отсутствуют в classificationVm.Terms
+                var deleteTerms = classification.Terms
+                    .Where(x => !classificationVm.Terms.Any(vm => vm.Id == x.Id))
+                    .ToList();
+                _context.Term.RemoveRange(deleteTerms);
+
+                foreach (var el in classificationVm.Terms)
+                {
+                    if (el.Id is null)
+                    {
+                        var term = new Term()
+                        {
+                            NameRu = el.NameRu,
+                            NameEng = el.NameEng,
+                            Order = el.Order,
+                            ClassificationId = Id
+                        };
+                        _context.Term.Add(term);
+                    }
+                    else
+                    {
+                        // Обновляем существующий термин
+                        var existingTerm = classification.Terms.FirstOrDefault(t => t.Id == el.Id);
+                        if (existingTerm != null)
+                        {
+                            existingTerm.NameRu = el.NameRu;
+                            existingTerm.NameEng = el.NameEng;
+                            existingTerm.Order = el.Order;
+                        }
+                    }
+                }
+
+                // Обновляем свойства классификации
+                classification.NameRu = classificationVm.NameRu;
+                classification.NameEng = classificationVm.NameEng;
+                classification.IsAlphabeticallOrder = classificationVm.IsAlphabeticallOrder ?? true;
+                classification.TranslationMode = classificationVm.TranslationMode;
+
+                // Сохраняем изменения
+                await _context.SaveChangesAsync();
+
+                return ServiceResponse<Classification>.OkResponse(classification);
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse<Classification>.BadResponse(ex.Message);
+            }
+        }
         public async Task<ServiceResponse<Classification>> Put(int id, string? nameRu,string? nameEng, TranslationMode TranslationMode = TranslationMode.Neutral)
         {
             try
@@ -75,7 +157,7 @@ namespace Photosoil.Service.Services.Second
             }
         }
 
-        public async Task<ServiceResponse> UpdateOrder(List<ClassificationOrder> orders)
+        public async Task<ServiceResponse> UpdateOrder(List<OrderVM> orders)
         {
             try
             {

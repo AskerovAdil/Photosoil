@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +32,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Photosoil.Core\Photosoil.Core\Photosoil.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
 
 </Project>

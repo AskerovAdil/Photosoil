@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Photosoil.Core.Models;
 using Photosoil.Service.Helpers.ViewModel;
 using Photosoil.Core.Models.Second;
 using Photosoil.Service.Helpers.ViewModel.Response;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Newtonsoft.Json;
-using Photosoil.Core.Models.Base;
 using Photosoil.Service.Models;
 
 namespace Photosoil.Service.Helpers
@@ -42,13 +36,11 @@ namespace Photosoil.Service.Helpers
                 .ForMember(x => x.UserEmail, x => x.MapFrom(x=>x.User.Email ))
                 ;
 
-            CreateMap<News, NewsResponseById>()
-    .ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email))
-    ;
+            CreateMap<News, NewsResponseById>().ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email));
 
-            CreateMap<EcoSystem, EcoSystemResponseById>()
-.ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email))
-;
+            CreateMap<EcoSystem, EcoSystemResponseById>().ForMember(x => x.UserEmail, x => x.MapFrom(x => x.User.Email));
+            CreateMap<ApplicationUser, AccountResponse>();
+
             CreateMap<SoilObject, SoilObjectVM>()
                 .ForMember(x=>x.Authors, x=>x.MapFrom(y=>y.Authors.Select(x=>x.Id)))
                 .ForMember(x=>x.EcoSystems, x=>x.MapFrom(y=>y.EcoSystems.Select(x=>x.Id)))
@@ -87,6 +79,11 @@ namespace Photosoil.Service.Helpers
             CreateMap<EcoSystem, EcoSystemResponse>().ReverseMap();
 
             CreateMap<Term, TermsResponse>();
+            CreateMap<Term, TermsVM?>().ReverseMap()
+                .ForMember(x => x.Id, x => x.Ignore())
+                .ForMember(x => x.SoilObjects, x => x.Ignore())
+                .ForMember(x => x.Classification, x => x.Ignore());
+
 
 
             CreateMap<Article, ArticleVM>();
@@ -153,9 +150,6 @@ namespace Photosoil.Service.Helpers
             CreateMap<Publication, PublicationResponse>();
                 //.ForMember(x => x.Coordinates, x => x.MapFrom(y => JsonConvert.DeserializeObject<Coordinate[]>(y.Coordinates)));
 
-
-            CreateMap<Term, TermsVM>().ReverseMap()
-                .ForMember(x => x.Classification, x => x.Ignore());
             CreateMap<ArticleVM, Article>()
                 .ForMember(x => x.Photo, x => x.Ignore())
                 .ForMember(x => x.PhotoId, x => x.Ignore());

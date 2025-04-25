@@ -18,7 +18,7 @@ namespace Photosoil.Core.Models.Second
         public string? Description { get; set; }
         public bool? IsVisible { get; set; } = false;
         public bool? IsEnglish { get; set; } = false;
-        public string? LastUpdated { get; set; }
+        public long LastUpdated { get; set; }
         public string? Comments { get; set; }
 
         public string? Code { get; set; }
@@ -27,5 +27,13 @@ namespace Photosoil.Core.Models.Second
         public int? EcoSystemId { get; set; }
         public EcoSystem? EcoSystem { get; set; }
 
+        [NotMapped]
+        public User? UserInfo => EcoSystem is not null && EcoSystem.User is not null ? new User
+        {
+            Id = EcoSystem.User.Id,
+            Name = EcoSystem.User.Name,
+            Role = EcoSystem.User.Role,
+            Email = EcoSystem.User.Email,
+        } : null;
     }
 }

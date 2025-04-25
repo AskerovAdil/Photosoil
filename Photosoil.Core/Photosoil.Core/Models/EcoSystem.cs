@@ -24,7 +24,7 @@ namespace Photosoil.Core.Models
         
         public bool? IsExternal { get; set; }
 
-        public string? CreatedDate { get; set; }
+        public long CreatedDate { get; set; }
 
         [Required(ErrorMessage = "Поле 'Изображение' является обязательным")]
         public File? Photo { get; set; }
@@ -38,7 +38,18 @@ namespace Photosoil.Core.Models
         /// </summary>
         public List<File> ObjectPhoto { get; set; } = new();
         public int? UserId { get; set; }
+
+        [JsonIgnore]
         public ApplicationUser? User { get; set; }
+
+        [NotMapped]
+        public User? UserInfo => User is not null ? new User
+        {
+            Id = User.Id,
+            Name = User.Name,
+            Role = User.Role,
+            Email = User.Email,
+        } : null;
 
     }
 }
