@@ -253,7 +253,6 @@ namespace Photosoil.Service.Services
                             <p>Здравствуйте, {user.Name}!</p>
                             <p>Для вашей учетной записи в системе Photosoil был сгенерирован новый пароль:</p>
                             <div class='password'>{newPassword}</div>
-                            <p>Рекомендуем изменить этот пароль после входа в систему.</p>
                             <p>Если вы не запрашивали сброс пароля, пожалуйста, немедленно свяжитесь с администратором системы.</p>
                             <p>С уважением,<br>Команда Photosoil</p>
                         </div>
@@ -267,7 +266,7 @@ namespace Photosoil.Service.Services
                 "Новый пароль для доступа к системе Photosoil",
                 message);
 
-            return ServiceResponse.OkResponse("Новый пароль отправлен на указанный email.");
+            return ServiceResponse.OkResponse;
         }
         
         /// <summary>

@@ -87,12 +87,14 @@ namespace PhotosoilAPI
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
             {
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             builder.Services.AddDbContext<ApplicationDbContext>(x =>
                 x.UseNpgsql(connectionString, builder =>
