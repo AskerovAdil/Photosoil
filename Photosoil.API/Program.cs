@@ -77,6 +77,7 @@ namespace PhotosoilAPI
 
 
 
+            builder.Services.AddScoped<EmailService>();
             builder.Services.AddScoped<AccountService>();
 
 
