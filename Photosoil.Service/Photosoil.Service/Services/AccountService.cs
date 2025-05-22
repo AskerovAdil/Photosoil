@@ -270,6 +270,67 @@ namespace Photosoil.Service.Services
         }
         
         /// <summary>
+        /// Изменение пароля пользователя (требуется ввод текущего пароля)
+        /// </summary>
+        public async Task<ServiceResponse> ChangePasswordAsync(string email, ChangePasswordRequest model)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return ServiceResponse.BadResponse("Пользователь не найден.");
+
+            // Проверка текущего пароля
+            if (!await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
+                return ServiceResponse.BadResponse("Текущий пароль указан неверно.");
+
+            // Проверка, что новый пароль отличается от текущего
+            if (model.CurrentPassword == model.NewPassword)
+                return ServiceResponse.BadResponse("Новый пароль должен отличаться от текущего.");
+
+            // Изменение пароля
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return ServiceResponse.BadResponse(string.Join(", ", errors));
+            }
+
+            // Отправка уведомления о смене пароля
+            var message = $@"
+                <html>
+                <head>
+                    <style>
+                        body {{ font-family: Arial, sans-serif; line-height: 1.6; }}
+                        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                        .header {{ background-color: #4CAF50; color: white; padding: 10px; text-align: center; }}
+                        .content {{ padding: 20px; border: 1px solid #ddd; }}
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Пароль успешно изменен</h2>
+                        </div>
+                        <div class='content'>
+                            <p>Здравствуйте, {user.Name}!</p>
+                            <p>Пароль для вашей учетной записи в системе Photosoil был успешно изменен.</p>
+                            <p>Если вы не меняли пароль, пожалуйста, немедленно свяжитесь с администратором системы.</p>
+                            <p>С уважением,<br>Команда Photosoil</p>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+
+            // Отправка email с уведомлением о смене пароля
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "Пароль успешно изменен - Photosoil",
+                message);
+
+            return ServiceResponse.OkResponse;
+        }
+        
+        /// <summary>
         /// Генерирует случайный пароль, соответствующий требованиям безопасности
         /// </summary>
         private string GenerateRandomPassword()

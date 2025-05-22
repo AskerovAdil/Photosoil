@@ -74,5 +74,23 @@ namespace Photosoil.API.Controllers
             var response = await _accountService.ResetPasswordAsync(model);
             return response.Error ? BadRequest(response) : Ok(response);
         }
+
+        /// <summary>
+        /// Изменение пароля пользователя (требуется ввод текущего пароля)
+        /// </summary>
+        [HttpPost("ChangePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest model)
+        {
+            // Получаем email пользователя из токена
+            var email = User.Identity.Name;
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest(new { Error = true, Message = "Пользователь не аутентифицирован" });
+            }
+
+            var response = await _accountService.ChangePasswordAsync(email, model);
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
     }
 }
