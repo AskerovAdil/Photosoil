@@ -1,35 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Photosoil.Core.Models;
-using Photosoil.Core.Models.Second;
-using Photosoil.Service.Abstract;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
-using Photosoil.Service.Helpers.ViewModel.Base;
-using Photosoil.Service.Helpers.ViewModel.Request;
-using Photosoil.Service.Helpers.ViewModel.Response;
-using File = Photosoil.Core.Models.File;
 
 namespace Photosoil.Service.Services
 {
     public class AuthorRequestService
     {
         private readonly ApplicationDbContext _context;
+        private readonly AuthorService _authorService;
         private readonly IMapper _mapper;
-        public AuthorRequestService(ApplicationDbContext context, IMapper mapper)
+        public AuthorRequestService(ApplicationDbContext context, AuthorService authorService, IMapper mapper)
         {
             _mapper = mapper;
             _context = context;
+            _authorService = authorService;
         }
         public ServiceResponse<AuthorRequest> Get(int id)
         {
@@ -54,7 +41,7 @@ namespace Photosoil.Service.Services
                 var authorRequest = await _context.AuthorRequests.FirstOrDefaultAsync(x=>x.Email == request.Email);
                 if(authorRequest != null)
                     return ServiceResponse<AuthorRequest>.BadResponse("Заявка уже отправлена!");
-
+                await _authorService.BecomeAuthorAsync(request);
                 _context.AuthorRequests.Add(request);
                 _context.SaveChanges();
                 return ServiceResponse<AuthorRequest>.OkResponse(request);

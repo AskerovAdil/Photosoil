@@ -136,7 +136,7 @@ namespace Photosoil.Service.Services
         /// <summary>
         /// Обработка заявки на роль автора
         /// </summary>
-        public async Task<ServiceResponse> BecomeAuthorAsync(BecomeAuthorRequest model)
+        public async Task<ServiceResponse> BecomeAuthorAsync(AuthorRequest model)
         {
             // Формирование HTML-сообщения с информацией о заявке
             var message = $@"
@@ -159,7 +159,7 @@ namespace Photosoil.Service.Services
                         <div class='content'>
                             <div class='field'>
                                 <div class='field-name'>ФИО:</div>
-                                <div>{model.FullName}</div>
+                                <div>{model.Name}</div>
                             </div>
                             <div class='field'>
                                 <div class='field-name'>Организация:</div>
@@ -183,7 +183,7 @@ namespace Photosoil.Service.Services
                 // Отправка email администратору
                 await _emailService.SendEmailAsync(
                     _adminEmail,
-                    $"Новая заявка на роль автора от {model.FullName}",
+                    $"Новая заявка на роль автора от {model.Name}",
                     message);
 
                 // Отправка подтверждения пользователю
@@ -203,7 +203,7 @@ namespace Photosoil.Service.Services
                                 <h2>Заявка на роль автора принята</h2>
                             </div>
                             <div class='content'>
-                                <p>Здравствуйте, {model.FullName}!</p>
+                                <p>Здравствуйте, {model.Name}!</p>
                                 <p>Ваша заявка на роль автора в системе Photosoil успешно принята.</p>
                                 <p>Мы рассмотрим вашу заявку и свяжемся с вами в ближайшее время.</p>
                                 <p>С уважением,<br>Команда Photosoil</p>
@@ -217,7 +217,7 @@ namespace Photosoil.Service.Services
                     "Заявка на роль автора в системе Photosoil",
                     confirmationMessage);
 
-                return ServiceResponse.OkResponse("Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.");
+                return ServiceResponse.OkResponse;
             }
             catch (Exception ex)
             {
