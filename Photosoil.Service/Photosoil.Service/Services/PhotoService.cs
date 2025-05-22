@@ -7,6 +7,7 @@ using Photosoil.Service.Helpers.ViewModel.Request;
 using File = Photosoil.Core.Models.File;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Photosoil.Service.Services
 {
@@ -94,7 +95,7 @@ namespace Photosoil.Service.Services
             }
         }
 
-        public async Task<string> CompressAndSaveImageAsync(IFormFile imageFile, string path, int quality = 10)
+        public async Task<string> CompressAndSaveImageAsync(IFormFile imageFile, string path, int quality = 50)
         {
             string compressedPath = Path.Combine(
                 Path.GetDirectoryName(path),
@@ -103,16 +104,26 @@ namespace Photosoil.Service.Services
 
             using var imageStream = imageFile.OpenReadStream();
             using var image = Image.Load(imageStream);
+
+            double scale = Math.Max(800.0 / image.Width, 800.0 / image.Height);
+            if (scale > 1.0)
+                scale = 1.0;
+
+            int targetWidth = (int)(image.Width * scale);
+            int targetHeight = (int)(image.Height * scale);
+            image.Mutate(x => x.Resize(targetWidth, targetHeight));
+
             var encoder = new JpegEncoder
             {
                 Quality = quality, 
+                
             };
 
             await Task.Run(() => image.Save(compressedPath, encoder));
             return compressedPath;
         }
 
-        public async Task<string> CompressAndSaveImageAsync(string sourcePath, int quality = 10)
+        public async Task<string> CompressAndSaveImageAsync(string sourcePath, int quality = 50)
         {
             var compressedPath = Path.Combine(
                 Path.GetDirectoryName(sourcePath),
@@ -123,12 +134,21 @@ namespace Photosoil.Service.Services
             if (!System.IO.File.Exists(compressedPath))
             {
                 using var image = Image.Load(sourcePath);
+
+                double scale = Math.Max(800.0 / image.Width, 800.0 / image.Height);
+                if (scale > 1.0)
+                    scale = 1.0;
+
+                int targetWidth = (int)(image.Width * scale);
+                int targetHeight = (int)(image.Height * scale);
+                image.Mutate(x => x.Resize(targetWidth, targetHeight));
+
                 var encoder = new JpegEncoder
                 {
                     Quality = quality
                 };
 
-                await Task.Run(() => image.Save(compressedPath, encoder));
+                image.Save(compressedPath, encoder);
             }
 
             return compressedPath;

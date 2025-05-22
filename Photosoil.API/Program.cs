@@ -260,7 +260,10 @@ namespace PhotosoilAPI
                 {
                     ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                     ctx.Context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
-                }
+                },
+                FileProvider = new PhysicalFileProvider("/Storage"),
+                RequestPath = "/Storage",
+                ServeUnknownFileTypes = true
             });
 
 

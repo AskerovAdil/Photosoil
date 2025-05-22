@@ -53,7 +53,7 @@ namespace Photosoil.API.Controllers
         {
             await _photoService.ResizeAllPhoto();
             // Немедленный возврат ответа
-            return Accepted();
+            return Ok();
         }
         [HttpPut(nameof(Put) + "/{Id}")]
         public async Task<IActionResult> Put(int Id, [FromForm] string? TitleEng, [FromForm] string? TitleRu)
