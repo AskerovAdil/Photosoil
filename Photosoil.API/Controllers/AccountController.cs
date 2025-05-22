@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Photosoil.Core.Models;
 using Photosoil.Service.Abstract;
+using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Services;
 using System.Security.Claims;
 
@@ -64,5 +65,14 @@ namespace Photosoil.API.Controllers
             return response.Error ? BadRequest(response) : Ok(response);
         }
 
+        /// <summary>
+        /// Сброс пароля - генерирует новый пароль и отправляет его на email пользователя
+        /// </summary>
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
+        {
+            var response = await _accountService.ResetPasswordAsync(model);
+            return response.Error ? BadRequest(response) : Ok(response);
+        }
     }
 }
