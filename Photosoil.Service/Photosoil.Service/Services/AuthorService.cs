@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Photosoil.Core.Models;
 using Photosoil.Service.Data;
 using Photosoil.Service.Helpers;
 using Photosoil.Service.Helpers.ViewModel.Request;
 using Photosoil.Service.Helpers.ViewModel.Response;
+using System.Threading.Tasks;
 
 namespace Photosoil.Service.Services
 {
@@ -12,10 +14,17 @@ namespace Photosoil.Service.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        public AuthorService(ApplicationDbContext context, IMapper mapper)
+        private readonly EmailService _emailService;
+        private readonly IConfiguration _configuration;
+        private readonly string _adminEmail;
+
+        public AuthorService(ApplicationDbContext context, IMapper mapper, EmailService emailService, IConfiguration configuration)
         {
             _mapper = mapper;
             _context = context;
+            _emailService = emailService;
+            _configuration = configuration;
+            _adminEmail = "askerov121099@gmail.com"; // Фиксированный email для получения заявок
         }
 
         public ServiceResponse<List<AuthorResponse>> GetAdminAll(int userId = 0, string role = "")
@@ -122,7 +131,98 @@ namespace Photosoil.Service.Services
             {
                 return ServiceResponse.BadResponse(ex.Message);
             }
+        }
 
+        /// <summary>
+        /// Обработка заявки на роль автора
+        /// </summary>
+        public async Task<ServiceResponse> BecomeAuthorAsync(BecomeAuthorRequest model)
+        {
+            // Формирование HTML-сообщения с информацией о заявке
+            var message = $@"
+                <html>
+                <head>
+                    <style>
+                        body {{ font-family: Arial, sans-serif; line-height: 1.6; }}
+                        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                        .header {{ background-color: #4CAF50; color: white; padding: 10px; text-align: center; }}
+                        .content {{ padding: 20px; border: 1px solid #ddd; }}
+                        .field {{ margin-bottom: 10px; }}
+                        .field-name {{ font-weight: bold; }}
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Новая заявка на роль автора</h2>
+                        </div>
+                        <div class='content'>
+                            <div class='field'>
+                                <div class='field-name'>ФИО:</div>
+                                <div>{model.FullName}</div>
+                            </div>
+                            <div class='field'>
+                                <div class='field-name'>Организация:</div>
+                                <div>{(string.IsNullOrEmpty(model.Organization) ? "Не указана" : model.Organization)}</div>
+                            </div>
+                            <div class='field'>
+                                <div class='field-name'>Должность:</div>
+                                <div>{(string.IsNullOrEmpty(model.Position) ? "Не указана" : model.Position)}</div>
+                            </div>
+                            <div class='field'>
+                                <div class='field-name'>Email:</div>
+                                <div>{model.Email}</div>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+
+            try
+            {
+                // Отправка email администратору
+                await _emailService.SendEmailAsync(
+                    _adminEmail,
+                    $"Новая заявка на роль автора от {model.FullName}",
+                    message);
+
+                // Отправка подтверждения пользователю
+                var confirmationMessage = $@"
+                    <html>
+                    <head>
+                        <style>
+                            body {{ font-family: Arial, sans-serif; line-height: 1.6; }}
+                            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                            .header {{ background-color: #4CAF50; color: white; padding: 10px; text-align: center; }}
+                            .content {{ padding: 20px; border: 1px solid #ddd; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>
+                                <h2>Заявка на роль автора принята</h2>
+                            </div>
+                            <div class='content'>
+                                <p>Здравствуйте, {model.FullName}!</p>
+                                <p>Ваша заявка на роль автора в системе Photosoil успешно принята.</p>
+                                <p>Мы рассмотрим вашу заявку и свяжемся с вами в ближайшее время.</p>
+                                <p>С уважением,<br>Команда Photosoil</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>";
+
+                await _emailService.SendEmailAsync(
+                    model.Email,
+                    "Заявка на роль автора в системе Photosoil",
+                    confirmationMessage);
+
+                return ServiceResponse.OkResponse("Заявка успешно отправлена. Мы свяжемся с вами в ближайшее время.");
+            }
+            catch (Exception ex)
+            {
+                return ServiceResponse.BadResponse($"Ошибка при отправке заявки: {ex.Message}");
+            }
         }
     }
 }
