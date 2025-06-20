@@ -8,6 +8,7 @@ using File = Photosoil.Core.Models.File;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System;
 
 namespace Photosoil.Service.Services
 {
@@ -59,6 +60,7 @@ namespace Photosoil.Service.Services
                 photo.TitleEng = photoVM.TitleEng;
                 photo.TitleRu= photoVM.TitleRu;
                 photo.Path = path;
+                photo.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 
                 _context.Photo.AddRange(photo);
@@ -162,6 +164,7 @@ namespace Photosoil.Service.Services
                 var photo = _context.Photo.FirstOrDefault(x => x.Id == id);
                 photo.TitleEng = TitleEng;
                 photo.TitleRu = TitleRu;
+                photo.LastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 _context.Photo.Update(photo);
                 _context.SaveChanges();
                 
