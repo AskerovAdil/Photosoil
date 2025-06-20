@@ -24,7 +24,7 @@ namespace Photosoil.Service.Services
             _context = context;
             _emailService = emailService;
             _configuration = configuration;
-            _adminEmail = "Askerov121099mail.ru"; // Фиксированный email для получения заявок
+            _adminEmail = "s.loyko@yandex.ru";
         }
 
         public ServiceResponse<List<AuthorResponse>> GetAdminAll(int userId = 0, string role = "")
@@ -255,12 +255,6 @@ namespace Photosoil.Service.Services
                                    <table cellpadding='0' cellspacing='0' width='100%' role='presentation' style='mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px'>
                                      <tr>
                                       <td align='left' class='es-text-1109' style='padding:0;Margin:0;padding-top:2px'>
-                       
-                                            <img src='https://ekxqldb.stripocdn.email/content/guids/CABINET_c10c8b979b3e65fd02bedfb689676a47f264391b5f7afae88de7a0e4bb64b67e/images/logo.png' alt='' width='40' style='display:inline-block;vertical-align:middle;font-size:14px;border:0;outline:none;text-decoration:none'>
-                        
-                                        <h1 class='es-text-mobile-size-36' style='Margin:0;display:inline-block;vertical-align:middle;font-family:arial, 'helvetica neue', helvetica, sans-serif;mso-line-height-rule:exactly;letter-spacing:0;font-size:36px;font-style:normal;font-weight:bold;line-height:43.2px;color:#333333'>
-                                        <span style='color:#52525b'>Photo</span><span style='color:#226eaf'>SOIL</span>
-                                    </h1>
                                 </td>
                                      </tr>
                                                  </table><!--[if mso]></td></tr></table><![endif]--></td>
@@ -283,16 +277,16 @@ namespace Photosoil.Service.Services
                                        </table></td>
                                      </tr>
                                      <tr>
-                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong>ФИО</strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong>{{model.Name}}</p></td>
+                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong>ФИО</strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong>{model.Name}</p></td>
                                      </tr>
                                      <tr>
-                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong>Организация</strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {{(string.IsNullOrEmpty(model.Organization) ? 'Не указана' : model.Organization)}}</p></td>
+                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong>Организация</strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {(string.IsNullOrEmpty(model.Organization) ? "Не указана" : model.Organization)}</p></td>
                                      </tr>
                                      <tr>
-                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> Должность </strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {{(string.IsNullOrEmpty(model.Position) ? 'Не указана' : model.Position)}}</p></td>
+                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> Должность </strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {(string.IsNullOrEmpty(model.Position) ? "Не указана" : model.Position)}</p></td>
                                      </tr>
                                      <tr>
-                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> Email </strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {{model.Email}}</p></td>
+                                      <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> Email </strong></p><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> {model.Email}</p></td>
                                      </tr>
                                    </table></td>
                                  </tr>

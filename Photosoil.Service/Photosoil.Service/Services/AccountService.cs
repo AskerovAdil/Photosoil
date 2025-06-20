@@ -424,13 +424,13 @@ a[x-apple-data-detectors],
                        </table></td>
                      </tr>
                      <tr>
-                      <td align='left' style='padding:0;Margin:0;padding-top:20px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> Здравствуйте, {{user.Name}}! <strong> </strong></p></td>
+                      <td align='left' style='padding:0;Margin:0;padding-top:20px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'><strong> </strong> Здравствуйте, {user.Name}! <strong> </strong></p></td>
                      </tr>
                      <tr>
                       <td align='left' style='padding:0;Margin:0;padding-top:5px;padding-bottom:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'>Для вашей учетной записи в системе Photosoil был сгенерирован новый пароль:</p></td>
                      </tr>
                      <tr>
-                      <td align='left' bgcolor='#efefef' style='padding:10px;Margin:0'><p style='Margin:0;mso-line-height-rule:exactly;font-family:'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'>{{newPassword}}</p></td>
+                      <td align='left' bgcolor='#efefef' style='padding:10px;Margin:0'><p style='Margin:0;mso-line-height-rule:exactly;font-family:'courier new', courier, 'lucida sans typewriter', 'lucida typewriter', monospace;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'>{model.NewPassword}</p></td>
                      </tr>
                      <tr>
                       <td align='left' style='padding:0;Margin:0;padding-top:10px'><p style='Margin:0;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;letter-spacing:0;color:#333333;font-size:14px'>Рекомендуем изменить этот пароль после входа в систему.</p></td>
