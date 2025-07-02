@@ -45,7 +45,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
                         En = EcoSystems?.SelectMany(p => p.Translations)
                                         .Count(t => t.IsEnglish == true) ?? 0
                     },
-                    Publications = new
+                    SoilObjects = new
                     {
                         Ru = SoilObjects?.SelectMany(p => p.Translations)
                                           .Count(t => t.IsEnglish == false) ?? 0,

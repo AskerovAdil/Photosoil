@@ -6,7 +6,7 @@ using Photosoil.Core.Models.Second;
 
 namespace Photosoil.Service.Helpers.ViewModel.Request
 {
-    public class    PublicationResponseById
+    public class PublicationResponseById
     {
         public int Id { get; set; }
         public string? Doi { get; set; }
@@ -35,7 +35,7 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
                         En = EcoSystems?.SelectMany(p => p.Translations)
                                         .Count(t => t.IsEnglish == true) ?? 0
                     },
-                    Publications = new
+                    SoilObjects = new
                     {
                         Ru = SoilObjects?.SelectMany(p => p.Translations)
                                           .Count(t => t.IsEnglish == false) ?? 0,
