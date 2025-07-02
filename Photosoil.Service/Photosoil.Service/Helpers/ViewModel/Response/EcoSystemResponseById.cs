@@ -38,5 +38,29 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
         public List<File> ObjectPhoto { get; set; } = new();
         public int UserId { get; set; }
         public string? UserEmail{ get; set; }
+
+        public object Stats
+        {
+            get
+            {
+                return new
+                {
+                    EcoSystems = new
+                    {
+                        Ru = SoilObjects?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == false) ?? 0,
+                        En = SoilObjects?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == true) ?? 0
+                    },
+                    Publications = new
+                    {
+                        Ru = Publications?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == false) ?? 0,
+                        En = Publications?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == true) ?? 0
+                    }
+                };
+            }
+        }
     }
 }

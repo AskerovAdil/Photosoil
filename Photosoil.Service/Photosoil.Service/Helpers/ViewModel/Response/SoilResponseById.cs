@@ -36,7 +36,32 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
         public List<EcoSystemResponse> EcoSystems { get; set; } = new List<EcoSystemResponse>();
         public List<ClassificationResponse> Classification { get; set; } = new List<ClassificationResponse>();
         public List<SoilTranslation> Translations { get; set; } = new();
+
+
+        public object Stats
+        {
+            get
+            {
+                return new
+                {
+                    EcoSystems = new
+                    {
+                        Ru = EcoSystems?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == false) ?? 0,
+                        En = EcoSystems?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == true) ?? 0
+                    },
+                    Publications = new
+                    {
+                        Ru = Publications?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == false) ?? 0,
+                        En = Publications?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == true) ?? 0
+                    }
+                };
+            }
+        }
+
+
     }
-
-
 }

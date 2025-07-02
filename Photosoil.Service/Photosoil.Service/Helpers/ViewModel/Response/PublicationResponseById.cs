@@ -22,5 +22,28 @@ namespace Photosoil.Service.Helpers.ViewModel.Request
         public List<SoilResponse> SoilObjects { get; set; } = new();
         public List<PublicationTranslation> Translations { get; set; } = new();
 
+        public object Stats
+        {
+            get
+            {
+                return new
+                {
+                    EcoSystems = new
+                    {
+                        Ru = EcoSystems?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == false) ?? 0,
+                        En = EcoSystems?.SelectMany(p => p.Translations)
+                                        .Count(t => t.IsEnglish == true) ?? 0
+                    },
+                    Publications = new
+                    {
+                        Ru = SoilObjects?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == false) ?? 0,
+                        En = SoilObjects?.SelectMany(p => p.Translations)
+                                          .Count(t => t.IsEnglish == true) ?? 0
+                    }
+                };
+            }
+        }
     }
 }
