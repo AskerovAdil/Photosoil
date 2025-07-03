@@ -62,6 +62,7 @@ namespace Photosoil.Service.Services
                 .Include(x => x.DataRu).Include(x => x.DataEng)
                 .Include(x => x.EcoSystems).ThenInclude(x => x.Photo)
                 .Include(x => x.EcoSystems).ThenInclude(x => x.Translations)
+                .Include(x => x.EcoSystems).ThenInclude(x => x.User)
                 .Include(x => x.SoilObjects).ThenInclude(x => x.Photo)
                 .Include(x => x.SoilObjects).ThenInclude(x => x.Translations)
                 .Include(x => x.SoilObjects).ThenInclude(x => x.User)
@@ -98,7 +99,7 @@ namespace Photosoil.Service.Services
             }
         }
 
-        public async Task<ServiceResponse<Author>> Put(int id, AuthorVM authorVM)
+        public async Task<ServiceResponse<AuthorVM>> Put(int id, AuthorVM authorVM)
         {
             try
             {
@@ -109,11 +110,11 @@ namespace Photosoil.Service.Services
 
                 _context.Author.Update(author);
                 _context.SaveChanges();
-                return ServiceResponse<Author>.OkResponse(author);
+                return ServiceResponse<AuthorVM>.OkResponse(authorVM);
             }
             catch (Exception ex)
             {
-                return ServiceResponse<Author>.BadResponse(ex.Message);
+                return ServiceResponse<AuthorVM>.BadResponse(ex.Message);
             }
         }
 

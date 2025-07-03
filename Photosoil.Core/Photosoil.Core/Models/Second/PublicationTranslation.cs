@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace Photosoil.Core.Models.Second
 {
@@ -20,7 +21,8 @@ namespace Photosoil.Core.Models.Second
         public long LastUpdated { get; set; }
 
         public int? PublicationId { get; set; }
-
+        
+        [JsonIgnore]
         public Publication? Publication { get; set; }
 
         [NotMapped]

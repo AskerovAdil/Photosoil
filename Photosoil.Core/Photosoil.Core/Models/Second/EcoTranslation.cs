@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Photosoil.Core.Models.Second
@@ -25,6 +26,8 @@ namespace Photosoil.Core.Models.Second
         public string? ExternalSource { get; set; }
 
         public int? EcoSystemId { get; set; }
+
+        [JsonIgnore]
         public EcoSystem? EcoSystem { get; set; }
 
         [NotMapped]
