@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MetadataExtractor;
+using MetadataExtractor.Formats.Exif;
 using Newtonsoft.Json;
 
 namespace Photosoil.Core.Models
@@ -56,6 +56,53 @@ namespace Photosoil.Core.Models
             get
             {
                 return string.IsNullOrEmpty(Path) ? "Без_названия" : Path.Split('/').Last();
+            }
+        }
+
+        [NotMapped]
+        public long? TakenDate
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Path))
+                    return null;
+
+                var takenDate = ExtractTakenDateFromExif(Path);
+                var offset = new DateTimeOffset(takenDate.Value, TimeSpan.Zero);
+                long unixTimestamp = offset.ToUnixTimeSeconds();
+
+                return unixTimestamp;
+            }
+        }
+
+        private DateTime? ExtractTakenDateFromExif(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath))
+                return null;
+
+            var extension = System.IO.Path.GetExtension(imagePath).ToLowerInvariant();
+            if (extension is not (".jpg" or ".jpeg" or ".tiff" or ".png"))
+                return null;
+
+            try
+            {
+                if (!System.IO.File.Exists(imagePath))
+                    return null;
+
+                var directories = ImageMetadataReader.ReadMetadata(imagePath);
+                var subIfdDirectory = directories.OfType<ExifSubIfdDirectory>().FirstOrDefault();
+
+                if (subIfdDirectory != null &&
+                    subIfdDirectory.TryGetDateTime(ExifDirectoryBase.TagDateTimeOriginal, out DateTime dateTaken))
+                {
+                    return dateTaken;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
     }
