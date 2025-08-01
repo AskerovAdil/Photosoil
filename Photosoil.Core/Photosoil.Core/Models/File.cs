@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using MetadataExtractor;
 using MetadataExtractor.Formats.Exif;
@@ -68,6 +70,9 @@ namespace Photosoil.Core.Models
                     return null;
 
                 var takenDate = ExtractTakenDateFromExif(Path);
+                if (takenDate is null)
+                    return null;
+
                 var offset = new DateTimeOffset(takenDate.Value, TimeSpan.Zero);
                 long unixTimestamp = offset.ToUnixTimeSeconds();
 
