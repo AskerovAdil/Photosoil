@@ -41,15 +41,17 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
                     EcoSystems = new
                     {
                         Ru = EcoSystems?.SelectMany(p => p.Translations)
+                                        .Where(x=>x.IsVisible == true)
                                         .Count(t => t.IsEnglish == false) ?? 0,
-                        En = EcoSystems?.SelectMany(p => p.Translations)
+                        En = EcoSystems?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                         .Count(t => t.IsEnglish == true) ?? 0
                     },
                     SoilObjects = new
                     {
                         Ru = SoilObjects?.SelectMany(p => p.Translations)
+                                          .Where(x => x.IsVisible == true)
                                           .Count(t => t.IsEnglish == false) ?? 0,
-                        En = SoilObjects?.SelectMany(p => p.Translations)
+                        En = SoilObjects?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                           .Count(t => t.IsEnglish == true) ?? 0
                     }
                 };

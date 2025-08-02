@@ -47,16 +47,16 @@ namespace Photosoil.Service.Helpers.ViewModel.Response
                 {
                     SoilObjects = new
                     {
-                        Ru = SoilObjects?.SelectMany(p => p.Translations)
+                        Ru = SoilObjects?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                         .Count(t => t.IsEnglish == false) ?? 0,
-                        En = SoilObjects?.SelectMany(p => p.Translations)
+                        En = SoilObjects?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                         .Count(t => t.IsEnglish == true) ?? 0
                     },
                     Publications = new
                     {
-                        Ru = Publications?.SelectMany(p => p.Translations)
+                        Ru = Publications?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                           .Count(t => t.IsEnglish == false) ?? 0,
-                        En = Publications?.SelectMany(p => p.Translations)
+                        En = Publications?.SelectMany(p => p.Translations).Where(x => x.IsVisible == true)
                                           .Count(t => t.IsEnglish == true) ?? 0
                     }
                 };
